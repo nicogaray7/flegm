@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    container:
+      image: node:20-slim
     env:
       NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
       NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
@@ -17,19 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-
-      - name: List directory
-        run: ls -la frontend
-
       - name: Install Dependencies
         working-directory: ./frontend
         run: |
-          npm install --verbose
-          npm list
+          npm install --legacy-peer-deps
+          npm list --depth=0
 
       - name: Build
         working-directory: ./frontend

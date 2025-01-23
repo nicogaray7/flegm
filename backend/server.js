@@ -58,8 +58,19 @@ mongoose.connection.on('error', (err) => {
   console.error('Erreur MongoDB:', err);
 });
 
+// Vérification des variables d'environnement critiques
+if (!process.env.MONGODB_URI) {
+  console.error('ERREUR CRITIQUE: Variable d\'environnement MONGODB_URI non définie');
+  process.exit(1);
+}
+
+console.log('MongoDB URI définie:', !!process.env.MONGODB_URI);
+console.log('MongoDB URI commence par:', process.env.MONGODB_URI?.substring(0, 20) + '...');
+
 // Réessayer la connexion en cas d'échec
 const connectWithRetry = () => {
+  const uri = process.env.MONGODB_URI;
+  console.log('Tentative de connexion à MongoDB...');
   mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -69,6 +80,7 @@ const connectWithRetry = () => {
   .then(() => console.log('Connecté à MongoDB'))
   .catch(err => {
     console.error('Erreur de connexion à MongoDB:', err);
+    console.error('URI utilisée (début):', uri?.substring(0, 20) + '...');
     setTimeout(connectWithRetry, 5000);
   });
 };

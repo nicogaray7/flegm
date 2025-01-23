@@ -5,17 +5,17 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
     "react-native-paper": "^5.12.1",
-    "expo": "~50.0.0",
+    "expo": "~50.0.6",
     "@cloudinary/url-gen": "^1.16.0",
     "expo-status-bar": "~1.11.1",
     "expo-image-picker": "~14.7.1",
-    "expo-av": "~13.10.4",
-    "expo-file-system": "~16.0.5",
+    "expo-av": "~13.10.5",
+    "expo-file-system": "~16.0.6",
     "@react-native-async-storage/async-storage": "1.21.0",
     "axios": "^1.6.7",
     "date-fns": "^3.3.1",
     "react-native-web": "~0.19.6",
-    "@expo/webpack-config": "^19.0.0",
+    "@expo/webpack-config": "^19.0.1",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
@@ -30,5 +30,10 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "resolutions": {
+    "semver": "^7.5.4",
+    "xml2js": "^0.5.0",
+    "tough-cookie": "^4.1.3"
   }
 } 

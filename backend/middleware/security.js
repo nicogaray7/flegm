@@ -37,7 +37,34 @@ const sanitizeContent = (req, res, next) => {
 
 // Configuration de sécurité
 const securityConfig = [
-  helmet(), // Sécurité des en-têtes HTTP
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https://api.cloudinary.com"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'", "https://res.cloudinary.com"],
+        frameSrc: ["'none'"],
+      },
+    },
+    crossOriginEmbedderPolicy: true,
+    crossOriginOpenerPolicy: true,
+    crossOriginResourcePolicy: true,
+    dnsPrefetchControl: true,
+    frameguard: true,
+    hidePoweredBy: true,
+    hsts: true,
+    ieNoOpen: true,
+    noSniff: true,
+    originAgentCluster: true,
+    permittedCrossDomainPolicies: true,
+    referrerPolicy: true,
+    xssFilter: true,
+  }),
   hpp(), // Protection contre la pollution des paramètres HTTP
   xssClean(), // Protection XSS
   globalLimiter,

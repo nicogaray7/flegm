@@ -7,6 +7,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - name: Checkout
@@ -17,35 +20,30 @@ jobs:
         with:
           node-version: '20.11.0'
 
-      - name: List files
-        run: |
-          pwd
-          ls -la
-          ls -la frontend/
-
       - name: Install Dependencies
-        working-directory: frontend
         run: |
           echo "Node version: $(node -v)"
           echo "NPM version: $(npm -v)"
-          npm install --legacy-peer-deps --verbose
+          rm -rf node_modules package-lock.json
+          npm install --no-package-lock --legacy-peer-deps
           npm list --depth=0
 
       - name: Build
-        working-directory: frontend
         run: |
           echo "Starting build..."
           npm run build
-          echo "Build completed"
-          ls -la .next/
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: frontend/.next
-          enable_jekyll: false
+          touch out/.nojekyll
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
-          NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }} 
+          NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
+
+      - name: Export
+        run: npm run export
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: frontend/out
+          clean: true 

@@ -1,4 +1,12 @@
 require('dotenv').config();
+
+// Vérification de la version de Node.js
+const nodeVersion = process.version;
+console.log('Version de Node.js:', nodeVersion);
+if (!nodeVersion.startsWith('v18')) {
+  console.warn('Attention: La version recommandée de Node.js est v18.x');
+}
+
 const express = require('express');
 const compression = require('compression');
 const mongoose = require('mongoose');
@@ -56,6 +64,15 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Gestion des erreurs MongoDB
 mongoose.connection.on('error', (err) => {
   console.error('Erreur MongoDB:', err);
+  if (err.name === 'MongoServerSelectionError') {
+    console.error('Détails de l\'erreur de connexion:', err.reason);
+  }
+  if (err.code === 'ECONNREFUSED') {
+    console.error('Connexion refusée. Vérifiez le pare-feu et les règles de sécurité MongoDB Atlas');
+  }
+  if (err.message.includes('ssl')) {
+    console.error('Erreur SSL. Vérifiez la configuration SSL/TLS');
+  }
 });
 
 // Vérification des variables d'environnement critiques
@@ -76,11 +93,20 @@ const connectWithRetry = () => {
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
+    ssl: true,
+    tls: true,
+    tlsAllowInvalidCertificates: false,
+    tlsAllowInvalidHostnames: false,
+    retryWrites: true,
+    w: 'majority'
   })
   .then(() => console.log('Connecté à MongoDB'))
   .catch(err => {
     console.error('Erreur de connexion à MongoDB:', err);
     console.error('URI utilisée (début):', uri?.substring(0, 20) + '...');
+    if (err.name === 'MongoServerSelectionError') {
+      console.error('Détails de l\'erreur de connexion:', err.reason);
+    }
     setTimeout(connectWithRetry, 5000);
   });
 };

@@ -17,10 +17,13 @@
     "react-dom": "18.2.0",
     "cross-env": "^7.0.3"
   },
+  "devDependencies": {
+    "expo-dev-client": "~3.3.8"
+  },
   "scripts": {
     "start": "expo start",
-    "build": "cross-env NODE_ENV=production expo export:web",
-    "vercel-build": "cross-env NODE_ENV=production expo export:web",
+    "build": "EXPO_NO_DEV_CLIENT=1 expo export:web",
+    "vercel-build": "EXPO_NO_DEV_CLIENT=1 expo export:web",
     "dev": "cross-env NODE_ENV=development expo start"
   },
   "engines": {

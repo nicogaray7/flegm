@@ -1,7 +1,14 @@
-// Import conditionnel de expo-dev-client
-if (process.env.NODE_ENV === 'development') {
-  require('expo-dev-client');
-}
+// Gestion conditionnelle de expo-dev-client
+const loadDevClient = async () => {
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      await import('expo-dev-client');
+    } catch (error) {
+      console.log('expo-dev-client non disponible en production');
+    }
+  }
+};
+loadDevClient();
 
 import { registerRootComponent } from 'expo';
 import React from 'react';

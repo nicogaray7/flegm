@@ -29,8 +29,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          rm -rf node_modules package-lock.json
-          npm install --legacy-peer-deps --verbose
+          npm config set legacy-peer-deps true
+          npm config set fetch-retries 5
+          npm config set fetch-retry-mintimeout 20000
+          npm config set fetch-retry-maxtimeout 120000
+          npm install --no-package-lock
 
       - name: Build
         run: |

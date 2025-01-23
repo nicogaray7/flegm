@@ -3,6 +3,11 @@
   "framework": "nextjs",
   "buildCommand": "next build",
   "outputDirectory": ".next",
+  "functions": {
+    "api/**/*": {
+      "runtime": "nodejs20.x"
+    }
+  },
   "env": {
     "NEXT_PUBLIC_API_URL": "https://api.flegm.fr",
     "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",

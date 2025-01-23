@@ -91,13 +91,9 @@ const connectWithRetry = () => {
   mongoose.connect(process.env.MONGODB_URI, {
     serverSelectionTimeoutMS: 30000,
     socketTimeoutMS: 75000,
-    ssl: true,
-    sslValidate: true,
     retryWrites: true,
     w: 'majority',
     authSource: 'admin',
-    replicaSet: 'atlas-jxnsm6-shard-0',
-    tls: true
   })
   .then(() => console.log('Connecté à MongoDB'))
   .catch(err => {

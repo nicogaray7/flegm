@@ -24,7 +24,12 @@
     "xss": "^1.0.14",
     "sanitize-html": "^2.12.1",
     "crypto-js": "^4.2.0",
-    "glob": "^10.3.10"
+    "glob": "^10.3.10",
+    "compression": "^1.7.4",
+    "express-static-gzip": "^2.1.7",
+    "node-cache": "^5.1.2",
+    "ioredis": "^5.3.2",
+    "express-slow-down": "^2.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.3"

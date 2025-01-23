@@ -20,7 +20,9 @@
   },
   "devDependencies": {
     "expo-dev-client": "~3.3.8",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "compression-webpack-plugin": "^10.0.0",
+    "terser-webpack-plugin": "^5.3.10"
   },
   "scripts": {
     "start": "expo start",

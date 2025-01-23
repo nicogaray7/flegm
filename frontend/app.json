@@ -11,10 +11,12 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "enabled": true
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/fonts/*",
+      "assets/images/*"
     ],
     "ios": {
       "supportsTablet": true,
@@ -29,7 +31,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "webpack"
+      "bundler": "webpack",
+      "output": "static",
+      "optimization": {
+        "minimize": true,
+        "splitChunks": true,
+        "treeshake": true
+      }
     },
     "extra": {
       "apiUrl": "https://flegm-api.onrender.com",

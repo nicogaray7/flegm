@@ -1,10 +1,26 @@
 require('dotenv').config();
 const express = require('express');
+const compression = require('compression');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { securityConfig } = require('./middleware/security');
+const path = require('path');
 
 const app = express();
+
+// Compression gzip
+app.use(compression());
+
+// Cache statique
+app.use(express.static('public', {
+  maxAge: '1d',
+  etag: true,
+  lastModified: true
+}));
+
+// Optimisation MongoDB
+mongoose.set('bufferCommands', false);
+mongoose.set('autoIndex', false);
 
 // Configuration CORS sécurisée
 const corsOptions = {

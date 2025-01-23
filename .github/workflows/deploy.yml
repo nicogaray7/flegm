@@ -43,13 +43,24 @@ jobs:
           NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
+          echo "Starting build process..."
+          echo "Checking Next.js config:"
+          cat next.config.js
+          echo "\nChecking package.json:"
+          cat package.json
+          echo "\nStarting build:"
           npm run build
+          echo "\nBuild completed, checking output:"
+          ls -la .next
 
       - name: Export
         working-directory: frontend
         run: |
+          echo "Starting export process..."
           npm run export
+          echo "\nCreating .nojekyll file..."
           touch out/.nojekyll
+          echo "\nChecking export output:"
           ls -la out
           echo "nicogaray7.github.io" > out/CNAME
 

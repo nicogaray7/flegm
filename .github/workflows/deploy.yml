@@ -7,6 +7,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,21 +19,23 @@ jobs:
 
       - name: Debug environment
         run: |
-          echo "Current directory:"
           pwd
-          echo "\nRoot directory contents:"
           ls -la
-          echo "\nFrontend directory contents:"
-          ls -la frontend
-          echo "\nNode.js version:"
+          cd frontend
+          ls -la
           node --version
-          echo "\nNPM version:"
           npm --version
 
       - name: Install Dependencies
         working-directory: frontend
         run: |
-          npm install --legacy-peer-deps
+          echo "Cleaning npm cache..."
+          npm cache clean --force
+          echo "Removing existing node_modules and package-lock.json..."
+          rm -rf node_modules package-lock.json
+          echo "Installing dependencies..."
+          npm install --no-package-lock --no-audit --no-fund --loglevel=error
+          echo "Listing installed packages..."
           npm ls --depth=0
 
       - name: Build
@@ -60,7 +63,7 @@ jobs:
           npm run export
           echo "\nCreating .nojekyll file..."
           touch out/.nojekyll
-          echo "\nChecking export output:"
+          echo "\nChecking exported files:"
           ls -la out
           echo "nicogaray7.github.io" > out/CNAME
 

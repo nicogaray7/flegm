@@ -9,8 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: node:20-alpine
+      options: --user root
 
     steps:
+      - name: Install system dependencies
+        run: |
+          apk add --no-cache git python3 make g++
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -20,8 +25,7 @@ jobs:
       - name: Install Dependencies
         working-directory: ./frontend
         run: |
-          npm config list
-          npm install --verbose --no-audit
+          npm install --no-optional --no-shrinkwrap --no-package-lock
 
       - name: Build
         working-directory: ./frontend

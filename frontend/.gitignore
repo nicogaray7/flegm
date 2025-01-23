@@ -43,3 +43,4 @@ out/
 .expo/
 web-build/
 App.dev.js 
+.vercel

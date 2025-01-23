@@ -10,6 +10,10 @@ jobs:
     defaults:
       run:
         working-directory: frontend
+    env:
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+      NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
 
     steps:
       - name: Checkout
@@ -29,11 +33,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm config set legacy-peer-deps true
-          npm config set fetch-retries 5
-          npm config set fetch-retry-mintimeout 20000
-          npm config set fetch-retry-maxtimeout 120000
-          npm install --no-package-lock
+          npm install --no-optional --no-audit --no-fund --no-package-lock
 
       - name: Build
         run: |

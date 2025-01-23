@@ -39,17 +39,27 @@ app.use(...securityConfig);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Connection à MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  ssl: true,
-  authSource: 'admin',
-  retryWrites: true,
-  w: 'majority'
-})
-.then(() => console.log('Connecté à MongoDB'))
-.catch(err => console.error('Erreur de connexion à MongoDB:', err));
+// Gestion des erreurs MongoDB
+mongoose.connection.on('error', (err) => {
+  console.error('Erreur MongoDB:', err);
+});
+
+// Réessayer la connexion en cas d'échec
+const connectWithRetry = () => {
+  mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+  })
+  .then(() => console.log('Connecté à MongoDB'))
+  .catch(err => {
+    console.error('Erreur de connexion à MongoDB:', err);
+    setTimeout(connectWithRetry, 5000);
+  });
+};
+
+connectWithRetry();
 
 // Middleware de logging sécurisé
 app.use((req, res, next) => {
@@ -60,6 +70,11 @@ app.use((req, res, next) => {
 
 // Routes API
 app.use('/api', routes);
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route non trouvée' });
+});
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {

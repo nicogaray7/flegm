@@ -3,8 +3,8 @@ services:
     name: flegm-api
     env: node
     region: frankfurt
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -22,4 +22,5 @@ services:
         sync: false
       - key: FRONTEND_URL
         value: https://flegm.vercel.app
+    healthCheckPath: /api/health
     autoDeploy: true 

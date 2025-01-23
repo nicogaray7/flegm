@@ -1,24 +1,17 @@
 {
   "version": 2,
-  "rootDirectory": "frontend",
-  "builds": [
-    {
-      "src": "web-build/**/*",
-      "use": "@vercel/static",
-      "config": {
-        "maxDuration": 300
-      }
-    }
-  ],
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/web-build",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/index.html"
     }
   ],
   "env": {
     "EXPO_PUBLIC_API_URL": "https://flegm-api.onrender.com",
     "EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",
-    "EXPO_PUBLIC_CLOUDINARY_API_KEY": "165535318843775"
+    "EXPO_PUBLIC_CLOUDINARY_API_KEY": "165535318843775",
+    "NODE_ENV": "production"
   }
 } 

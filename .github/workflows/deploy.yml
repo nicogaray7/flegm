@@ -51,10 +51,13 @@ jobs:
         run: |
           npm run export
           touch out/.nojekyll
+          ls -la out
+          echo "nicogaray7.github.io" > out/CNAME
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: frontend/out
-          clean: true 
+          clean: true
+          cname: nicogaray7.github.io 

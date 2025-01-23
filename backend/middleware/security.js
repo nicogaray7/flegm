@@ -1,6 +1,6 @@
 const helmet = require('helmet');
 const hpp = require('hpp');
-const xssClean = require('xss-clean');
+const xss = require('xss');
 const sanitizeHtml = require('sanitize-html');
 const rateLimit = require('express-rate-limit');
 const { validationResult } = require('express-validator');
@@ -29,6 +29,18 @@ const sanitizeContent = (req, res, next) => {
           allowedTags: [],
           allowedAttributes: {}
         });
+      }
+    });
+  }
+  next();
+};
+
+// Middleware XSS personnalisé
+const xssMiddleware = (req, res, next) => {
+  if (req.body) {
+    Object.keys(req.body).forEach(key => {
+      if (typeof req.body[key] === 'string') {
+        req.body[key] = xss(req.body[key]);
       }
     });
   }
@@ -66,7 +78,7 @@ const securityConfig = [
     xssFilter: true,
   }),
   hpp(), // Protection contre la pollution des paramètres HTTP
-  xssClean(), // Protection XSS
+  xssMiddleware,
   globalLimiter,
   sanitizeContent
 ];
@@ -74,5 +86,6 @@ const securityConfig = [
 module.exports = {
   securityConfig,
   validateInput,
-  sanitizeContent
+  sanitizeContent,
+  xssMiddleware
 }; 

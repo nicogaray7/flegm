@@ -10,6 +10,8 @@ build/
 
 # Dossier d'uploads temporaires
 uploads/
+uploads/*
+!uploads/.gitkeep
 
 # Logs
 logs

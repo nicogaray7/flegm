@@ -3,8 +3,8 @@
   "rootDirectory": "frontend",
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/node",
+      "src": "web-build/**/*",
+      "use": "@vercel/static",
       "config": {
         "maxDuration": 300
       }
@@ -13,7 +13,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/$1"
     }
   ],
   "env": {

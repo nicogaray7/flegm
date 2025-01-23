@@ -18,8 +18,8 @@
   },
   "scripts": {
     "start": "expo start",
-    "build": "expo export:web",
-    "vercel-build": "expo export:web"
+    "build": "expo export:web && cp -r web-build/* public/",
+    "vercel-build": "expo export:web && cp -r web-build/* public/"
   },
   "engines": {
     "node": ">=18.0.0"

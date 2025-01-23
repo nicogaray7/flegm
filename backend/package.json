@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "NODE_ENV=production node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "npm install",
+    "postbuild": "chmod +x build.sh"
   },
   "dependencies": {
     "express": "^4.19.1",

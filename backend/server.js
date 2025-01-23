@@ -6,6 +6,7 @@ const cors = require('cors');
 const { securityConfig } = require('./middleware/security');
 const path = require('path');
 const routes = require('./routes');
+const healthRoutes = require('./routes/health');
 
 const app = express();
 
@@ -67,6 +68,9 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${sanitizedUrl}`);
   next();
 });
+
+// Route de health check
+app.use('/api/health', healthRoutes);
 
 // Routes API
 app.use('/api', routes);

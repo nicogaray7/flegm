@@ -5,6 +5,9 @@ services:
     region: frankfurt
     buildCommand: cd backend && npm install
     startCommand: cd backend && npm start
+    healthCheckPath: /api/health
+    healthCheckTimeout: 5
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
@@ -22,5 +25,11 @@ services:
         sync: false
       - key: FRONTEND_URL
         value: https://flegm.vercel.app
-    healthCheckPath: /api/health
-    autoDeploy: true 
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+      targetMemoryPercent: 80
+    buildFilter:
+      paths:
+        - backend/**/*.js
+        - backend/package*.json 

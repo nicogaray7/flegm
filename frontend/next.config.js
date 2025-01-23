@@ -11,26 +11,15 @@ const nextConfig = {
     NEXT_PUBLIC_CLOUDINARY_API_KEY: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production'
   },
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: [
-      '@react-native-async-storage/async-storage',
-      'date-fns',
-      '@cloudinary/url-gen'
-    ]
-  },
-  webpack: (config, { dev, isServer }) => {
-    // Optimisations webpack pour la production
-    if (!dev && !isServer) {
-      Object.assign(config.resolve.alias, {
-        'react/jsx-runtime': 'react/jsx-runtime.js',
-        'react/jsx-dev-runtime': 'react/jsx-dev-runtime.js',
-      });
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      'react-native$': 'react-native-web'
     }
-    return config;
-  },
+    return config
+  }
 }
 
 module.exports = nextConfig 

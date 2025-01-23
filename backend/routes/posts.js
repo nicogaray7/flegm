@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
 const { authMiddleware } = require('../middleware/auth');
-const { validate, postValidations } = require('../middleware/validation');
+const { postRules, validateRequest } = require('../middleware/validation');
 const upload = require('../middleware/upload');
 const { uploadVideo } = require('../config/cloudinary');
 const fs = require('fs');
@@ -11,7 +11,8 @@ const fs = require('fs');
 router.post('/', 
   authMiddleware,
   upload.single('video'),
-  validate(postValidations),
+  postRules,
+  validateRequest,
   async (req, res) => {
     try {
       const result = await uploadVideo(req.file.path);

@@ -14,12 +14,14 @@
     "date-fns": "^3.3.1",
     "react-native-web": "~0.19.6",
     "@expo/webpack-config": "^19.0.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "cross-env": "^7.0.3"
   },
   "scripts": {
     "start": "expo start",
-    "build": "expo export:web && cp -r web-build/* public/",
-    "vercel-build": "expo export:web && cp -r web-build/* public/"
+    "build": "cross-env NODE_ENV=production expo export:web",
+    "vercel-build": "cross-env NODE_ENV=production expo export:web",
+    "dev": "cross-env NODE_ENV=development expo start"
   },
   "engines": {
     "node": ">=18.0.0"

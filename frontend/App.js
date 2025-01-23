@@ -1,3 +1,8 @@
+// Import conditionnel de expo-dev-client
+if (process.env.NODE_ENV === 'development') {
+  require('expo-dev-client');
+}
+
 import { registerRootComponent } from 'expo';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';

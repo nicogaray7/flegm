@@ -33,4 +33,13 @@ Thumbs.db
 # Fichiers de build
 *.apk
 *.aab
-*.ipa 
+*.ipa
+
+# Build
+build/
+dist/
+.next/
+out/
+.expo/
+web-build/
+App.dev.js 

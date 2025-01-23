@@ -91,14 +91,17 @@ const connectWithRetry = () => {
   mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 75000,
     ssl: true,
-    tls: true,
-    tlsAllowInvalidCertificates: false,
-    tlsAllowInvalidHostnames: false,
+    sslValidate: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
     retryWrites: true,
-    w: 'majority'
+    w: 'majority',
+    authSource: 'admin',
+    replicaSet: 'atlas-jxnsm6-shard-0',
+    tls: true
   })
   .then(() => console.log('Connecté à MongoDB'))
   .catch(err => {
@@ -107,6 +110,7 @@ const connectWithRetry = () => {
     if (err.name === 'MongoServerSelectionError') {
       console.error('Détails de l\'erreur de connexion:', err.reason);
     }
+    console.log('Nouvelle tentative dans 5 secondes...');
     setTimeout(connectWithRetry, 5000);
   });
 };

@@ -1,0 +1,36 @@
+# Dépendances
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# Variables d'environnement
+.env
+.env.local
+.env.development
+.env.production
+
+# Système d'exploitation
+.DS_Store
+Thumbs.db
+
+# IDE et éditeurs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Expo
+.expo-shared/
+
+# Fichiers de build
+*.apk
+*.aab
+*.ipa 

@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/expo"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {
+    "EXPO_PUBLIC_API_URL": "https://flegm-api.onrender.com",
+    "EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",
+    "EXPO_PUBLIC_CLOUDINARY_API_KEY": "165535318843775"
+  }
+} 

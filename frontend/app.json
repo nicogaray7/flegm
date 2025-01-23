@@ -27,14 +27,14 @@
       },
       "package": "com.flegm.app"
     },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "L'application accède à vos photos pour permettre le partage de vidéos.",
-          "cameraPermission": "L'application accède à votre caméra pour permettre le partage de vidéos."
-        }
-      ]
-    ]
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "webpack"
+    },
+    "extra": {
+      "apiUrl": "https://flegm-api.onrender.com",
+      "cloudinaryCloudName": "dfupyozxe",
+      "cloudinaryApiKey": "165535318843775"
+    }
   }
 } 

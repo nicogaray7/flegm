@@ -11,6 +11,14 @@
     "expo-file-system": "~16.0.5",
     "@react-native-async-storage/async-storage": "1.21.0",
     "axios": "^1.6.7",
-    "date-fns": "^3.3.1"
+    "date-fns": "^3.3.1",
+    "react-native-web": "~0.19.6",
+    "@expo/webpack-config": "^19.0.0"
+  },
+  "scripts": {
+    "start": "expo start",
+    "build": "expo export:web",
+    "web": "expo start --web",
+    "deploy": "vercel deploy --prod"
   }
 } 

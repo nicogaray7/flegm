@@ -4,7 +4,7 @@
   "description": "Backend pour l'application Flegm - Plateforme de découverte de créateurs de contenu",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "NODE_ENV=production node server.js",
     "dev": "nodemon server.js"
   },
   "dependencies": {

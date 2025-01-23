@@ -6,8 +6,12 @@ module.exports = {
   web: {
     bundler: 'webpack',
     output: 'static',
+    optimization: {
+      minimize: true,
+      splitChunks: true,
+      treeshake: true
+    }
   },
-  plugins: process.env.EXPO_NO_DEV_CLIENT ? [] : ['expo-dev-client'],
   extra: {
     apiUrl: process.env.EXPO_PUBLIC_API_URL,
     cloudinaryCloudName: process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME,

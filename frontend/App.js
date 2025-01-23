@@ -1,15 +1,3 @@
-// Gestion conditionnelle de expo-dev-client
-const loadDevClient = async () => {
-  if (process.env.NODE_ENV === 'development') {
-    try {
-      await import('expo-dev-client');
-    } catch (error) {
-      console.log('expo-dev-client non disponible en production');
-    }
-  }
-};
-loadDevClient();
-
 import { registerRootComponent } from 'expo';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';

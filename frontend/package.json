@@ -19,15 +19,14 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "expo-dev-client": "~3.3.8",
     "cross-env": "^7.0.3",
     "compression-webpack-plugin": "^10.0.0",
     "terser-webpack-plugin": "^5.3.10"
   },
   "scripts": {
     "start": "expo start",
-    "build": "EXPO_NO_DEV_CLIENT=1 expo export:web",
-    "vercel-build": "EXPO_NO_DEV_CLIENT=1 expo export:web",
+    "build": "expo export:web",
+    "vercel-build": "expo export:web",
     "dev": "cross-env NODE_ENV=development expo start"
   },
   "engines": {

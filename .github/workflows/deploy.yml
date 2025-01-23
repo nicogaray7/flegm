@@ -7,25 +7,22 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    container: 
-      image: node:20-alpine
-      options: --user root
 
     steps:
-      - name: Install system dependencies
-        run: |
-          apk add --no-cache git python3 make g++
-
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: List directory contents
-        run: ls -la frontend
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install Dependencies
         working-directory: ./frontend
         run: |
-          npm install --no-optional --no-shrinkwrap --no-package-lock
+          npm ci
 
       - name: Build
         working-directory: ./frontend

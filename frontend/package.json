@@ -2,6 +2,9 @@
   "name": "flegm-frontend",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,20 +12,18 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cloudinary/url-gen": "1.16.0",
-    "@react-native-async-storage/async-storage": "1.21.0",
-    "@types/react-native": "0.73.0",
-    "axios": "1.7.4",
-    "date-fns": "3.3.1",
     "next": "14.2.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native-web": "0.19.6"
+    "@cloudinary/url-gen": "1.16.0",
+    "axios": "1.7.4",
+    "date-fns": "3.3.1",
+    "@types/react-native": "0.73.0",
+    "react-native-web": "0.19.6",
+    "@react-native-async-storage/async-storage": "1.21.0"
   },
   "devDependencies": {
     "@babel/core": "7.23.9",
-    "@tailwindcss/forms": "0.5.10",
-    "@tailwindcss/line-clamp": "0.4.4",
     "@types/node": "20.11.16",
     "@types/react": "18.2.52",
     "@types/react-dom": "18.2.18",
@@ -31,7 +32,6 @@
     "eslint-config-next": "14.2.21",
     "postcss": "8.4.35",
     "tailwindcss": "3.4.1",
-    "typescript": "5.3.3",
-    "vercel": "^39.3.0"
+    "typescript": "5.3.3"
   }
 }

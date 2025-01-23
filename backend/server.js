@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { securityConfig } = require('./middleware/security');
 const path = require('path');
+const routes = require('./routes');
 
 const app = express();
 
@@ -57,12 +58,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.use('/api/users', require('./routes/users'));
-app.use('/api/posts', require('./routes/posts'));
-app.use('/api/comments', require('./routes/comments'));
-app.use('/api/upload', require('./routes/upload'));
-app.use('/api/health', require('./routes/health'));
+// Routes API
+app.use('/api', routes);
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {

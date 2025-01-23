@@ -1,18 +1,19 @@
 {
   "version": 2,
-  "framework": "expo",
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "web-build",
-  "routes": [
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["cdg1"],
+  "builds": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "package.json",
+      "use": "@vercel/next"
     }
   ],
   "env": {
-    "EXPO_PUBLIC_API_URL": "https://flegm-api.onrender.com",
-    "EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",
-    "EXPO_PUBLIC_CLOUDINARY_API_KEY": "165535318843775",
-    "NODE_ENV": "production"
+    "NEXT_PUBLIC_API_URL": "https://api.flegm.fr",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",
+    "NEXT_PUBLIC_CLOUDINARY_API_KEY": "165535318843775"
   }
 } 

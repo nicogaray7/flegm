@@ -1,58 +1,33 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Layout from '../components/layout/Layout'
 import ProductCard from '../components/home/ProductCard'
+import { Post } from '../types/post'
 
-// Données de test
-const mockProducts = [
-  {
-    id: '1',
-    title: 'Flegm AI',
-    description: 'Une plateforme d\'intelligence artificielle pour les créateurs de contenu',
-    imageUrl: 'https://picsum.photos/200',
-    upvotes: 128,
-    comments: 32,
-    topics: ['AI', 'SaaS', 'Productivité']
-  },
-  {
-    id: '2',
-    title: 'Studio Flegm',
-    description: 'Suite d\'outils pour la création et l\'édition de contenu multimédia',
-    imageUrl: 'https://picsum.photos/201',
-    upvotes: 95,
-    comments: 24,
-    topics: ['Design', 'Vidéo', 'Audio']
-  },
-  {
-    id: '3',
-    title: 'Flegm Analytics',
-    description: 'Analysez et optimisez vos performances de création de contenu',
-    imageUrl: 'https://picsum.photos/202',
-    upvotes: 76,
-    comments: 18,
-    topics: ['Analytics', 'Data', 'Growth']
-  },
-  {
-    id: '4',
-    title: 'Flegm Community',
-    description: 'Plateforme communautaire pour connecter les créateurs de contenu',
-    imageUrl: 'https://picsum.photos/203',
-    upvotes: 64,
-    comments: 29,
-    topics: ['Community', 'Social', 'Networking']
-  },
-  {
-    id: '5',
-    title: 'Flegm Monetize',
-    description: 'Solutions de monétisation pour créateurs de contenu',
-    imageUrl: 'https://picsum.photos/204',
-    upvotes: 112,
-    comments: 41,
-    topics: ['Monétisation', 'Finance', 'Business']
-  }
-]
+export default function Home() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-const Home = () => {
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`);
+        if (!response.ok) {
+          throw new Error('Erreur lors du chargement des posts');
+        }
+        const data = await response.json();
+        setPosts(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
     <Layout>
       <Head>
@@ -75,15 +50,31 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Liste des produits */}
-        <div className="bg-white rounded-lg shadow">
-          {mockProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              {...product}
-            />
-          ))}
-        </div>
+        {/* État de chargement */}
+        {loading && (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+          </div>
+        )}
+
+        {/* Message d'erreur */}
+        {error && (
+          <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        {/* Liste des posts */}
+        {!loading && !error && (
+          <div className="bg-white rounded-lg shadow">
+            {posts.map((post) => (
+              <ProductCard
+                key={post._id}
+                post={post}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Newsletter */}
         <div className="bg-white rounded-lg shadow p-6 mt-8">
@@ -108,6 +99,4 @@ const Home = () => {
       </div>
     </Layout>
   )
-}
-
-export default Home 
+} 

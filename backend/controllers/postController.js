@@ -1,13 +1,24 @@
 const Post = require('../models/Post');
+const Comment = require('../models/Comment');
 const { cache } = require('../services/cache');
 
 exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate('author', 'username')
-      .sort({ createdAt: -1 })
+      .populate('creator', 'username avatar')
+      .sort({ upvoteCount: -1, createdAt: -1 })
       .limit(20);
-    res.json(posts);
+
+    // Récupérer le nombre de commentaires pour chaque post
+    const postsWithComments = await Promise.all(posts.map(async (post) => {
+      const commentCount = await Comment.countDocuments({ post: post._id });
+      return {
+        ...post.toObject(),
+        commentCount
+      };
+    }));
+
+    res.json(postsWithComments);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

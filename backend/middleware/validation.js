@@ -1,7 +1,7 @@
 const { check, validationResult } = require('express-validator');
 const CryptoJS = require('crypto-js');
 
-// Validation des entrées
+// Middleware de validation
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -10,22 +10,31 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-// Règles de validation
-const postRules = [
-  check('title').trim().isLength({ min: 3, max: 100 }),
+// Validation des posts
+const validatePost = [
+  check('title').trim().isLength({ min: 3, max: 100 })
+    .withMessage('Le titre doit contenir entre 3 et 100 caractères'),
   check('description').trim().isLength({ min: 10, max: 1000 })
+    .withMessage('La description doit contenir entre 10 et 1000 caractères'),
+  validateRequest
 ];
 
-const commentRules = [
-  check('content').trim().isLength({ min: 1, max: 500 }),
-  check('postId').isMongoId()
-];
-
-const uploadRules = [
-  check('folder').equals('flegm_videos'),
-  check('resource_type').equals('video'),
-  check('timestamp').isNumeric(),
+// Validation des uploads
+const validateUpload = [
+  check('timestamp').isNumeric()
+    .withMessage('Timestamp invalide'),
   check('signature').isString().notEmpty()
+    .withMessage('Signature requise'),
+  validateRequest
+];
+
+// Validation des commentaires
+const validateComment = [
+  check('content').trim().isLength({ min: 1, max: 500 })
+    .withMessage('Le commentaire doit contenir entre 1 et 500 caractères'),
+  check('postId').isMongoId()
+    .withMessage('ID de post invalide'),
+  validateRequest
 ];
 
 // Vérification de signature
@@ -43,9 +52,8 @@ const verifySignature = (req, res, next) => {
 };
 
 module.exports = {
-  validateRequest,
-  postRules,
-  commentRules,
-  uploadRules,
+  validatePost,
+  validateUpload,
+  validateComment,
   verifySignature
 }; 

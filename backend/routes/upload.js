@@ -2,14 +2,13 @@ const express = require('express');
 const router = express.Router();
 const cloudinary = require('cloudinary').v2;
 const { authMiddleware, uploadLimiter } = require('../middleware/auth');
-const { uploadRules, validateRequest } = require('../middleware/validation');
+const { validateUpload } = require('../middleware/validation');
 
 // Route pour obtenir la signature
 router.get('/signature', 
-  authMiddleware, 
+  authMiddleware,
   uploadLimiter,
-  uploadRules,
-  validateRequest,
+  validateUpload,
   async (req, res) => {
     try {
       const timestamp = Math.round((new Date).getTime()/1000);

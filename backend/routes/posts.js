@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
 const { authMiddleware } = require('../middleware/auth');
-const { postRules, validateRequest } = require('../middleware/validation');
+const { validatePost } = require('../middleware/validation');
 const upload = require('../middleware/upload');
 const { uploadVideo } = require('../config/cloudinary');
 const fs = require('fs');
@@ -11,8 +11,7 @@ const fs = require('fs');
 router.post('/', 
   authMiddleware,
   upload.single('video'),
-  postRules,
-  validateRequest,
+  validatePost,
   async (req, res) => {
     try {
       const result = await uploadVideo(req.file.path);
@@ -23,13 +22,14 @@ router.post('/',
         description: req.body.description,
         videoUrl: result.secure_url,
         thumbnailUrl: result.eager[1].secure_url,
-        tags: JSON.parse(req.body.tags)
+        tags: req.body.tags ? JSON.parse(req.body.tags) : []
       });
 
       await post.save();
       
-      // Supprime le fichier temporaire
-      fs.unlinkSync(req.file.path);
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
       
       res.status(201).json(post);
     } catch (error) {

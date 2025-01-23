@@ -140,4 +140,22 @@ export const uploadVideo = async (videoUri) => {
     console.error('Erreur upload:', error);
     throw error;
   }
+};
+
+// Ajoutons un test rapide
+const testAPI = async () => {
+  try {
+    const response = await api.get('/posts');
+    console.log('Posts récupérés:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Erreur API:', error);
+    throw error;
+  }
+};
+
+// Exportons la fonction de test
+module.exports = {
+  ...api,
+  testAPI
 }; 

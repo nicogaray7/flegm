@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  output: 'export',
   images: {
-    domains: ['storage.flegm.fr', 'api.dicebear.com', 'picsum.photos'],
+    unoptimized: true,
+    domains: ['localhost', 'api.flegm.fr'],
   },
+  basePath: '/flegm',
+  assetPrefix: '/flegm',
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,

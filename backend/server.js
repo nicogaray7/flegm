@@ -89,14 +89,10 @@ const connectWithRetry = () => {
   const uri = process.env.MONGODB_URI;
   console.log('Tentative de connexion à MongoDB...');
   mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 30000,
     socketTimeoutMS: 75000,
     ssl: true,
     sslValidate: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     retryWrites: true,
     w: 'majority',
     authSource: 'admin',

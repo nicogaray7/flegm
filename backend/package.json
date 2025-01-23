@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@cloudinary/url-gen": "^1.16.0",
+    "@types/passport": "1.0.17",
+    "@types/passport-facebook": "3.0.3",
+    "@types/passport-google-oauth20": "2.0.16",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.0.1",
     "compression": "^1.7.4",
@@ -31,6 +34,10 @@
     "mongoose": "^8.9.5",
     "multer": "^1.4.5-lts.1",
     "node-cache": "^5.1.2",
+    "passport": "0.7.0",
+    "passport-facebook": "3.0.0",
+    "passport-google-oauth20": "2.0.0",
+    "passport-tiktok": "0.0.0",
     "sanitize-html": "^2.12.1",
     "xss": "^1.0.14"
   },

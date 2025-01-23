@@ -10,6 +10,12 @@ const healthRoutes = require('./routes/health');
 
 const app = express();
 
+// Log toutes les routes disponibles
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // Compression gzip
 app.use(compression());
 
@@ -33,6 +39,13 @@ const corsOptions = {
   credentials: true,
   maxAge: 3600
 };
+
+// Debug CORS
+app.use((req, res, next) => {
+  console.log('Origin:', req.headers.origin);
+  console.log('CORS allowed:', corsOptions.origin);
+  next();
+});
 
 // Middleware de sécurité
 app.use(cors(corsOptions));
@@ -73,10 +86,11 @@ app.use((req, res, next) => {
 app.use('/api/health', healthRoutes);
 
 // Routes API
-app.use('/api', routes);
+app.use('/', routes);
 
 // Gestion des erreurs 404
 app.use((req, res) => {
+  console.log(`404 - Route non trouvée: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ message: 'Route non trouvée' });
 });
 

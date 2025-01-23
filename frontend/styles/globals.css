@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply antialiased text-gray-900;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply text-gray-700 hover:text-orange-500 transition-colors duration-200;
+  }
+  
+  .input-primary {
+    @apply rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

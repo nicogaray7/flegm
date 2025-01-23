@@ -20,17 +20,25 @@ jobs:
         with:
           node-version: '20.11.0'
 
-      - name: Install Dependencies
+      - name: Check Node.js and npm versions
         run: |
-          echo "Node version: $(node -v)"
-          echo "NPM version: $(npm -v)"
+          node -v
+          npm -v
+          npm config list
+
+      - name: Clean install dependencies
+        run: |
           rm -rf node_modules package-lock.json
-          npm install --no-package-lock --legacy-peer-deps
-          npm list --depth=0
+          npm install --legacy-peer-deps --force
+
+      - name: Check Next.js version
+        run: |
+          npm list next
+          npm list react
+          npm list react-dom
 
       - name: Build
         run: |
-          echo "Starting build..."
           npm run build
           touch out/.nojekyll
         env:

@@ -7,6 +7,6 @@
     "NEXT_PUBLIC_API_URL": "https://api.flegm.fr",
     "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",
     "NEXT_PUBLIC_CLOUDINARY_API_KEY": "165535318843775",
-    "NODE_VERSION": "20.x"
+    "NODE_VERSION": "22.x"
   }
 } 

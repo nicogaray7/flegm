@@ -16,59 +16,25 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Debug environment
-        run: |
-          pwd
-          ls -la
-          cd frontend
-          ls -la
-          node --version
-          npm --version
 
       - name: Install Dependencies
         working-directory: frontend
-        env:
-          NODE_OPTIONS: "--max-old-space-size=4096"
         run: |
-          echo "Nettoyage du cache npm..."
-          npm cache clean --force
-          echo "Installation des dépendances..."
-          npm ci --prefer-offline --no-audit --no-fund
-          echo "Liste des paquets installés..."
-          npm ls --depth=0
+          npm install --no-package-lock --no-audit --no-fund
 
       - name: Build
         working-directory: frontend
         env:
-          NODE_OPTIONS: "--max-old-space-size=4096"
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+          NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
         run: |
-          echo "Démarrage du build..."
-          echo "Configuration Next.js :"
-          cat next.config.js
-          echo "\nPackage.json :"
-          cat package.json
-          echo "\nDémarrage du build :"
           npm run build
-          echo "\nBuild terminé, vérification de la sortie :"
-          ls -la .next
-
-      - name: Export
-        working-directory: frontend
-        run: |
-          echo "Démarrage de l'export..."
-          npm run export
-          echo "\nCréation du fichier .nojekyll..."
           touch out/.nojekyll
-          echo "\nVérification des fichiers exportés :"
-          ls -la out
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: frontend/out
-          clean: true
-          cname: nicogaray7.github.io 
+          clean: true 

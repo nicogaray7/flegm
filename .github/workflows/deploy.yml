@@ -7,15 +7,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: frontend
-    env:
-      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
-      NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
-      NODE_OPTIONS: "--max_old_space_size=4096"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,27 +18,35 @@ jobs:
 
       - name: Debug environment
         run: |
+          echo "Current directory:"
           pwd
+          echo "\nRoot directory contents:"
           ls -la
+          echo "\nFrontend directory contents:"
+          ls -la frontend
+          echo "\nNode.js version:"
           node --version
+          echo "\nNPM version:"
           npm --version
-          npm config list
-
-      - name: Clean npm cache
-        run: |
-          npm cache clean --force
-          rm -rf node_modules package-lock.json
 
       - name: Install Dependencies
+        working-directory: frontend
         run: |
           npm install --legacy-peer-deps
           npm ls --depth=0
 
       - name: Build
+        working-directory: frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+          NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           npm run build
 
       - name: Export
+        working-directory: frontend
         run: |
           npm run export
           touch out/.nojekyll

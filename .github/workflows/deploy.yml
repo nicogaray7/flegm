@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -18,17 +18,26 @@ jobs:
           node-version: '20.11.0'
 
       - name: List files
-        run: ls -la frontend/
+        run: |
+          pwd
+          ls -la
+          ls -la frontend/
 
       - name: Install Dependencies
         working-directory: frontend
         run: |
-          npm install --legacy-peer-deps
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+          npm install --legacy-peer-deps --verbose
           npm list --depth=0
 
       - name: Build
         working-directory: frontend
-        run: npm run build
+        run: |
+          echo "Starting build..."
+          npm run build
+          echo "Build completed"
+          ls -la .next/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

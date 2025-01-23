@@ -3,10 +3,8 @@ services:
     name: flegm-api
     env: node
     region: frankfurt
-    rootDir: backend  # Spécifie le dossier backend comme racine
     buildCommand: npm install
     startCommand: npm start
-    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production

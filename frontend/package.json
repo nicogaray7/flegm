@@ -1,4 +1,6 @@
 {
+  "name": "flegm-frontend",
+  "version": "1.0.0",
   "dependencies": {
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
@@ -14,11 +16,11 @@
     "date-fns": "^3.3.1",
     "react-native-web": "~0.19.6",
     "@expo/webpack-config": "^19.0.0",
-    "react-dom": "18.2.0",
-    "cross-env": "^7.0.3"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "expo-dev-client": "~3.3.8"
+    "expo-dev-client": "~3.3.8",
+    "cross-env": "^7.0.3"
   },
   "scripts": {
     "start": "expo start",

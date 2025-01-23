@@ -17,12 +17,15 @@ jobs:
         with:
           node-version: '20.11.0'
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: List files
+        run: ls -la frontend/
 
       - name: Install Dependencies
         working-directory: frontend
         run: |
-          npm ci
+          npm install
           npm list --depth=0
 
       - name: Build

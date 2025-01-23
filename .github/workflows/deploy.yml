@@ -16,6 +16,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Debug environment
         run: |
@@ -28,44 +30,40 @@ jobs:
 
       - name: Install Dependencies
         working-directory: frontend
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
         run: |
-          echo "Cleaning npm cache..."
+          echo "Nettoyage du cache npm..."
           npm cache clean --force
-          echo "Removing existing node_modules and package-lock.json..."
-          rm -rf node_modules package-lock.json
-          echo "Installing dependencies..."
-          npm install --no-package-lock --no-audit --no-fund --loglevel=error
-          echo "Listing installed packages..."
+          echo "Installation des dépendances..."
+          npm ci --prefer-offline --no-audit --no-fund
+          echo "Liste des paquets installés..."
           npm ls --depth=0
 
       - name: Build
         working-directory: frontend
         env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
-          NEXT_PUBLIC_CLOUDINARY_API_KEY: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
-          NODE_OPTIONS: "--max_old_space_size=4096"
+          NODE_OPTIONS: "--max-old-space-size=4096"
         run: |
-          echo "Starting build process..."
-          echo "Checking Next.js config:"
+          echo "Démarrage du build..."
+          echo "Configuration Next.js :"
           cat next.config.js
-          echo "\nChecking package.json:"
+          echo "\nPackage.json :"
           cat package.json
-          echo "\nStarting build:"
+          echo "\nDémarrage du build :"
           npm run build
-          echo "\nBuild completed, checking output:"
+          echo "\nBuild terminé, vérification de la sortie :"
           ls -la .next
 
       - name: Export
         working-directory: frontend
         run: |
-          echo "Starting export process..."
+          echo "Démarrage de l'export..."
           npm run export
-          echo "\nCreating .nojekyll file..."
+          echo "\nCréation du fichier .nojekyll..."
           touch out/.nojekyll
-          echo "\nChecking exported files:"
+          echo "\nVérification des fichiers exportés :"
           ls -la out
-          echo "nicogaray7.github.io" > out/CNAME
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

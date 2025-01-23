@@ -16,22 +16,15 @@ export default function SecureVideo({ publicId, style }) {
   useEffect(() => {
     const loadVideo = async () => {
       try {
-        // Génère l'URL avec transformation
         const myVideo = cld.video(publicId)
           .resize(fill().width(720).height(480))
           .quality('auto')
           .format('mp4');
 
         const url = myVideo.toURL();
-
-        // Vérifie le cache
         const cachedUrl = await VideoCache.getCachedVideo(url);
-        if (cachedUrl) {
-          setVideoUrl(cachedUrl);
-        } else {
-          const newCachedUrl = await VideoCache.cacheVideo(url);
-          setVideoUrl(newCachedUrl);
-        }
+        
+        setVideoUrl(cachedUrl || url);
       } catch (error) {
         console.error('Erreur chargement vidéo:', error);
       }

@@ -6,7 +6,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { theme } from './theme';
 import { AuthProvider } from './context/AuthContext';
-import { CloudinaryContext } from '@cloudinary/react';
 
 import HomeScreen from './screens/HomeScreen';
 import PostScreen from './screens/PostScreen';
@@ -17,26 +16,24 @@ const Stack = createStackNavigator();
 
 function App() {
   return (
-    <CloudinaryContext cloudName={process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME}>
-      <AuthProvider>
-        <PaperProvider theme={theme}>
-          <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName="Home"
-              screenOptions={{
-                headerShown: false,
-                cardStyle: { backgroundColor: '#f9f9f9' }
-              }}
-            >
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Post" component={PostScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen name="NewPost" component={NewPostScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </PaperProvider>
-      </AuthProvider>
-    </CloudinaryContext>
+    <AuthProvider>
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+              headerShown: false,
+              cardStyle: { backgroundColor: '#f9f9f9' }
+            }}
+          >
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Post" component={PostScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="NewPost" component={NewPostScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    </AuthProvider>
   );
 }
 

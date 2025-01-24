@@ -15,7 +15,17 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  videoUrl: {
+  youtubeUrl: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})$/.test(v);
+      },
+      message: 'URL YouTube invalide'
+    }
+  },
+  youtubeId: {
     type: String,
     required: true
   },
@@ -35,6 +45,17 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+});
+
+// Middleware pour extraire l'ID YouTube avant la sauvegarde
+postSchema.pre('save', function(next) {
+  if (this.isModified('youtubeUrl')) {
+    const match = this.youtubeUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (match) {
+      this.youtubeId = match[1];
+    }
+  }
+  next();
 });
 
 // Index pour le classement

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Appbar, Text, Avatar, Divider } from 'react-native-paper';
-import { Video } from 'expo-av';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import YouTubePlayer from '../components/YouTubePlayer';
 import CommentList from '../components/CommentList';
 import CommentInput from '../components/CommentInput';
 import UpvoteButton from '../components/UpvoteButton';
@@ -41,11 +41,10 @@ export default function PostScreen({ route, navigation }) {
       </Appbar.Header>
 
       <ScrollView>
-        <Video
-          source={{ uri: post.videoUrl }}
-          style={styles.video}
-          useNativeControls
-          resizeMode="contain"
+        <YouTubePlayer
+          youtubeId={post.youtubeId}
+          title={post.title}
+          className="mb-4"
         />
 
         <View style={styles.content}>

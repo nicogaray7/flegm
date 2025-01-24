@@ -1,52 +1,45 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { TextInput, Button, Appbar, Chip, ProgressBar } from 'react-native-paper';
-import * as ImagePicker from 'expo-image-picker';
-import { uploadVideo } from '../services/uploadService';
-import SecureVideo from '../components/SecureVideo';
+import { TextInput, Button, Appbar } from 'react-native-paper';
 import { createPost } from '../services/api';
+import YouTubePlayer from '../components/YouTubePlayer';
 
 export default function NewPostScreen({ navigation }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [videoUri, setVideoUri] = useState('');
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [youtubeId, setYoutubeId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [publicId, setPublicId] = useState(null);
+  const [error, setError] = useState('');
 
-  const pickVideo = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-      allowsEditing: true,
-      quality: 1,
-    });
+  const extractYoutubeId = (url) => {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : null;
+  };
 
-    if (!result.canceled) {
-      setVideoUri(result.assets[0].uri);
-    }
+  const handleYoutubeUrlChange = (url) => {
+    setYoutubeUrl(url);
+    const id = extractYoutubeId(url);
+    setYoutubeId(id);
+    setError(!id ? 'URL YouTube invalide' : '');
   };
 
   const handleSubmit = async () => {
-    if (!title.trim() || !description.trim() || !videoUri) return;
+    if (!title.trim() || !description.trim() || !youtubeId) return;
 
     setLoading(true);
     try {
-      // Upload sécurisé
-      const uploadResult = await uploadVideo(videoUri, (progress) => {
-        setUploadProgress(progress);
-      });
-
-      // Créer le post avec l'ID public Cloudinary
       await createPost({
         title,
         description,
-        videoId: uploadResult.public_id,
-        thumbnailUrl: uploadResult.secure_url.replace(/\.[^/.]+$/, ".jpg")
+        youtubeUrl,
+        youtubeId
       });
 
       navigation.navigate('Home');
     } catch (error) {
       console.error('Erreur:', error);
+      setError('Erreur lors de la création du post');
     } finally {
       setLoading(false);
     }
@@ -60,24 +53,23 @@ export default function NewPostScreen({ navigation }) {
       </Appbar.Header>
 
       <ScrollView style={styles.content}>
-        <Button
+        <TextInput
           mode="outlined"
-          onPress={pickVideo}
-          style={styles.uploadButton}
-          icon="video-plus"
-          disabled={loading}
-        >
-          Sélectionner une vidéo
-        </Button>
-
-        {uploadProgress > 0 && uploadProgress < 1 && (
-          <ProgressBar progress={uploadProgress} style={styles.progressBar} />
+          label="URL YouTube"
+          value={youtubeUrl}
+          onChangeText={handleYoutubeUrlChange}
+          placeholder="https://youtube.com/watch?v=..."
+          error={!!error}
+          style={styles.input}
+        />
+        {error && (
+          <Text style={styles.errorText}>{error}</Text>
         )}
 
-        {videoUri && (
-          <SecureVideo
-            publicId={publicId}
-            style={styles.videoPreview}
+        {youtubeId && (
+          <YouTubePlayer
+            youtubeId={youtubeId}
+            className="my-4"
           />
         )}
 
@@ -87,7 +79,6 @@ export default function NewPostScreen({ navigation }) {
           value={title}
           onChangeText={setTitle}
           style={styles.input}
-          disabled={loading}
         />
 
         <TextInput
@@ -98,14 +89,13 @@ export default function NewPostScreen({ navigation }) {
           multiline
           numberOfLines={4}
           style={styles.input}
-          disabled={loading}
         />
 
         <Button
           mode="contained"
           onPress={handleSubmit}
           loading={loading}
-          disabled={!title.trim() || !description.trim() || !videoUri || loading}
+          disabled={!title.trim() || !description.trim() || !youtubeId || loading}
           style={styles.submitButton}
         >
           Publier
@@ -123,18 +113,13 @@ const styles = StyleSheet.create({
   content: {
     padding: 16
   },
-  uploadButton: {
-    marginBottom: 16
-  },
-  videoPreview: {
-    width: '100%',
-    height: 200,
-    marginBottom: 16
-  },
   input: {
     marginBottom: 16
   },
-  progressBar: {
+  errorText: {
+    color: '#B00020',
+    fontSize: 12,
+    marginTop: -12,
     marginBottom: 16
   },
   submitButton: {

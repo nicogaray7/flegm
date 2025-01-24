@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { FacebookLoginButton } from '../components/FacebookLoginButton';
+import { TikTokLoginButton } from '../components/TikTokLoginButton';
 
 export default function Login() {
   const router = useRouter();
@@ -57,6 +58,23 @@ export default function Login() {
     // Afficher l'erreur à l'utilisateur si nécessaire
   };
 
+  const handleTikTokSuccess = async (data: any) => {
+    try {
+      // Stocker le token dans le localStorage
+      localStorage.setItem('token', data.token);
+      
+      // Rediriger vers la page d'accueil
+      router.push('/');
+    } catch (error) {
+      console.error('Erreur lors de la connexion TikTok:', error);
+    }
+  };
+
+  const handleTikTokError = (error: string) => {
+    console.error('Erreur TikTok:', error);
+    setError(error);
+  };
+
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -108,15 +126,11 @@ export default function Login() {
                   className="mt-3 w-full"
                 />
 
-                <button
-                  onClick={() => handleSocialLogin('tiktok')}
-                  className="mt-3 w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                >
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.321 5.562a5.124 5.124 0 01-.443-.258 6.228 6.228 0 01-1.137-1.022C16.326 2.699 16.035 1 16.035 1h-3.991v15.428c0 1.832-1.485 3.315-3.317 3.315-1.832 0-3.317-1.483-3.317-3.315s1.485-3.315 3.317-3.315c.365 0 .716.059 1.044.168V9.321c-.34-.037-.685-.056-1.044-.056C4.151 9.265 1 12.416 1 16.292s3.151 7.027 7.043 7.027 7.043-3.151 7.043-7.027V8.403c1.434.942 3.12 1.462 4.912 1.462v-3.991c-.252 0-.498-.018-.738-.053-.141-.02-.276-.043-.411-.069l.472-.19z"/>
-                  </svg>
-                  Continuer avec TikTok
-                </button>
+                <TikTokLoginButton
+                  onSuccess={handleTikTokSuccess}
+                  onError={handleTikTokError}
+                  className="mt-3 w-full"
+                />
               </div>
 
               <div className="relative">

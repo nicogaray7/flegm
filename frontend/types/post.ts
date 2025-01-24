@@ -2,7 +2,8 @@ export interface Post {
   _id: string;
   title: string;
   description: string;
-  videoUrl: string;
+  youtubeUrl: string;
+  youtubeId: string;
   thumbnailUrl?: string;
   creator: {
     _id: string;

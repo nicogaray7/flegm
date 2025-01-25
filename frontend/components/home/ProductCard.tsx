@@ -9,6 +9,51 @@ interface ProductCardProps {
 
 const ProductCard = ({ post }: ProductCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [upvoteCount, setUpvoteCount] = useState(post.upvoteCount);
+  const [isUpvoted, setIsUpvoted] = useState(false);
+  const [commentClicked, setCommentClicked] = useState(false);
+  const [upvoteAnimation, setUpvoteAnimation] = useState(false);
+
+  const handleUpvote = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Empêche la navigation
+    e.stopPropagation(); // Arrête la propagation de l'événement
+
+    // Déclencher l'animation
+    setUpvoteAnimation(true);
+    
+    // Réinitialiser l'animation après 300ms
+    setTimeout(() => {
+      setUpvoteAnimation(false);
+    }, 300);
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // Rediriger vers la connexion si non connecté
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${post._id}/upvote`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const updatedPost = await response.json();
+        setUpvoteCount(updatedPost.upvoteCount);
+        setIsUpvoted(!isUpvoted);
+      }
+    } catch (error) {
+      console.error('Erreur lors du vote', error);
+    }
+  };
+
+  const handleCommentClick = () => {
+    setCommentClicked(!commentClicked);
+  };
 
   return (
     <>
@@ -45,24 +90,65 @@ const ProductCard = ({ post }: ProductCardProps) => {
             </div>
             
             <h2 className="text-lg font-medium text-gray-900 truncate mt-2">{post.title}</h2>
-            <p className="text-sm text-gray-500 line-clamp-2">{post.description}</p>
             
             <div className="mt-2 flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <button className="flex items-center space-x-1 text-gray-500 hover:text-orange-500">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+              <button 
+                type="button" 
+                className="styles_reset__0clCw"
+                data-test="comment-button"
+                onClick={handleCommentClick}
+              >
+                <div 
+                  className="group/accessory flex size-12 flex-col items-center justify-center gap-1 rounded-xl border-2 border-gray-200 dark:border-gray-dark-800 bg-white transition-all duration-300 hover:border-[#FF6154] dark:hover:border-[#FF6154]"
+                  data-filled={commentClicked ? "true" : "false"}
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="14" 
+                    height="14" 
+                    fill="none" 
+                    viewBox="0 0 14 14" 
+                    className="stroke-[#344054] text-[#344054] group-hover:stroke-[#FF6154] group-hover:text-[#FF6154] group-data-[filled=true]/accessory:stroke-[#FF6154] group-data-[filled=true]/accessory:text-[#FF6154] size-[14px] stroke-[1.5px]"
+                  >
+                    <path 
+                      stroke="#344054" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth="1.5" 
+                      d="M12.25 6.708a4.958 4.958 0 0 1-6.74 4.629 2 2 0 0 0-.192-.068.5.5 0 0 0-.11-.014 1.4 1.4 0 0 0-.176.012l-2.987.309c-.285.03-.427.044-.511-.007a.3.3 0 0 1-.137-.204c-.015-.097.053-.223.19-.475l.953-1.766c.079-.146.118-.218.136-.288a.5.5 0 0 0 .016-.19c-.006-.072-.037-.166-.1-.353a4.958 4.958 0 1 1 9.658-1.585"
+                    ></path>
                   </svg>
-                  <span>{post.upvoteCount}</span>
-                </button>
-              </div>
-              
-              <div className="flex items-center space-x-1 text-gray-500">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                <span>{post.commentCount}</span>
-              </div>
+                  <div className="text-14 font-semibold text-[#344054] leading-none group-hover:text-[#FF6154] group-data-[filled=true]/accessory:text-[#FF6154]">
+                    {post.commentCount}
+                  </div>
+                </div>
+              </button>
+
+              <button 
+                type="button" 
+                className="styles_reset__0clCw"
+                data-test="vote-button"
+                onClick={handleUpvote}
+              >
+                <div 
+                  className={`group/accessory flex size-12 flex-col items-center justify-center gap-1 rounded-xl border-2 border-gray-200 dark:border-gray-dark-800 bg-white transition-all duration-300 hover:border-[#FF6154] dark:hover:border-[#FF6154] ${upvoteAnimation ? 'styles_animation__iT31' : ''}`}
+                  data-filled={isUpvoted ? "true" : "false"}
+                >
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="16" 
+                    height="16" 
+                    fill="none" 
+                    viewBox="0 0 16 16" 
+                    className="fill-white stroke-[#344054] stroke-[1.5px] transition-all duration-300 group-hover:stroke-[#FF6154] group-hover:fill-[#FF6154] group-data-[filled=true]/accessory:fill-[#FF6154] group-data-[filled=true]/accessory:stroke-[#FF6154]"
+                  >
+                    <path d="M6.579 3.467c.71-1.067 2.132-1.067 2.842 0L12.975 8.8c.878 1.318.043 3.2-1.422 3.2H4.447c-1.464 0-2.3-1.882-1.422-3.2z"></path>
+                  </svg>
+                  <div className="text-14 font-semibold text-[#344054] leading-none group-hover:text-[#FF6154] group-data-[filled=true]/accessory:text-[#FF6154]">
+                    {upvoteCount}
+                  </div>
+                </div>
+              </button>
             </div>
 
             <div className="mt-2 flex flex-wrap gap-2">
@@ -79,14 +165,16 @@ const ProductCard = ({ post }: ProductCardProps) => {
         </div>
       </div>
 
-      <VideoModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        youtubeId={post.youtubeId}
-        title={post.title}
-      />
+      {isModalOpen && (
+        <VideoModal 
+          isOpen={isModalOpen}
+          youtubeId={post.youtubeId} 
+          title={post.title} 
+          onClose={() => setIsModalOpen(false)} 
+        />
+      )}
     </>
   );
 };
 
-export default ProductCard; 
+export default ProductCard;

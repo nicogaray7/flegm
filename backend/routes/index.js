@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { cacheMiddleware } = require('../services/cache');
 const { validateInput } = require('../middleware/security');
+const auth = require('../middleware/auth');
 
 // Contrôleurs
 const userController = require('../controllers/userController');
@@ -17,23 +18,23 @@ router.get('/test', (req, res) => {
 // Routes utilisateurs
 router.post('/api/users/login', validateInput, userController.login);
 router.post('/api/users/register', validateInput, userController.register);
-router.get('/api/users/profile', userController.getProfile);
-router.put('/api/users/profile', validateInput, userController.updateProfile);
+router.get('/api/users/profile', auth, userController.getProfile);
+router.put('/api/users/profile', auth, validateInput, userController.updateProfile);
 
 // Routes posts avec cache
 router.get('/api/posts', cacheMiddleware(300), postController.getPosts);
-router.post('/api/posts', validateInput, postController.createPost);
+router.post('/api/posts', auth, validateInput, postController.createPost);
 router.get('/api/posts/:id', cacheMiddleware(300), postController.getPost);
-router.put('/api/posts/:id', validateInput, postController.updatePost);
-router.delete('/api/posts/:id', postController.deletePost);
-router.post('/api/posts/:id/upvote', postController.upvotePost);
+router.put('/api/posts/:id', auth, validateInput, postController.updatePost);
+router.delete('/api/posts/:id', auth, postController.deletePost);
+router.post('/api/posts/:id/upvote', auth, postController.upvotePost);
 
 // Routes commentaires
 router.get('/api/posts/:id/comments', commentController.getComments);
-router.post('/api/posts/:id/comments', validateInput, commentController.addComment);
-router.delete('/api/comments/:id', commentController.deleteComment);
+router.post('/api/posts/:id/comments', auth, validateInput, commentController.addComment);
+router.delete('/api/comments/:id', auth, commentController.deleteComment);
 
 // Route upload
-router.post('/api/upload', uploadController.uploadFile);
+router.post('/api/upload', auth, uploadController.uploadFile);
 
 module.exports = router; 

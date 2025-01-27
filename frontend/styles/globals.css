@@ -1,3 +1,4 @@
+/* stylelint-disable */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,32 +11,50 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200;
+    @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-hover transition-colors duration-200;
   }
-  
+
   .btn-secondary {
-    @apply text-gray-700 hover:text-orange-500 transition-colors duration-200;
+    @apply text-gray-700 hover:text-primary transition-colors duration-200;
   }
-  
+
   .input-primary {
-    @apply rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500;
+    @apply rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary;
   }
 }
 
+/* Animations et styles personnalisés */
+@keyframes upvoteAnimation {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.styles_animation__iT31 {
+  animation: upvoteAnimation 0.3s ease-in-out;
+}
+
+.styles_reset {
+  @apply appearance-none outline-none border border-transparent rounded-md relative inline-block transition-all ease-in-out duration-300 text-center;
+}
+
+/* Thème sombre et variables */
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-end-rgb: 166, 52, 41;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 166, 52, 41;
+  }
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgb(var(--background-end-rgb))
-  )
-  rgb(var(--background-start-rgb));
+  background-color: white;
   margin: 0;
   padding: 0;
   min-height: 100vh;

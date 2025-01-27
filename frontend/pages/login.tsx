@@ -11,6 +11,7 @@ export default function Login() {
     password: '',
   });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSocialLogin = async (provider: string) => {
     try {
@@ -22,22 +23,56 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      console.log('🚀 Tentative de connexion avec :', { email: formData.email, password: formData.password });
+      console.log('🌐 URL complète :', `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`);
+      console.log('🔍 Variable d\'environnement :', process.env.NEXT_PUBLIC_API_URL);
+      console.log('🔄 URL de redirection :', router.query.redirect);
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Origin': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+        },
         credentials: 'include',
+        mode: 'cors',
+        body: JSON.stringify({ email: formData.email, password: formData.password })
       });
 
+      console.log('📡 Réponse du serveur :', {
+        status: res.status,
+        statusText: res.statusText,
+        headers: Object.fromEntries(res.headers.entries())
+      });
+
+      const data = await res.json();
+      console.log('📦 Données reçues :', data);
+
       if (res.ok) {
-        router.push('/');
+        console.log('✅ Connexion réussie');
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Gérer la redirection
+        const redirectUrl = router.query.redirect as string;
+        console.log('🔀 Redirection vers :', redirectUrl || '/');
+        router.push(redirectUrl || '/');
       } else {
-        const data = await res.json();
-        setError(data.message || 'Une erreur est survenue');
+        console.error('❌ Erreur de connexion :', data);
+        setError(data.message || 'Erreur de connexion');
       }
     } catch (err) {
+      console.error('🚨 Erreur détaillée :', err);
+      console.error('🔍 Type d\'erreur :', err instanceof Error ? err.name : typeof err);
+      console.error('📝 Message d\'erreur :', err instanceof Error ? err.message : String(err));
       setError('Erreur de connexion au serveur');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,7 +119,7 @@ export default function Login() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Ou{' '}
-            <a href="/register" className="font-medium text-orange-600 hover:text-orange-500">
+            <a href="/register" className="font-medium text-[#A63429] hover:text-[#A63429]/80">
               créez un compte gratuitement
             </a>
           </p>
@@ -97,7 +132,7 @@ export default function Login() {
               <div>
                 <button
                   onClick={() => handleSocialLogin('google')}
-                  className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                  className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A63429]"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path
@@ -162,7 +197,7 @@ export default function Login() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#A63429] focus:border-[#A63429] text-gray-900 dark:text-gray-900"
                     />
                   </div>
                 </div>
@@ -180,7 +215,7 @@ export default function Login() {
                       required
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#A63429] focus:border-[#A63429] text-gray-900 dark:text-gray-900"
                     />
                   </div>
                 </div>
@@ -191,7 +226,7 @@ export default function Login() {
                       id="remember-me"
                       name="remember-me"
                       type="checkbox"
-                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-[#A63429] focus:ring-[#A63429] border-gray-300 rounded"
                     />
                     <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                       Se souvenir de moi
@@ -199,7 +234,7 @@ export default function Login() {
                   </div>
 
                   <div className="text-sm">
-                    <a href="#" className="font-medium text-orange-600 hover:text-orange-500">
+                    <a href="#" className="font-medium text-[#A63429] hover:text-[#A63429]/80">
                       Mot de passe oublié ?
                     </a>
                   </div>
@@ -208,7 +243,7 @@ export default function Login() {
                 <div>
                   <button
                     type="submit"
-                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#A63429] hover:bg-[#A63429]/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A63429]"
                   >
                     Se connecter
                   </button>

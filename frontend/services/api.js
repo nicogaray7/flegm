@@ -145,7 +145,7 @@ export const uploadVideo = async (videoUri) => {
 // Ajoutons un test rapide
 const testAPI = async () => {
   try {
-    const response = await api.get('/posts');
+    const response = await api.get('/api/posts');
     console.log('Posts récupérés:', response.data);
     return response.data;
   } catch (error) {

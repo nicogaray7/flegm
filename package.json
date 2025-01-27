@@ -7,11 +7,13 @@
     "backend"
   ],
   "scripts": {
-    "frontend": "cd frontend && npm start",
-    "backend": "cd backend && npm start",
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\"",
-    "build": "cd frontend && npm run build",
-    "vercel-build": "cd frontend && npm install && npm run vercel-build"
+    "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run dev\"",
+    "start": "concurrently \"cd frontend && npm start\" \"cd backend && npm start\"",
+    "build": "cd frontend && npm run build && cd ../backend && npm run build",
+    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules frontend/.next backend/dist",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "check-env": "node scripts/check-env.js",
+    "predev": "npm run check-env"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
@@ -20,4 +22,4 @@
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   }
-} 
+}

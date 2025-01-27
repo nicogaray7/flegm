@@ -11,144 +11,104 @@ const express = require('express');
 const compression = require('compression');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
 const { securityConfig } = require('./middleware/security');
-const path = require('path');
+const { corsOptions, mongooseOptions, expressConfig } = require('./config/server');
 const routes = require('./routes');
 const healthRoutes = require('./routes/health');
 
 const app = express();
 
-// Log toutes les routes disponibles
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
-  next();
+// Middleware de sécurité de base
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false
+}));
+app.use(cors(corsOptions));
+app.use(...securityConfig);
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limite chaque IP à 100 requêtes par fenêtre
 });
 
-// Compression gzip
-app.use(compression());
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 50, // ralentir après 50 requêtes
+  delayMs: 500 // ajouter 500ms de délai par requête
+});
 
-// Cache statique
-app.use(express.static('public', {
-  maxAge: '1d',
-  etag: true,
-  lastModified: true
-}));
+app.use(limiter);
+app.use(speedLimiter);
+
+// Middleware de base
+app.use(compression());
+app.use(express.json({ limit: expressConfig.jsonLimit }));
+app.use(express.urlencoded({ extended: true, limit: expressConfig.urlEncodedLimit }));
+app.use(express.static('public', expressConfig.staticOptions));
 
 // Optimisation MongoDB
 mongoose.set('bufferCommands', false);
-mongoose.set('autoIndex', false);
+mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
-// Configuration CORS sécurisée
-const corsOptions = {
-  origin: process.env.FRONTEND_URL,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  credentials: true,
-  maxAge: 3600
-};
-
-// Debug CORS
-app.use((req, res, next) => {
-  console.log('Origin:', req.headers.origin);
-  console.log('CORS allowed:', corsOptions.origin);
-  next();
-});
-
-// Middleware de sécurité
-app.use(cors(corsOptions));
-app.use(...securityConfig);
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Gestion des erreurs MongoDB
-mongoose.connection.on('error', (err) => {
-  console.error('Erreur MongoDB:', err);
-  if (err.name === 'MongoServerSelectionError') {
-    console.error('Détails de l\'erreur de connexion:', err.reason);
-  }
-  if (err.code === 'ECONNREFUSED') {
-    console.error('Connexion refusée. Vérifiez le pare-feu et les règles de sécurité MongoDB Atlas');
-  }
-  if (err.message.includes('ssl')) {
-    console.error('Erreur SSL. Vérifiez la configuration SSL/TLS');
-  }
-});
-
-// Vérification des variables d'environnement critiques
-if (!process.env.MONGODB_URI) {
-  console.error('ERREUR CRITIQUE: Variable d\'environnement MONGODB_URI non définie');
-  process.exit(1);
-}
-
-console.log('MongoDB URI définie:', !!process.env.MONGODB_URI);
-console.log('MongoDB URI commence par:', process.env.MONGODB_URI?.substring(0, 20) + '...');
-
-// Réessayer la connexion en cas d'échec
-const connectWithRetry = () => {
-  const uri = process.env.MONGODB_URI;
-  console.log('Tentative de connexion à MongoDB...');
-  mongoose.connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 30000,
-    socketTimeoutMS: 75000,
-    retryWrites: true,
-    w: 'majority',
-    authSource: 'admin',
-  })
-  .then(() => console.log('Connecté à MongoDB'))
-  .catch(err => {
-    console.error('Erreur de connexion à MongoDB:', err);
-    console.error('URI utilisée (début):', uri?.substring(0, 20) + '...');
-    if (err.name === 'MongoServerSelectionError') {
-      console.error('Détails de l\'erreur de connexion:', err.reason);
+// Connexion MongoDB et démarrage du serveur
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
+    console.log('✅ Connexion réussie à MongoDB');
+    
+    // Middleware de logging en développement
+    if (process.env.NODE_ENV === 'development') {
+      app.use((req, res, next) => {
+        console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+        next();
+      });
     }
-    console.log('Nouvelle tentative dans 5 secondes...');
-    setTimeout(connectWithRetry, 5000);
-  });
+
+    // Routes
+    app.use('/api/health', healthRoutes);
+    app.use('/api/auth', require('./routes/auth'));
+    app.use('/', routes);
+
+    // Gestion des erreurs 404
+    app.use((req, res) => {
+      res.status(404).json({ message: 'Route non trouvée' });
+    });
+
+    // Gestion des erreurs globale
+    app.use((err, req, res, next) => {
+      console.error('Erreur:', err);
+      res.status(500).json({ message: 'Erreur serveur', details: err.message });
+    });
+
+    const PORT = process.env.PORT || 5001;
+    const server = app.listen(PORT, () => {
+      console.log(`Serveur démarré sur le port ${PORT}`);
+    });
+
+    // Gestion gracieuse de l'arrêt
+    const gracefulShutdown = async () => {
+      console.log('Arrêt gracieux...');
+      try {
+        await mongoose.connection.close();
+        await new Promise((resolve) => server.close(resolve));
+        process.exit(0);
+      } catch (err) {
+        console.error('Erreur lors de l\'arrêt:', err);
+        process.exit(1);
+      }
+    };
+
+    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGINT', gracefulShutdown);
+
+  } catch (err) {
+    console.error('❌ Erreur de connexion à MongoDB:', err);
+    process.exit(1);
+  }
 };
 
-connectWithRetry();
-
-// Middleware de logging sécurisé
-app.use((req, res, next) => {
-  const sanitizedUrl = req.url.replace(/[<>'"]/g, '');
-  console.log(`${new Date().toISOString()} - ${req.method} ${sanitizedUrl}`);
-  next();
-});
-
-// Route de health check
-app.use('/api/health', healthRoutes);
-
-// Routes API
-app.use('/', routes);
-
-// Gestion des erreurs 404
-app.use((req, res) => {
-  console.log(`404 - Route non trouvée: ${req.method} ${req.originalUrl}`);
-  res.status(404).json({ message: 'Route non trouvée' });
-});
-
-// Gestion des erreurs globale
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Erreur serveur',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
-
-const PORT = process.env.PORT || 5001;
-const server = app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
-});
-
-// Gestion gracieuse de l'arrêt
-process.on('SIGTERM', () => {
-  console.log('SIGTERM reçu. Arrêt gracieux...');
-  server.close(() => {
-    mongoose.connection.close(false, () => {
-      console.log('Serveur arrêté');
-      process.exit(0);
-    });
-  });
-}); 
+startServer(); 

@@ -11,10 +11,6 @@ const postSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  description: {
-    type: String,
-    required: true
-  },
   youtubeUrl: {
     type: String,
     required: true,
@@ -26,6 +22,24 @@ const postSchema = new mongoose.Schema({
     }
   },
   youtubeId: {
+    type: String,
+    required: true
+  },
+  isCreator: {
+    type: Boolean,
+    default: false
+  },
+  youtubeChannel: {
+    name: {
+      type: String,
+      required: true
+    },
+    avatar: {
+      type: String,
+      required: true
+    }
+  },
+  thumbnailUrl: {
     type: String,
     required: true
   },
@@ -44,6 +58,10 @@ const postSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  description: {
+    type: String,
+    trim: true
   }
 });
 

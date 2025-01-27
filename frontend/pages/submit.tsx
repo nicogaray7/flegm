@@ -5,37 +5,12 @@ import Layout from '../components/Layout';
 export default function Submit() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    imageUrl: '',
-    websiteUrl: '',
-    category: 'tech', // Catégorie par défaut
+    videoUrl: '',
+    tags: '',
+    isCreator: false
   });
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'flegm_products');
-
-    try {
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
-      const data = await res.json();
-      setFormData(prev => ({ ...prev, imageUrl: data.secure_url }));
-    } catch (err) {
-      setError('Erreur lors du téléchargement de l\'image');
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,11 +18,22 @@ export default function Submit() {
     setError('');
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-        credentials: 'include',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...formData,
+          tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
+        })
       });
 
       if (res.ok) {
@@ -68,7 +54,7 @@ export default function Submit() {
       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl font-extrabold text-gray-900 text-center mb-8">
-            Soumettez votre produit
+            Partagez une vidéo YouTube
           </h1>
 
           <div className="bg-white shadow rounded-lg p-6">
@@ -80,92 +66,53 @@ export default function Submit() {
               )}
 
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Nom du produit
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  required
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-                  Image du produit
-                </label>
-                <input
-                  type="file"
-                  id="image"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="mt-1 block w-full"
-                />
-                {formData.imageUrl && (
-                  <img
-                    src={formData.imageUrl}
-                    alt="Aperçu"
-                    className="mt-2 h-32 w-32 object-cover rounded-lg"
-                  />
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-700">
-                  Site web
+                <label htmlFor="videoUrl" className="block text-sm font-medium text-gray-700">
+                  URL YouTube
                 </label>
                 <input
                   type="url"
-                  id="websiteUrl"
+                  id="videoUrl"
                   required
-                  value={formData.websiteUrl}
-                  onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  value={formData.videoUrl}
+                  onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#A63429] focus:border-[#A63429]"
                 />
               </div>
 
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                  Catégorie
+                <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+                  Tags (séparés par des virgules)
                 </label>
-                <select
-                  id="category"
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 rounded-md"
-                >
-                  <option value="tech">Technologie</option>
-                  <option value="design">Design</option>
-                  <option value="productivity">Productivité</option>
-                  <option value="lifestyle">Style de vie</option>
-                  <option value="other">Autre</option>
-                </select>
+                <input
+                  type="text"
+                  id="tags"
+                  placeholder="tech, tutoriel, gaming..."
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#A63429] focus:border-[#A63429]"
+                />
               </div>
+
+              <label className="flex items-center gap-3 cursor-pointer my-4">
+                <input
+                  type="checkbox"
+                  checked={formData.isCreator}
+                  onChange={(e) => setFormData({ ...formData, isCreator: e.target.checked })}
+                  className="w-5 h-5 text-[#A63429] bg-gray-100 border-gray-300 rounded focus:ring-[#A63429]"
+                />
+                <span className="text-sm font-medium text-gray-900">
+                  Je suis le créateur de contenu
+                </span>
+              </label>
 
               <div>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#A63429] hover:bg-[#A63429]/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A63429] disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Soumission en cours...' : 'Soumettre le produit'}
+                  {isSubmitting ? 'Soumission en cours...' : 'Partager la vidéo'}
                 </button>
               </div>
             </form>

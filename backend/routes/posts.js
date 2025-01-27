@@ -6,38 +6,92 @@ const { validatePost } = require('../middleware/validation');
 const upload = require('../middleware/upload');
 const { uploadVideo } = require('../config/cloudinary');
 const fs = require('fs');
+const { google } = require('googleapis');
 
-// Créer un post
+// Configuration du client YouTube
+const youtube = google.youtube({
+  version: 'v3',
+  auth: process.env.YOUTUBE_API_KEY
+});
+
+// Fonction pour extraire l'ID YouTube
+const extractYoutubeId = (url) => {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+};
+
+// Fonction pour récupérer les infos de la vidéo YouTube
+const getYoutubeVideoInfo = async (videoId) => {
+  try {
+    const videoResponse = await youtube.videos.list({
+      part: 'snippet',
+      id: videoId,
+      fields: 'items(snippet(title,thumbnails/high/url,channelId,channelTitle))'
+    });
+
+    if (!videoResponse.data.items || videoResponse.data.items.length === 0) {
+      throw new Error('Vidéo non trouvée');
+    }
+
+    const video = videoResponse.data.items[0];
+
+    // Récupérer les infos de la chaîne
+    const channelResponse = await youtube.channels.list({
+      part: 'snippet',
+      id: video.snippet.channelId,
+      fields: 'items(snippet(title,thumbnails/default/url))'
+    });
+
+    const channel = channelResponse.data.items[0];
+
+    return {
+      title: video.snippet.title,
+      thumbnailUrl: video.snippet.thumbnails.high.url,
+      youtubeChannel: {
+        name: channel.snippet.title,
+        avatar: channel.snippet.thumbnails.default.url
+      }
+    };
+  } catch (error) {
+    console.error('Erreur lors de la récupération des infos YouTube:', error);
+    throw error;
+  }
+};
+
+// Créer un post YouTube
 router.post('/', 
   authMiddleware,
-  upload.single('video'),
-  validatePost,
   async (req, res) => {
     try {
-      const result = await uploadVideo(req.file.path);
-      
+      const { videoUrl, tags, isCreator } = req.body;
+
+      // Extraire l'ID YouTube
+      const youtubeId = extractYoutubeId(videoUrl);
+      if (!youtubeId) {
+        return res.status(400).json({ message: 'URL YouTube invalide' });
+      }
+
+      // Récupérer les infos de la vidéo
+      const videoInfo = await getYoutubeVideoInfo(youtubeId);
+
+      // Créer le post
       const post = new Post({
-        creator: req.user.id,
-        title: req.body.title,
-        description: req.body.description,
-        videoUrl: result.secure_url,
-        thumbnailUrl: result.eager[1].secure_url,
-        tags: req.body.tags ? JSON.parse(req.body.tags) : []
+        youtubeUrl: videoUrl,
+        youtubeId: youtubeId,
+        creator: req.user._id,
+        tags: tags || [],
+        title: videoInfo.title,
+        thumbnailUrl: videoInfo.thumbnailUrl,
+        youtubeChannel: videoInfo.youtubeChannel,
+        isCreator: isCreator || false
       });
 
       await post.save();
       
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
-      
       res.status(201).json(post);
     } catch (error) {
-      console.error('Erreur création post:', error);
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
-      res.status(500).json({ message: 'Erreur serveur' });
+      console.error('Erreur création post YouTube:', error);
+      res.status(500).json({ message: 'Erreur serveur', error: error.message });
     }
   }
 );

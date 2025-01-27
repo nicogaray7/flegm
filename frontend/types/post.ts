@@ -1,18 +1,38 @@
 export interface Post {
   _id: string;
   title: string;
-  description: string;
-  youtubeUrl: string;
+  videoUrl: string;
   youtubeId: string;
-  thumbnailUrl?: string;
   creator: {
     _id: string;
     username: string;
     avatar: string;
   };
-  tags: string[];
+  isCreator: boolean;
+  thumbnailUrl: string;
+  description?: string;
   upvotes: string[];
   upvoteCount: number;
-  commentCount: number;
+  author?: {
+    _id: string;
+    username: string;
+    avatar: string;
+  };
+  youtubeChannel?: {
+    name: string;
+    avatar: string;
+  };
+  comments?: Array<{
+    _id: string;
+    content: string;
+    author: {
+      _id: string;
+      username: string;
+      avatar: string;
+    };
+    createdAt: string;
+  }>;
+  tags?: string[];
   createdAt: string;
+  updatedAt?: string;
 } 

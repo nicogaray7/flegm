@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+const internalTeamSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -19,15 +19,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  role: {
+    type: String,
+    enum: ['admin', 'developer', 'manager', 'support'],
+    required: true
+  },
+  permissions: [{
+    type: String
+  }],
   avatar: {
     type: String,
     default: function() {
       return `https://api.dicebear.com/7.x/avataaars/svg?seed=${this.username}`;
     }
-  },
-  isCreator: {
-    type: Boolean,
-    default: false
   },
   createdAt: {
     type: Date,
@@ -36,7 +40,12 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash le mot de passe avant la sauvegarde
-userSchema.pre('save', async function(next) {
+internalTeamSchema.pre('save', async function(next) {
+  // Ne pas hacher en développement
+  if (process.env.NODE_ENV === 'development') {
+    return next();
+  }
+
   if (!this.isModified('password')) return next();
   
   try {
@@ -49,7 +58,7 @@ userSchema.pre('save', async function(next) {
 });
 
 // Méthode pour comparer les mots de passe
-userSchema.methods.comparePassword = async function(candidatePassword) {
+internalTeamSchema.methods.comparePassword = async function(candidatePassword) {
   try {
     return await bcrypt.compare(candidatePassword, this.password);
   } catch (error) {
@@ -57,4 +66,4 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   }
 };
 
-module.exports = mongoose.model('User', userSchema); 
+module.exports = mongoose.model('InternalTeam', internalTeamSchema); 

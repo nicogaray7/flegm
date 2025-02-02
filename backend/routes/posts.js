@@ -7,6 +7,7 @@ const upload = require('../middleware/upload');
 const { uploadVideo } = require('../config/cloudinary');
 const fs = require('fs');
 const { google } = require('googleapis');
+const { getYoutubeVideoInfo, extractYoutubeId } = require('../controllers/postController');
 
 // Configuration du client YouTube
 const youtube = google.youtube({
@@ -90,7 +91,6 @@ router.post('/',
       
       res.status(201).json(post);
     } catch (error) {
-      console.error('Erreur création post YouTube:', error);
       res.status(500).json({ message: 'Erreur serveur', error: error.message });
     }
   }

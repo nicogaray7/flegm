@@ -13,12 +13,7 @@ export interface Post {
   description?: string;
   upvotes: string[];
   upvoteCount: number;
-  author?: {
-    _id: string;
-    username: string;
-    avatar: string;
-  };
-  youtubeChannel?: {
+  youtubeChannel: {
     name: string;
     avatar: string;
   };
@@ -32,7 +27,7 @@ export interface Post {
     };
     createdAt: string;
   }>;
-  tags?: string[];
+  tags: string[];
   createdAt: string;
   updatedAt?: string;
 } 

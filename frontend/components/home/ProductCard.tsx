@@ -10,24 +10,39 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [upvoteCount, setUpvoteCount] = useState(post.upvoteCount);
-  const [isUpvoted, setIsUpvoted] = useState(false);
+  const [isUpvoted, setIsUpvoted] = useState(() => {
+    const userId = localStorage.getItem('userId');
+    return userId ? post.upvotes?.includes(userId) || false : false;
+  });
   const [upvoteAnimation, setUpvoteAnimation] = useState(false);
 
   const handleUpvote = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
+    // Vérification côté client
+    if (typeof window === 'undefined') {
+      console.error('Tentative de vote côté serveur');
+      return;
+    }
+
+    // Récupération sécurisée du token et de l'userId
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
+
+    // Vérification de la connexion
+    if (!token || !userId) {
+      console.error('Utilisateur non connecté');
+      // Redirection vers la page de connexion
+      window.location.href = '/login';
+      return;
+    }
+
     setUpvoteAnimation(true);
     
     try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const method = isUpvoted ? 'DELETE' : 'POST';
-      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${post._id}/upvote`, {
-        method: method,
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -36,8 +51,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
 
       if (response.ok) {
         const updatedPost = await response.json();
-        setUpvoteCount(updatedPost.upvoteCount);
-        setIsUpvoted(!isUpvoted);
+        
+        // Mise à jour directe basée sur la réponse du serveur
+        post.upvoteCount = updatedPost.upvoteCount;
+        post.upvotes = updatedPost.upvotes;
+        
+        // Vérifier si l'utilisateur a déjà upvoté
+        const hasUpvoted = updatedPost.upvotes.includes(userId);
+        setIsUpvoted(hasUpvoted);
+      } else {
+        const errorText = await response.text();
+        console.error('Erreur de réponse:', errorText);
+        
+        // Gestion des erreurs d'authentification
+        if (response.status === 401) {
+          window.location.href = '/login';
+        }
       }
     } catch (error) {
       console.error('Erreur lors du vote', error);
@@ -106,7 +135,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
                   onClick={handleUpvote}
                 >
                   <div 
-                    className={`group/accessory flex size-12 flex-col items-center justify-center gap-1 rounded-xl border-2 border-gray-200 dark:border-gray-dark-800 bg-white transition-all duration-300 hover:border-[#FF6154] dark:hover:border-[#FF6154] ${upvoteAnimation ? 'animate-bounce' : ''}`}
+                    className={`group/accessory flex items-center space-x-2 px-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-dark-800 bg-white transition-all duration-300 hover:border-[#FF6154] dark:hover:border-[#FF6154] ${upvoteAnimation ? 'animate-bounce' : ''}`}
                     data-filled={isUpvoted ? "true" : "false"}
                   >
                     <svg 
@@ -128,7 +157,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
                         ? 'text-[#FF6154]' 
                         : 'text-[#344054] group-hover:text-[#FF6154]'
                     }`}>
-                      {upvoteCount}
+                      {post.upvoteCount}
                     </div>
                   </div>
                 </button>
@@ -139,7 +168,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
                   className="styles_reset__0clCw group"
                 >
                   <div 
-                    className="group/accessory flex size-12 flex-col items-center justify-center gap-1 rounded-xl border-2 border-gray-200 dark:border-gray-dark-800 bg-white transition-all duration-300 hover:border-[#FF6154] dark:hover:border-[#FF6154]"
+                    className="group/accessory flex items-center space-x-2 px-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-dark-800 bg-white transition-all duration-300 hover:border-[#FF6154] dark:hover:border-[#FF6154]"
                   >
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 

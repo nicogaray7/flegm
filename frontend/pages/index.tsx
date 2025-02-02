@@ -7,12 +7,11 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'popular' | 'new'>('popular');
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?sort=${activeFilter}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
         if (!response.ok) {
           throw new Error('Erreur lors du chargement des posts');
         }
@@ -27,7 +26,7 @@ export default function Home() {
     };
 
     fetchPosts();
-  }, [activeFilter]);
+  }, []);
 
   return (
     <>
@@ -44,28 +43,6 @@ export default function Home() {
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-0">
             Aujourd'hui
           </h1>
-          <div className="flex space-x-4">
-            <button
-              onClick={() => setActiveFilter('popular')}
-              className={`text-sm font-medium ${
-                activeFilter === 'popular'
-                  ? 'text-[#A63429]'
-                  : 'text-gray-500 hover:text-[#A63429]'
-              }`}
-            >
-              Populaire
-            </button>
-            <button
-              onClick={() => setActiveFilter('new')}
-              className={`text-sm font-medium ${
-                activeFilter === 'new'
-                  ? 'text-[#A63429]'
-                  : 'text-gray-500 hover:text-[#A63429]'
-              }`}
-            >
-              Nouveau
-            </button>
-          </div>
         </div>
 
         {/* État de chargement */}

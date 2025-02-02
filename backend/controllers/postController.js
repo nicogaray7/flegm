@@ -94,10 +94,7 @@ exports.getPosts = async (req, res) => {
 
     // Récupérer les posts depuis la base de données
     const posts = await Post.find()
-      .populate({
-        path: 'creator',
-        select: 'username avatar email'
-      })
+      .populate('creator', 'username avatar')
       .sort({ createdAt: -1 })
       .lean()
       .limit(20);
@@ -110,8 +107,7 @@ exports.getPosts = async (req, res) => {
     console.log(`${posts.length} posts trouvés`);
 
     // Traiter chaque post individuellement
-    const postsWithComments = [];
-    for (const post of posts) {
+    const postsWithComments = await Promise.all(posts.map(async (post) => {
       try {
         console.log('Traitement du post:', post._id);
         const commentCount = await Comment.countDocuments({ post: post._id });
@@ -133,12 +129,13 @@ exports.getPosts = async (req, res) => {
           commentCount
         };
         
-        postsWithComments.push(processedPost);
+        return processedPost;
       } catch (error) {
         console.error('Erreur lors du traitement du post:', post._id, error);
         // Continuer avec le post suivant
+        return null;
       }
-    }
+    }));
 
     // Mettre en cache pour les prochaines requêtes
     await cache.set('posts', postsWithComments, 300);
@@ -191,7 +188,7 @@ exports.createPost = async (req, res) => {
     const post = new Post({
       youtubeUrl: req.body.videoUrl,
       youtubeId: youtubeId,
-      creator: mongoose.Types.ObjectId.isValid(req.user._id) ? req.user._id : null,
+      creator: req.user._id,
       tags: req.body.tags || [],
       title: videoInfo.title,
       thumbnailUrl: videoInfo.thumbnailUrl,
@@ -233,7 +230,7 @@ exports.getPost = async (req, res) => {
 exports.updatePost = async (req, res) => {
   try {
     const post = await Post.findOneAndUpdate(
-      { _id: req.params.id, author: req.user._id },
+      { _id: req.params.id, creator: req.user._id },
       req.body,
       { new: true }
     );
@@ -251,7 +248,7 @@ exports.deletePost = async (req, res) => {
   try {
     const post = await Post.findOneAndDelete({
       _id: req.params.id,
-      author: req.user._id
+      creator: req.user._id
     });
     if (!post) {
       return res.status(404).json({ message: 'Post non trouvé' });
@@ -274,8 +271,10 @@ exports.upvotePost = async (req, res) => {
     const upvoteIndex = post.upvotes.indexOf(req.user._id);
     if (upvoteIndex === -1) {
       post.upvotes.push(req.user._id);
+      post.upvoteCount += 1;
     } else {
       post.upvotes.splice(upvoteIndex, 1);
+      post.upvoteCount -= 1;
     }
     
     await post.save();

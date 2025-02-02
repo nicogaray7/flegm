@@ -41,9 +41,6 @@ const nextConfig = {
   swcMinify: true,
   compress: true,
   productionBrowserSourceMaps: false,
-  typescript: {
-    ignoreBuildErrors: false
-  },
   eslint: {
     ignoreDuringBuilds: true
   }

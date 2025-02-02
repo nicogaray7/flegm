@@ -7,13 +7,12 @@
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run dev\"",
-    "start": "concurrently \"cd frontend && npm start\" \"cd backend && npm start\"",
-    "build": "cd frontend && npm run build && cd ../backend && npm run build",
-    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules frontend/.next backend/dist",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "check-env": "node scripts/check-env.js",
-    "predev": "npm run check-env"
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start"
+  },
+  "dependencies": {
+    "next": "14.0.4"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

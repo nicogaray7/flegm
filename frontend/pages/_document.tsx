@@ -18,10 +18,10 @@ class MyDocument extends Document {
           <link
             rel="preconnect"
             href="https://fonts.gstatic.com"
-            crossOrigin=""
+            crossOrigin="anonymous"
           />
         </Head>
-        <body>
+        <body className="antialiased text-gray-900 bg-gray-50">
           <Main />
           <NextScript />
         </body>

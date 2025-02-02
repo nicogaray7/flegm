@@ -16,13 +16,11 @@ export default function App({ Component, pageProps }: AppProps) {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="antialiased text-gray-900 bg-gray-50">
-        <Layout>
-          <GlobalLoader />
-          <Component {...pageProps} />
-          <SpeedInsights />
-        </Layout>
-      </div>
+      <Layout>
+        <GlobalLoader />
+        <Component {...pageProps} />
+        <SpeedInsights />
+      </Layout>
     </>
   );
 } 

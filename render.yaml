@@ -22,4 +22,6 @@ services:
         sync: false
       - key: FRONTEND_URL
         value: https://flegm.vercel.app
+      - key: CORS_ORIGIN
+        value: https://flegm.vercel.app
     autoDeploy: true 

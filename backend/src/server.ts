@@ -1,82 +1,181 @@
-import express, { Request, Response, NextFunction } from 'express';
-import mongoose, { ConnectOptions } from 'mongoose';
-import cors from 'cors';
-import helmet from 'helmet';
-import dotenv from 'dotenv';
-import authRoutes from './routes/authRoutes';
+require('dotenv').config();
 
-// Charger les variables d'environnement
-dotenv.config();
+// Logging de démarrage
+console.log('🚀 Démarrage du serveur...');
+console.log('📊 Variables d\'environnement:');
+console.log('- NODE_ENV:', process.env.NODE_ENV);
+console.log('- PORT:', process.env.PORT);
+console.log('- FRONTEND_URL:', process.env.FRONTEND_URL);
+console.log('- CORS_ORIGINS:', process.env.CORS_ORIGINS);
+
+const express = require('express');
+const compression = require('compression');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const slowDown = require('express-slow-down');
+const { securityConfig } = require('./middleware/security');
+const { corsOptions, mongooseOptions, expressConfig } = require('./config/server');
+const routes = require('./routes');
+const healthRoutes = require('./routes/health');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || '';
 
-// Configuration Mongoose avancée
-const mongooseOptions: ConnectOptions = {
-  maxPoolSize: parseInt(process.env.MONGODB_MAX_POOL_SIZE || '50', 10),
-  minPoolSize: parseInt(process.env.MONGODB_MIN_POOL_SIZE || '10', 10),
-  connectTimeoutMS: parseInt(process.env.MONGODB_CONNECT_TIMEOUT_MS || '30000', 10),
-  socketTimeoutMS: parseInt(process.env.MONGODB_SOCKET_TIMEOUT_MS || '45000', 10),
-  ssl: process.env.MONGODB_SSL_ENABLED === 'true',
-  sslValidate: process.env.MONGODB_SSL_VALIDATE === 'true'
-};
-
-// Connexion à MongoDB avec gestion des erreurs améliorée
-mongoose.connect(MONGODB_URI, mongooseOptions)
-  .then(() => {
-    console.log('✅ Connecté à MongoDB Atlas avec succès');
-  })
-  .catch((err) => {
-    console.error('❌ Échec de la connexion à MongoDB :', err);
-    process.exit(1);
-  });
-
-// Gestion des événements de connexion
-const db = mongoose.connection;
-db.on('connected', () => console.log('🔗 Connexion MongoDB maintenue'));
-db.on('error', (err) => console.error('❌ Erreur de connexion MongoDB :', err));
-db.on('disconnected', () => console.warn('⚠️ Déconnexion de MongoDB'));
-
-// Middlewares
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'https://flegm.fr',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+// Middleware de sécurité de base
+console.log('🔒 Configuration de la sécurité...');
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false
 }));
-app.use(helmet()); // Sécurité HTTP
-app.use(express.json()); // Parser JSON
-app.use(express.urlencoded({ extended: true })); // Parser les données de formulaire
+
+// Configuration CORS
+console.log('🌍 Configuration CORS...');
+console.log('Options CORS:', JSON.stringify(corsOptions, null, 2));
+console.log('Frontend URL:', process.env.FRONTEND_URL);
+console.log('Environment:', process.env.NODE_ENV);
+
+const corsMiddleware = cors(corsOptions);
+app.use((req, res, next) => {
+  console.log('📨 Requête reçue:', {
+    method: req.method,
+    path: req.path,
+    origin: req.headers.origin,
+    headers: req.headers
+  });
+  next();
+});
+app.use(corsMiddleware);
+app.options('*', corsMiddleware);
+
+// Middleware pour forcer le Content-Type JSON pour les routes API
+app.use('/api', (req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
+
+app.use(...securityConfig);
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX) || 100
+});
+
+const speedLimiter = slowDown({
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  delayAfter: 50,
+  delayMs: 500
+});
+
+app.use(limiter);
+app.use(speedLimiter);
+
+// Middleware de logging détaillé
+app.use((req, res, next) => {
+  const start = Date.now();
+  console.log(`📥 Requête entrante: ${req.method} ${req.url}`);
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`📤 Réponse: ${res.statusCode} (${duration}ms)`);
+    if (res.statusCode >= 400) {
+      console.error('❌ Erreur détectée:', {
+        method: req.method,
+        url: req.url,
+        status: res.statusCode,
+        duration: `${duration}ms`,
+        headers: req.headers,
+        query: req.query,
+        body: req.body
+      });
+    }
+  });
+  
+  next();
+});
+
+// Middleware de base
+app.use(compression());
+app.use(express.json({ limit: expressConfig.jsonLimit }));
+app.use(express.urlencoded({ extended: true, limit: expressConfig.urlEncodedLimit }));
+app.use(express.static('public', expressConfig.staticOptions));
+
+// Optimisation MongoDB
+mongoose.set('bufferCommands', false);
+mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
 // Routes
-app.use('/api/auth', authRoutes);
+console.log('🛣️ Configuration des routes...');
+app.use('/api/health', healthRoutes);
+app.use('/api', routes);
 
-// Gestion des erreurs globales
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error('Erreur globale :', err.stack);
-  res.status(500).send('Une erreur serveur est survenue');
-});
-
-// Démarrage du serveur
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-});
-
-// Gestion des arrêts gracieux
-process.on('SIGTERM', () => {
-  console.log('🛑 Arrêt du serveur en cours...');
-  server.close(() => {
-    mongoose.connection.close()
-      .then(() => {
-        console.log('📴 Connexions fermées');
-        process.exit(0);
-      })
-      .catch((err) => {
-        console.error('Erreur lors de la fermeture de la connexion :', err);
-        process.exit(1);
-      });
+// Logging des requêtes en production
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+      const duration = Date.now() - start;
+      console.log(JSON.stringify({
+        timestamp: new Date().toISOString(),
+        method: req.method,
+        url: req.url,
+        status: res.statusCode,
+        duration: `${duration}ms`,
+        userAgent: req.headers['user-agent'],
+        ip: req.ip
+      }));
+    });
+    next();
   });
+}
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+  console.log('❌ Route non trouvée:', req.url);
+  res.status(404).json({ message: 'Route non trouvée' });
 });
 
-export default app; 
+// Gestion des erreurs globale
+app.use((err, req, res, next) => {
+  console.error('❌ Erreur serveur:', err);
+  res.status(500).json({ message: 'Erreur serveur', details: err.message });
+});
+
+// Connexion MongoDB et démarrage du serveur
+const startServer = async () => {
+  try {
+    console.log('🔌 Connexion à MongoDB...');
+    await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
+    console.log('✅ Connexion réussie à MongoDB');
+    
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => {
+      console.log(`✅ Serveur démarré sur le port ${PORT}`);
+      console.log('🌐 URL du frontend:', process.env.FRONTEND_URL);
+      console.log('🔑 Origines CORS autorisées:', process.env.CORS_ORIGINS);
+    });
+
+    // Gestion gracieuse de l'arrêt
+    const gracefulShutdown = async () => {
+      console.log('Arrêt gracieux...');
+      try {
+        await mongoose.connection.close();
+        process.exit(0);
+      } catch (err) {
+        console.error('Erreur lors de l\'arrêt:', err);
+        process.exit(1);
+      }
+    };
+
+    process.on('SIGTERM', gracefulShutdown);
+    process.on('SIGINT', gracefulShutdown);
+
+  } catch (err) {
+    console.error('❌ Erreur de démarrage:', err);
+    process.exit(1);
+  }
+};
+
+startServer(); 

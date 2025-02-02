@@ -1,6 +1,6 @@
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://flegm.vercel.app']
+    ? ['https://flegm.fr']
     : ['http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: [

@@ -36,7 +36,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://flegm.vercel.app"
+          "value": "https://flegm.fr"
         },
         {
           "key": "Access-Control-Allow-Methods",

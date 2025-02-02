@@ -38,7 +38,6 @@ const nextConfig = {
     optimizeCss: false,
     scrollRestoration: true
   },
-  swcMinify: true,
   compress: true,
   productionBrowserSourceMaps: false,
   eslint: {
@@ -46,4 +45,4 @@ const nextConfig = {
   }
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig

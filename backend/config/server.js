@@ -2,11 +2,21 @@ const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://flegm.vercel.app', 'https://flegm-api.onrender.com', 'https://flegm.onrender.com']
     : ['http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   credentials: true,
-  maxAge: 3600
+  maxAge: 3600,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
 
 const mongooseOptions = {

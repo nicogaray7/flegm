@@ -48,6 +48,12 @@ app.use((req, res, next) => {
 app.use(corsMiddleware);
 app.options('*', corsMiddleware);
 
+// Middleware pour forcer le Content-Type JSON pour les routes API
+app.use('/api', (req, res, next) => {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  next();
+});
+
 app.use(...securityConfig);
 
 // Rate limiting

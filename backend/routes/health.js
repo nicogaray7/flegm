@@ -2,26 +2,18 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-router.get('/', async (req, res) => {
-  try {
-    // Vérification de la connexion MongoDB
-    const isMongoConnected = mongoose.connection.readyState === 1;
+// Middleware pour forcer le Content-Type JSON
+router.use((req, res, next) => {
+  res.type('application/json');
+  next();
+});
 
-    res.json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV,
-      mongodb: isMongoConnected ? 'connected' : 'disconnected',
-      version: process.version
-    });
-  } catch (error) {
-    console.error('Health check failed:', error);
-    res.status(500).json({
-      status: 'unhealthy',
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
-  }
+router.get('/', (req, res) => {
+  res.json({
+    status: 'healthy',
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString()
+  });
 });
 
 module.exports = router; 

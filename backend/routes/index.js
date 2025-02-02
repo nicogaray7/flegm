@@ -3,12 +3,21 @@ const router = express.Router();
 const { cacheMiddleware } = require('../services/cache');
 const { validateInput } = require('../middleware/security');
 const auth = require('../middleware/auth');
+const postRoutes = require('./posts');
+const userRoutes = require('./users');
+const authRoutes = require('./auth');
 
 // Contrôleurs
 const userController = require('../controllers/userController');
 const postController = require('../controllers/postController');
 const commentController = require('../controllers/commentController');
 const uploadController = require('../controllers/uploadController');
+
+// Middleware pour forcer le Content-Type JSON
+router.use((req, res, next) => {
+  res.type('application/json');
+  next();
+});
 
 // Route de test
 router.get('/test', (req, res) => {
@@ -36,5 +45,9 @@ router.delete('/api/comments/:id', auth, commentController.deleteComment);
 
 // Route upload
 router.post('/api/upload', auth, uploadController.uploadFile);
+
+router.use('/posts', postRoutes);
+router.use('/users', userRoutes);
+router.use('/auth', authRoutes);
 
 module.exports = router; 

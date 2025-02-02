@@ -51,15 +51,6 @@
           "value": "true"
         }
       ]
-    },
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://flegm.fr"
-        }
-      ]
     }
   ],
   "redirects": [

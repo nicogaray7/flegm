@@ -14,9 +14,18 @@ export const useCloudinaryVideo = (videoId: string) => {
     thumbnail: '',
     preview: ''
   });
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (videoId) {
+    if (!videoId) {
+      console.warn('❌ useCloudinaryVideo: Aucun videoId fourni');
+      return;
+    }
+
+    try {
+      console.log('🎥 Génération URL Cloudinary pour:', videoId);
+      console.log('☁️ Cloud name:', process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME);
+      
       const streamingUrl = cld.video(videoId)
         .quality('auto')
         .format('auto')
@@ -30,13 +39,25 @@ export const useCloudinaryVideo = (videoId: string) => {
         .addTransformation(videoTransforms.preview)
         .toURL();
 
+      console.log('✅ URL générée pour streaming:', streamingUrl);
+      console.log('✅ URL générée pour thumbnail:', thumbnailUrl);
+      console.log('✅ URL générée pour preview:', previewUrl);
       setVideoUrls({
         streaming: streamingUrl,
         thumbnail: thumbnailUrl,
         preview: previewUrl
       });
+      setError(null);
+    } catch (err) {
+      console.error('❌ Erreur Cloudinary:', err);
+      setError(err as Error);
+      setVideoUrls({
+        streaming: '',
+        thumbnail: '',
+        preview: ''
+      });
     }
   }, [videoId]);
 
-  return videoUrls;
+  return { videoUrls, error };
 }; 

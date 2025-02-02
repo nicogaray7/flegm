@@ -71,6 +71,31 @@ const speedLimiter = slowDown({
 app.use(limiter);
 app.use(speedLimiter);
 
+// Middleware de logging détaillé
+app.use((req, res, next) => {
+  const start = Date.now();
+  console.log(`📥 Requête entrante: ${req.method} ${req.url}`);
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`📤 Réponse: ${res.statusCode} (${duration}ms)`);
+    if (res.statusCode >= 400) {
+      console.error('❌ Erreur détectée:', {
+        method: req.method,
+        url: req.url,
+        status: res.statusCode,
+        duration: `${duration}ms`,
+        headers: req.headers,
+        query: req.query,
+        body: req.body
+      });
+    }
+  });
+  
+  next();
+});
+
 // Middleware de base
 app.use(compression());
 app.use(express.json({ limit: expressConfig.jsonLimit }));

@@ -3,8 +3,10 @@ services:
     name: flegm-api
     env: node
     region: frankfurt
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    rootDir: backend
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
@@ -21,7 +23,7 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: FRONTEND_URL
-        value: https://flegm.vercel.app
+        value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
       - key: CORS_ORIGIN
-        value: https://flegm.vercel.app
+        value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
     autoDeploy: true 

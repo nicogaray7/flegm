@@ -27,9 +27,7 @@ const mongooseOptions = {
   w: 'majority',
   ssl: true,
   tls: true,
-  tlsAllowInvalidCertificates: false,
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+  tlsAllowInvalidCertificates: false
 };
 
 const expressConfig = {

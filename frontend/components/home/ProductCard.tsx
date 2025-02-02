@@ -10,37 +10,28 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isUpvoted, setIsUpvoted] = useState(() => {
-    const userId = localStorage.getItem('userId');
-    return userId ? post.upvotes?.includes(userId) || false : false;
-  });
+  const [isUpvoted, setIsUpvoted] = useState(
+    post.upvotes?.includes(localStorage.getItem('userId') || '') || false
+  );
+  const [upvoteCount, setUpvoteCount] = useState(post.upvoteCount);
   const [upvoteAnimation, setUpvoteAnimation] = useState(false);
 
   const handleUpvote = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Vérification côté client
-    if (typeof window === 'undefined') {
-      console.error('Tentative de vote côté serveur');
-      return;
-    }
-
-    // Récupération sécurisée du token et de l'userId
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
-
-    // Vérification de la connexion
-    if (!token || !userId) {
-      console.error('Utilisateur non connecté');
-      // Redirection vers la page de connexion
-      window.location.href = '/login';
-      return;
-    }
-
-    setUpvoteAnimation(true);
-    
     try {
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      
+      if (!token || !userId) {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Déclenchement de l'animation
+      setUpvoteAnimation(true);
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${post._id}/upvote`, {
         method: 'POST',
         headers: {
@@ -52,26 +43,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
       if (response.ok) {
         const updatedPost = await response.json();
         
-        // Mise à jour directe basée sur la réponse du serveur
-        post.upvoteCount = updatedPost.upvoteCount;
-        post.upvotes = updatedPost.upvotes;
-        
-        // Vérifier si l'utilisateur a déjà upvoté
-        const hasUpvoted = updatedPost.upvotes.includes(userId);
-        setIsUpvoted(hasUpvoted);
-      } else {
-        const errorText = await response.text();
-        console.error('Erreur de réponse:', errorText);
-        
-        // Gestion des erreurs d'authentification
-        if (response.status === 401) {
-          window.location.href = '/login';
-        }
+        // Mise à jour de l'état local
+        setIsUpvoted(!isUpvoted);
+        setUpvoteCount(updatedPost.upvoteCount);
       }
     } catch (error) {
       console.error('Erreur lors du vote', error);
     } finally {
-      setTimeout(() => setUpvoteAnimation(false), 500);
+      // Arrêt de l'animation après un court délai
+      setTimeout(() => {
+        setUpvoteAnimation(false);
+      }, 500);
     }
   };
 
@@ -131,12 +113,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
                 {/* Upvotes */}
                 <button 
                   type="button" 
-                  className="styles_reset__0clCw group"
+                  className="styles_reset__0clCw group mr-4"
                   onClick={handleUpvote}
                 >
                   <div 
-                    className={`group/accessory flex items-center space-x-2 px-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-dark-800 bg-white transition-all duration-300 hover:border-[#FF6154] dark:hover:border-[#FF6154] ${upvoteAnimation ? 'animate-bounce' : ''}`}
-                    data-filled={isUpvoted ? "true" : "false"}
+                    className={`
+                      group/accessory 
+                      flex items-center 
+                      space-x-2 
+                      px-3 py-2 
+                      rounded-xl 
+                      border-2 
+                      transition-all 
+                      duration-300 
+                      ${isUpvoted 
+                        ? 'border-[#FF6154] bg-[#FF6154]/10' 
+                        : 'border-gray-200 bg-white'
+                      }
+                      ${upvoteAnimation ? 'animate-bounce' : ''}
+                    `}
                   >
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
@@ -144,20 +139,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
                       height="16" 
                       fill="none" 
                       viewBox="0 0 16 16" 
-                      className={`stroke-[1.5px] transition-all duration-300 ${
-                        isUpvoted 
+                      className={`
+                        stroke-[1.5px] 
+                        transition-all 
+                        duration-300 
+                        ${isUpvoted 
                           ? 'fill-[#FF6154] stroke-[#FF6154]' 
                           : 'fill-white stroke-[#344054] group-hover:stroke-[#FF6154] group-hover:fill-[#FF6154]'
-                      }`}
+                        }
+                      `}
                     >
                       <path d="M6.579 3.467c.71-1.067 2.132-1.067 2.842 0L12.975 8.8c.878 1.318.043 3.2-1.422 3.2H4.447c-1.464 0-2.3-1.882-1.422-3.2z"></path>
                     </svg>
-                    <div className={`text-14 font-semibold leading-none transition-colors duration-300 ${
-                      isUpvoted 
-                        ? 'text-[#FF6154]' 
-                        : 'text-[#344054] group-hover:text-[#FF6154]'
-                    }`}>
-                      {post.upvoteCount}
+                    <div 
+                      className={`
+                        text-14 
+                        font-semibold 
+                        leading-none 
+                        transition-colors 
+                        duration-300 
+                        ${isUpvoted 
+                          ? 'text-[#FF6154]' 
+                          : 'text-[#344054] group-hover:text-[#FF6154]'
+                        }
+                      `}
+                    >
+                      {upvoteCount}
                     </div>
                   </div>
                 </button>

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   images: {
     domains: [
       'img.youtube.com',
@@ -32,7 +33,14 @@ const nextConfig = {
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production'
-  }
+  },
+  experimental: {
+    optimizeCss: true,
+    scrollRestoration: true
+  },
+  swcMinify: true,
+  compress: true,
+  productionBrowserSourceMaps: false
 }
 
 module.exports = nextConfig 

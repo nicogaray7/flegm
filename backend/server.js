@@ -1,11 +1,12 @@
 require('dotenv').config();
 
-// Vérification de la version de Node.js
-const nodeVersion = process.version;
-console.log('Version de Node.js:', nodeVersion);
-if (!nodeVersion.startsWith('v18')) {
-  console.warn('Attention: La version recommandée de Node.js est v18.x');
-}
+// Logging de démarrage
+console.log('🚀 Démarrage du serveur...');
+console.log('📊 Variables d\'environnement:');
+console.log('- NODE_ENV:', process.env.NODE_ENV);
+console.log('- PORT:', process.env.PORT);
+console.log('- FRONTEND_URL:', process.env.FRONTEND_URL);
+console.log('- CORS_ORIGINS:', process.env.CORS_ORIGINS);
 
 const express = require('express');
 const compression = require('compression');
@@ -22,13 +23,28 @@ const healthRoutes = require('./routes/health');
 const app = express();
 
 // Middleware de sécurité de base
+console.log('🔒 Configuration de la sécurité...');
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   crossOriginEmbedderPolicy: false
 }));
 
 // Configuration CORS
+console.log('🌍 Configuration CORS...');
+console.log('Options CORS:', JSON.stringify(corsOptions, null, 2));
+console.log('Frontend URL:', process.env.FRONTEND_URL);
+console.log('Environment:', process.env.NODE_ENV);
+
 const corsMiddleware = cors(corsOptions);
+app.use((req, res, next) => {
+  console.log('📨 Requête reçue:', {
+    method: req.method,
+    path: req.path,
+    origin: req.headers.origin,
+    headers: req.headers
+  });
+  next();
+});
 app.use(corsMiddleware);
 app.options('*', corsMiddleware);
 
@@ -60,37 +76,42 @@ mongoose.set('bufferCommands', false);
 mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
 // Routes
+console.log('🛣️ Configuration des routes...');
 app.use('/api/health', healthRoutes);
 app.use('/api', routes);
 
+// Logging des requêtes en production
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+  });
+}
+
 // Gestion des erreurs 404
 app.use((req, res) => {
+  console.log('❌ Route non trouvée:', req.url);
   res.status(404).json({ message: 'Route non trouvée' });
 });
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {
-  console.error('Erreur:', err);
+  console.error('❌ Erreur serveur:', err);
   res.status(500).json({ message: 'Erreur serveur', details: err.message });
 });
 
 // Connexion MongoDB et démarrage du serveur
 const startServer = async () => {
   try {
+    console.log('🔌 Connexion à MongoDB...');
     await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
     console.log('✅ Connexion réussie à MongoDB');
     
-    // Middleware de logging en développement
-    if (process.env.NODE_ENV === 'development') {
-      app.use((req, res, next) => {
-        console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-        next();
-      });
-    }
-
     const PORT = process.env.PORT || 8080;
-    const server = app.listen(PORT, () => {
+    app.listen(PORT, () => {
       console.log(`✅ Serveur démarré sur le port ${PORT}`);
+      console.log('🌐 URL du frontend:', process.env.FRONTEND_URL);
+      console.log('🔑 Origines CORS autorisées:', process.env.CORS_ORIGINS);
     });
 
     // Gestion gracieuse de l'arrêt
@@ -98,7 +119,6 @@ const startServer = async () => {
       console.log('Arrêt gracieux...');
       try {
         await mongoose.connection.close();
-        await new Promise((resolve) => server.close(resolve));
         process.exit(0);
       } catch (err) {
         console.error('Erreur lors de l\'arrêt:', err);

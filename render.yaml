@@ -27,9 +27,9 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: FRONTEND_URL
-        value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
+        value: https://flegm.fr
       - key: CORS_ORIGINS
-        value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
+        value: https://flegm.fr
       - key: API_URL
         value: https://flegm-api.onrender.com
       - key: RATE_LIMIT_WINDOW_MS

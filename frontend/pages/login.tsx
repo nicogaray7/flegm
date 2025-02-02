@@ -1,78 +1,35 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import { FacebookLoginButton } from '../components/FacebookLoginButton';
 import { TikTokLoginButton } from '../components/TikTokLoginButton';
 
 export default function Login() {
-  const router = useRouter();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      await login(email, password);
+      // Redirection après connexion réussie
+      router.push('/dashboard');
+    } catch (err) {
+      setError('Identifiants invalides');
+    }
+  };
 
   const handleSocialLogin = async (provider: string) => {
     try {
       window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/${provider}`;
     } catch (err) {
       setError('Erreur lors de la connexion avec ' + provider);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
-    try {
-      console.log('🚀 Tentative de connexion avec :', { email: formData.email, password: formData.password });
-      console.log('🌐 URL complète :', `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`);
-      console.log('🔍 Variable d\'environnement :', process.env.NEXT_PUBLIC_API_URL);
-      console.log('🔄 URL de redirection :', router.query.redirect);
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Origin': process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-        },
-        credentials: 'include',
-        mode: 'cors',
-        body: JSON.stringify({ email: formData.email, password: formData.password })
-      });
-
-      console.log('📡 Réponse du serveur :', {
-        status: res.status,
-        statusText: res.statusText,
-        headers: Object.fromEntries(res.headers.entries())
-      });
-
-      const data = await res.json();
-      console.log('📦 Données reçues :', data);
-
-      if (res.ok) {
-        console.log('✅ Connexion réussie');
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Gérer la redirection
-        const redirectUrl = router.query.redirect as string;
-        console.log('🔀 Redirection vers :', redirectUrl || '/');
-        router.push(redirectUrl || '/');
-      } else {
-        console.error('❌ Erreur de connexion :', data);
-        setError(data.message || 'Erreur de connexion');
-      }
-    } catch (err) {
-      console.error('🚨 Erreur détaillée :', err);
-      console.error('🔍 Type d\'erreur :', err instanceof Error ? err.name : typeof err);
-      console.error('📝 Message d\'erreur :', err instanceof Error ? err.message : String(err));
-      setError('Erreur de connexion au serveur');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -195,8 +152,8 @@ export default function Login() {
                       type="email"
                       autoComplete="email"
                       required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#A63429] focus:border-[#A63429] text-gray-900 dark:text-gray-900"
                     />
                   </div>
@@ -213,8 +170,8 @@ export default function Login() {
                       type="password"
                       autoComplete="current-password"
                       required
-                      value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#A63429] focus:border-[#A63429] text-gray-900 dark:text-gray-900"
                     />
                   </div>

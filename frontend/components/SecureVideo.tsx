@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Video } from 'expo-av';
 import { Cloudinary } from "@cloudinary/url-gen";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { VideoCache } from '../utils/videoCache';
 
 const cld = new Cloudinary({
   cloud: {
-    cloudName: process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME
+    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
   }
 });
 
-export default function SecureVideo({ publicId, style }) {
-  const [videoUrl, setVideoUrl] = useState(null);
+interface SecureVideoProps {
+  publicId: string;
+  style?: React.CSSProperties;
+  className?: string;
+}
+
+export default function SecureVideo({ 
+  publicId, 
+  style, 
+  className 
+}: SecureVideoProps) {
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const loadVideo = async () => {
@@ -36,13 +45,12 @@ export default function SecureVideo({ publicId, style }) {
   if (!videoUrl) return null;
 
   return (
-    <Video
-      source={{ uri: videoUrl }}
+    <video
+      src={videoUrl}
       style={style}
-      useNativeControls
-      resizeMode="contain"
-      isLooping={false}
-      shouldPlay={false}
+      className={`${className || ''}`}
+      controls
+      controlsList="nodownload"
     />
   );
 } 

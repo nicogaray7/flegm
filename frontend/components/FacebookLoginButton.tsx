@@ -1,8 +1,15 @@
 import React from 'react';
 import { useFacebookAuth } from '../hooks/useFacebookAuth';
 
+interface UserData {
+  id: string;
+  username: string;
+  avatar?: string;
+  email?: string;
+}
+
 interface FacebookLoginButtonProps {
-  onSuccess: (data: any) => void;
+  onSuccess: (data: UserData) => void;
   onError?: (error: string) => void;
   className?: string;
 }

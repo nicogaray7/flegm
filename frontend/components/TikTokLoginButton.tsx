@@ -1,8 +1,15 @@
 import React from 'react';
 import { useTikTokAuth } from '../hooks/useTikTokAuth';
 
+interface UserData {
+  id: string;
+  username: string;
+  avatar?: string;
+  email?: string;
+}
+
 interface TikTokLoginButtonProps {
-  onSuccess: (data: any) => void;
+  onSuccess: (data: UserData) => void;
   onError?: (error: string) => void;
   className?: string;
 }

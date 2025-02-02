@@ -15,8 +15,8 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-const GlobalLoader: React.FC = () => {
+function GlobalLoader(): JSX.Element | null {
   return null; // Le composant n'affiche rien, mais gère les événements de chargement
-};
+}
 
 export default GlobalLoader; 

@@ -35,8 +35,7 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production'
   },
   experimental: {
-    optimizeCss: false,
-    scrollRestoration: true
+    optimizeCss: false
   },
   compress: true,
   productionBrowserSourceMaps: false,

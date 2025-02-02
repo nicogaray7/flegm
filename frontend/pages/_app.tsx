@@ -6,6 +6,8 @@ import '../styles/globals.css';
 import GlobalLoader from '../components/layout/GlobalLoader'
 import Layout from '../components/layout/Layout'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import ErrorBoundary from '../components/ErrorBoundary';
+import Logger from '../utils/logger';
 
 // Composant de test AdSense
 const AdSenseTest = () => {
@@ -34,62 +36,49 @@ const AdSenseTest = () => {
   );
 };
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    // Logs de débogage
-    console.log('🔍 Initialisation des scripts tiers');
+    Logger.info({
+      message: 'Application démarrée',
+      data: {
+        env: process.env.NODE_ENV,
+        apiUrl: process.env.NEXT_PUBLIC_API_URL
+      },
+      context: 'App'
+    });
 
-    // Google Analytics
-    const script1 = document.createElement('script');
-    script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-SBM8F87PNN';
-    script1.async = true;
-    script1.onload = () => console.log('✅ Google Analytics script chargé');
-    script1.onerror = () => console.error('❌ Échec du chargement de Google Analytics');
-    document.head.appendChild(script1);
+    // Scripts tiers
+    const loadScripts = () => {
+      // Google Analytics
+      const script1 = document.createElement('script');
+      script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-SBM8F87PNN';
+      script1.async = true;
+      document.head.appendChild(script1);
 
-    const script2 = document.createElement('script');
-    script2.innerHTML = `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-SBM8F87PNN');
-      console.log('✅ Configuration Google Analytics terminée');
-    `;
-    document.head.appendChild(script2);
+      const script2 = document.createElement('script');
+      script2.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SBM8F87PNN');
+      `;
+      document.head.appendChild(script2);
 
-    // Google AdSense
-    const adSenseScript = document.createElement('script');
-    adSenseScript.async = true;
-    adSenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1641130131347247';
-    adSenseScript.crossOrigin = 'anonymous';
-    
-    // Logs spécifiques à AdSense
-    adSenseScript.onload = () => {
-      console.log('✅ Script AdSense chargé avec succès');
-      console.log('📍 Client ID:', adSenseScript.src);
-      
-      // Forcer le chargement des publicités
-      try {
-        (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-        (window as any).adsbygoogle.push({});
-        console.log('📣 Publicités AdSense initialisées');
-      } catch (error) {
-        console.error('❌ Erreur lors de l\'initialisation des publicités :', error);
-      }
-    };
-    
-    adSenseScript.onerror = () => {
-      console.error('❌ Échec du chargement du script AdSense');
-      console.error('🔗 URL du script :', adSenseScript.src);
+      // Google AdSense
+      const adSenseScript = document.createElement('script');
+      adSenseScript.async = true;
+      adSenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1641130131347247';
+      adSenseScript.crossOrigin = 'anonymous';
+      document.head.appendChild(adSenseScript);
+
+      return () => {
+        document.head.removeChild(script1);
+        document.head.removeChild(script2);
+        document.head.removeChild(adSenseScript);
+      };
     };
 
-    document.head.appendChild(adSenseScript);
-
-    return () => {
-      document.head.removeChild(script1);
-      document.head.removeChild(script2);
-      document.head.removeChild(adSenseScript);
-    };
+    loadScripts();
   }, []);
 
   return (
@@ -129,13 +118,17 @@ export default function App({ Component, pageProps }: AppProps) {
           crossOrigin="anonymous"
         ></script>
       </Head>
-      <Layout>
-        <GlobalLoader />
-        <Component {...pageProps} />
-        <AdSenseTest />
-        <SpeedInsights />
-        <Analytics />
-      </Layout>
+      <ErrorBoundary>
+        <Layout>
+          <GlobalLoader />
+          <Component {...pageProps} />
+          <AdSenseTest />
+          <SpeedInsights />
+          <Analytics />
+        </Layout>
+      </ErrorBoundary>
     </>
   );
-} 
+}
+
+export default App; 

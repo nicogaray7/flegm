@@ -4,7 +4,7 @@
   "description": "Backend pour l'application Flegm",
   "main": "dist/server.js",
   "engines": {
-    "node": "18.x"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "start": "node dist/server.js",

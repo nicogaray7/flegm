@@ -3,10 +3,14 @@ services:
     name: flegm-api
     env: node
     region: frankfurt
-    buildCommand: npm install
-    startCommand: node server.js
+    plan: free
+    buildCommand: |
+      npm install
+      npm run build
+    startCommand: NODE_ENV=production node server.js
     rootDir: backend
     healthCheckPath: /api/health
+    healthCheckTimeout: 300
     envVars:
       - key: NODE_ENV
         value: production
@@ -24,7 +28,7 @@ services:
         sync: false
       - key: FRONTEND_URL
         value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
-      - key: CORS_ORIGIN
+      - key: CORS_ORIGINS
         value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
       - key: API_URL
         value: https://flegm-api.onrender.com
@@ -38,4 +42,6 @@ services:
         value: 5
       - key: MONGODB_TIMEOUT_MS
         value: 30000
+      - key: DEBUG
+        value: "app:*"
     autoDeploy: true 

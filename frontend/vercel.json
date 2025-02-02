@@ -5,7 +5,7 @@
   "installCommand": "npm install",
   "outputDirectory": ".next",
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://api.flegm.fr",
+    "NEXT_PUBLIC_API_URL": "https://flegm.onrender.com",
     "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",
     "NEXT_PUBLIC_CLOUDINARY_API_KEY": "165535318843775",
     "NODE_ENV": "production"
@@ -55,7 +55,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.flegm.fr/api/:path*"
+      "destination": "https://flegm.onrender.com/api/:path*"
     }
   ],
   "regions": ["cdg1"],

@@ -1,53 +1,72 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
-// Interface pour le typage TypeScript
 export interface IUser extends mongoose.Document {
-  name: string;
+  username: string;
   email: string;
-  password: string;
-  role: 'admin' | 'user';
-  createdAt: Date;
-  updatedAt: Date;
+  password?: string;
+  avatar?: string;
+  googleId?: string;
+  facebookId?: string;
+  tiktokId?: string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-// Schéma Mongoose
-const UserSchema = new mongoose.Schema<IUser>({
-  name: {
+const userSchema = new mongoose.Schema({
+  username: {
     type: String,
     required: true,
+    unique: true,
     trim: true,
-    minlength: 2,
-    maxlength: 50
   },
   email: {
     type: String,
     required: true,
     unique: true,
     trim: true,
-    lowercase: true
+    lowercase: true,
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6
+    required: false, // Optionnel pour l'authentification sociale
+    minlength: 6,
   },
-  role: {
+  avatar: {
     type: String,
-    enum: ['admin', 'user'],
-    default: 'user'
-  }
+    default: '',
+  },
+  googleId: {
+    type: String,
+    sparse: true,
+    unique: true,
+  },
+  facebookId: {
+    type: String,
+    sparse: true,
+    unique: true,
+  },
+  tiktokId: {
+    type: String,
+    sparse: true,
+    unique: true,
+  },
 }, {
-  timestamps: true // Ajoute createdAt et updatedAt
+  timestamps: true,
 });
 
-// Index pour améliorer les performances de recherche
-UserSchema.index({ email: 1 });
+// Hash le mot de passe avant la sauvegarde
+userSchema.pre('save', async function(next) {
+  if (this.isModified('password') && this.password) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+  next();
+});
 
-// Méthode pour masquer le mot de passe lors de la sérialisation
-UserSchema.methods.toJSON = function() {
-  const obj = this.toObject();
-  delete obj.password;
-  return obj;
+// Méthode pour comparer les mots de passe
+userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+  if (!this.password) return false;
+  return bcrypt.compare(candidatePassword, this.password);
 };
 
-export const User = mongoose.model<IUser>('User', UserSchema); 
+export const User = mongoose.model<IUser>('User', userSchema); 

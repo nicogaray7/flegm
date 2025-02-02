@@ -26,10 +26,10 @@ const nextConfig = {
       }
     ]
   },
-  publicRuntimeConfig: {
-    NEXT_PUBLIC_API_URL: 'https://flegm.onrender.com',
-    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: 'dfupyozxe',
-    NEXT_PUBLIC_CLOUDINARY_API_KEY: '165535318843775'
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXT_PUBLIC_CLOUDINARY_API_KEY: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production'

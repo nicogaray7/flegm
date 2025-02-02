@@ -1,18 +1,28 @@
-import React from 'react'
-import type { AppProps } from 'next/app'
-import '../styles/globals.css'
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import '../styles/globals.css';
 import GlobalLoader from '../components/layout/GlobalLoader'
 import Layout from '../components/layout/Layout'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <GlobalLoader />
-      <Component {...pageProps} />
-      <SpeedInsights />
-    </Layout>
-  )
-}
-
-export default MyApp 
+    <>
+      <Head>
+        <meta charSet="utf-8" />
+        <link 
+          rel="stylesheet" 
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className="antialiased text-gray-900 bg-gray-50">
+        <Layout>
+          <GlobalLoader />
+          <Component {...pageProps} />
+          <SpeedInsights />
+        </Layout>
+      </div>
+    </>
+  );
+} 

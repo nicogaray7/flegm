@@ -10,6 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <meta charSet="utf-8" />
+        <meta name="google-adsense-account" content="ca-pub-1641130131347247" />
         <link 
           rel="stylesheet" 
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"

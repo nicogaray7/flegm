@@ -1,47 +1,32 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
-require('dotenv').config();
 
-async function checkUserPassword(email, password) {
+async function checkUser() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, { 
-      useNewUrlParser: true, 
-      useUnifiedTopology: true 
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
     });
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      console.error('❌ Utilisateur non trouvé');
-      return;
-    }
-
-    console.log('🔍 Informations utilisateur:');
-    console.log('Email:', user.email);
-    console.log('Mot de passe stocké (début):', user.password ? user.password.substring(0, 20) + '...' : 'Pas de mot de passe');
-
-    console.log('\n🧪 Test de comparaison de mot de passe:');
-    const isMatch = await bcrypt.compare(password, user.password);
-    console.log('Résultat de la comparaison:', isMatch);
-
-    // Test direct avec bcrypt
-    console.log('\n🔐 Vérification directe avec bcrypt:');
-    console.log('Mot de passe fourni:', password);
-    console.log('Mot de passe haché stocké:', user.password);
-
+    
+    const user = await User.findOne({ email: 'test@example.com' });
+    console.log('Utilisateur :', user);
+    
+    // Tester différentes méthodes de comparaison
+    console.log('Comparaison directe bcrypt:', await bcrypt.compare('motdepasse123', user.password));
+    console.log('Comparaison avec méthode du modèle:', await user.comparePassword('motdepasse123'));
+    
+    // Générer un nouveau hachage et comparer
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash('motdepasse123', salt);
+    console.log('Nouveau mot de passe haché:', hashedPassword);
+    console.log('Comparaison avec le nouveau hachage:', await bcrypt.compare('motdepasse123', hashedPassword));
   } catch (error) {
-    console.error('❌ Erreur:', error);
+    console.error('Erreur :', error);
   } finally {
-    await mongoose.connection.close();
+    await mongoose.disconnect();
   }
 }
 
-// Utilisation : node checkUser.js email@example.com motdepasse
-const [,, email, password] = process.argv;
-if (!email || !password) {
-  console.error('Veuillez fournir un email et un mot de passe');
-  process.exit(1);
-}
-
-checkUserPassword(email, password); 
+checkUser(); 

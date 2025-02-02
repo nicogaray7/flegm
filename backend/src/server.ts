@@ -1,4 +1,16 @@
-require('dotenv').config();
+import 'dotenv/config';
+import express from 'express';
+import compression from 'compression';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
+import { securityConfig } from './middleware/security';
+import { corsOptions } from './config/express';
+import { mongooseOptions } from './config/mongodb';
+import routes from './routes';
+import healthRoutes from './routes/health';
 
 // Logging de démarrage
 console.log('🚀 Démarrage du serveur...');
@@ -7,18 +19,6 @@ console.log('- NODE_ENV:', process.env.NODE_ENV);
 console.log('- PORT:', process.env.PORT);
 console.log('- FRONTEND_URL:', process.env.FRONTEND_URL);
 console.log('- CORS_ORIGINS:', process.env.CORS_ORIGINS);
-
-const express = require('express');
-const compression = require('compression');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const slowDown = require('express-slow-down');
-const { securityConfig } = require('./middleware/security');
-const { corsOptions, mongooseOptions, expressConfig } = require('./config/server');
-const routes = require('./routes');
-const healthRoutes = require('./routes/health');
 
 const app = express();
 
@@ -56,21 +56,6 @@ app.use('/api', (req, res, next) => {
 
 app.use(...securityConfig);
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX) || 100
-});
-
-const speedLimiter = slowDown({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-  delayAfter: 50,
-  delayMs: 500
-});
-
-app.use(limiter);
-app.use(speedLimiter);
-
 // Middleware de logging détaillé
 app.use((req, res, next) => {
   const start = Date.now();
@@ -96,11 +81,26 @@ app.use((req, res, next) => {
   next();
 });
 
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '') || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX || '') || 100
+});
+
+const speedLimiter = slowDown({
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '') || 15 * 60 * 1000,
+  delayAfter: 50,
+  delayMs: 500
+});
+
+app.use(limiter);
+app.use(speedLimiter);
+
 // Middleware de base
 app.use(compression());
-app.use(express.json({ limit: expressConfig.jsonLimit }));
-app.use(express.urlencoded({ extended: true, limit: expressConfig.urlEncodedLimit }));
-app.use(express.static('public', expressConfig.staticOptions));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.static('public'));
 
 // Optimisation MongoDB
 mongoose.set('bufferCommands', false);
@@ -108,7 +108,7 @@ mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
 // Routes
 console.log('🛣️ Configuration des routes...');
-app.use('/api/health', healthRoutes);
+app.use('/health', healthRoutes);
 app.use('/api', routes);
 
 // Logging des requêtes en production

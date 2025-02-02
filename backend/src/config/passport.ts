@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { Strategy as TikTokStrategy } from 'passport-tiktok';
+// import { Strategy as TikTokStrategy } from 'passport-tiktok';
 import { User } from '../models/User';
 
 passport.serializeUser((user: any, done) => {
@@ -84,32 +84,32 @@ passport.use(
 );
 
 // Configuration TikTok Strategy
-passport.use(
-  new TikTokStrategy(
-    {
-      clientID: process.env.TIKTOK_CLIENT_KEY!,
-      clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
-      callbackURL: `${process.env.API_URL}/auth/tiktok/callback`,
-      scope: ['user.info.basic'],
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ tiktokId: profile.id });
+// passport.use(
+//   new TikTokStrategy(
+//     {
+//       clientID: process.env.TIKTOK_CLIENT_KEY!,
+//       clientSecret: process.env.TIKTOK_CLIENT_SECRET!,
+//       callbackURL: `${process.env.API_URL}/auth/tiktok/callback`,
+//       scope: ['user.info.basic'],
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       try {
+//         let user = await User.findOne({ tiktokId: profile.id });
 
-        if (!user) {
-          user = await User.create({
-            username: profile.displayName,
-            tiktokId: profile.id,
-            avatar: profile.avatarUrl,
-          });
-        }
+//         if (!user) {
+//           user = await User.create({
+//             username: profile.displayName,
+//             tiktokId: profile.id,
+//             avatar: profile.avatarUrl,
+//           });
+//         }
 
-        return done(null, user);
-      } catch (error) {
-        return done(error as Error, undefined);
-      }
-    }
-  )
-);
+//         return done(null, user);
+//       } catch (error) {
+//         return done(error as Error, undefined);
+//       }
+//     }
+//   )
+// );
 
 export default passport; 

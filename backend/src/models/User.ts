@@ -6,6 +6,8 @@ export interface IUser extends mongoose.Document {
   email: string;
   password?: string;
   avatar?: string;
+  name?: string;
+  role?: string;
   googleId?: string;
   facebookId?: string;
   tiktokId?: string;
@@ -30,6 +32,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false, // Optionnel pour l'authentification sociale
     minlength: 6,
+  },
+  name: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
   },
   avatar: {
     type: String,

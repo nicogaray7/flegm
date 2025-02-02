@@ -1,7 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
 
     if (userExists) {
       return res.status(400).json({
-        message: 'Un utilisateur existe déjà avec cet email ou ce nom d'utilisateur',
+        message: "Un utilisateur existe déjà avec cet email ou ce nom d'utilisateur"
       });
     }
 
@@ -30,9 +30,16 @@ router.post('/register', async (req, res) => {
       password,
     });
 
-    const token = generateToken(user._id);
-    res.status(201).json({ token });
+    res.status(201).json({
+      message: 'Utilisateur créé avec succès',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
   } catch (error) {
+    console.error('Erreur lors de l\'inscription:', error);
     res.status(500).json({ message: 'Erreur lors de l\'inscription' });
   }
 });
@@ -46,47 +53,48 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id.toString());
     res.json({ token });
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la connexion' });
   }
 });
 
-// Routes d'authentification Google
+// Routes d'authentification sociale
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: false }),
+  passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    const token = generateToken(req.user!._id);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+    const user = req.user as IUser;
+    const token = generateToken(user._id.toString());
+    res.redirect(`${process.env.FRONTEND_URL}/auth/success?token=${token}`);
   }
 );
 
-// Routes d'authentification Facebook
 router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 
 router.get(
   '/facebook/callback',
-  passport.authenticate('facebook', { session: false }),
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
   (req, res) => {
-    const token = generateToken(req.user!._id);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+    const user = req.user as IUser;
+    const token = generateToken(user._id.toString());
+    res.redirect(`${process.env.FRONTEND_URL}/auth/success?token=${token}`);
   }
 );
 
-// Routes d'authentification TikTok
 router.get('/tiktok', passport.authenticate('tiktok'));
 
 router.get(
   '/tiktok/callback',
-  passport.authenticate('tiktok', { session: false }),
+  passport.authenticate('tiktok', { failureRedirect: '/login' }),
   (req, res) => {
-    const token = generateToken(req.user!._id);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+    const user = req.user as IUser;
+    const token = generateToken(user._id.toString());
+    res.redirect(`${process.env.FRONTEND_URL}/auth/success?token=${token}`);
   }
 );
 
-export default router; 
+export default router;

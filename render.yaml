@@ -5,11 +5,14 @@ services:
     region: frankfurt
     plan: free
     buildCommand: |
+      cd backend
       npm install
       npm run build
-    startCommand: NODE_ENV=production node server.js
-    rootDir: backend
-    healthCheckPath: /api/health
+    startCommand: |
+      cd backend
+      NODE_ENV=production node dist/server.js
+    rootDir: .
+    healthCheckPath: /health
     healthCheckTimeout: 300
     envVars:
       - key: NODE_ENV
@@ -44,4 +47,4 @@ services:
         value: 30000
       - key: DEBUG
         value: "app:*"
-    autoDeploy: true 
+    autoDeploy: true

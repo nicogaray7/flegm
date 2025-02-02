@@ -12,9 +12,16 @@ class MyDocument extends Document {
     return (
       <Html lang="fr">
         <Head>
+          <meta charSet="utf-8" />
+          <link rel="icon" href="/favicon.ico" />
           <meta name="google-adsense-account" content="ca-pub-1641130131347247" />
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin=""
+          />
         </Head>
-        <body className="antialiased text-gray-900 bg-gray-50">
+        <body>
           <Main />
           <NextScript />
         </body>

@@ -26,19 +26,24 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   crossOriginEmbedderPolicy: false
 }));
-app.use(cors(corsOptions));
+
+// Configuration CORS
+const corsMiddleware = cors(corsOptions);
+app.use(corsMiddleware);
+app.options('*', corsMiddleware);
+
 app.use(...securityConfig);
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limite chaque IP à 100 requêtes par fenêtre
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX) || 100
 });
 
 const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 50, // ralentir après 50 requêtes
-  delayMs: 500 // ajouter 500ms de délai par requête
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  delayAfter: 50,
+  delayMs: 500
 });
 
 app.use(limiter);
@@ -54,6 +59,21 @@ app.use(express.static('public', expressConfig.staticOptions));
 mongoose.set('bufferCommands', false);
 mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
+// Routes
+app.use('/api/health', healthRoutes);
+app.use('/api', routes);
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route non trouvée' });
+});
+
+// Gestion des erreurs globale
+app.use((err, req, res, next) => {
+  console.error('Erreur:', err);
+  res.status(500).json({ message: 'Erreur serveur', details: err.message });
+});
+
 // Connexion MongoDB et démarrage du serveur
 const startServer = async () => {
   try {
@@ -68,25 +88,9 @@ const startServer = async () => {
       });
     }
 
-    // Routes
-    app.use('/api/health', healthRoutes);
-    app.use('/api/auth', require('./routes/auth'));
-    app.use('/', routes);
-
-    // Gestion des erreurs 404
-    app.use((req, res) => {
-      res.status(404).json({ message: 'Route non trouvée' });
-    });
-
-    // Gestion des erreurs globale
-    app.use((err, req, res, next) => {
-      console.error('Erreur:', err);
-      res.status(500).json({ message: 'Erreur serveur', details: err.message });
-    });
-
-    const PORT = process.env.PORT || 5001;
+    const PORT = process.env.PORT || 8080;
     const server = app.listen(PORT, () => {
-      console.log(`Serveur démarré sur le port ${PORT}`);
+      console.log(`✅ Serveur démarré sur le port ${PORT}`);
     });
 
     // Gestion gracieuse de l'arrêt
@@ -106,7 +110,7 @@ const startServer = async () => {
     process.on('SIGINT', gracefulShutdown);
 
   } catch (err) {
-    console.error('❌ Erreur de connexion à MongoDB:', err);
+    console.error('❌ Erreur de démarrage:', err);
     process.exit(1);
   }
 };

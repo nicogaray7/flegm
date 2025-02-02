@@ -5,19 +5,21 @@ const mongoose = require('mongoose');
 router.get('/', async (req, res) => {
   try {
     // Vérification de la connexion MongoDB
-    if (mongoose.connection.readyState !== 1) {
-      throw new Error('MongoDB non connecté');
-    }
+    const isMongoConnected = mongoose.connection.readyState === 1;
 
     res.json({
       status: 'healthy',
-      mongodb: 'connected',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      mongodb: isMongoConnected ? 'connected' : 'disconnected',
+      version: process.version
     });
   } catch (error) {
+    console.error('Health check failed:', error);
     res.status(500).json({
       status: 'unhealthy',
-      error: error.message
+      error: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 });

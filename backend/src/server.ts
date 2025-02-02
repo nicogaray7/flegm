@@ -108,7 +108,7 @@ mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
 // Routes
 console.log('🛣️ Configuration des routes...');
-app.use('/health', healthRoutes);
+app.use('/api/health', healthRoutes);
 app.use('/api', routes);
 
 // Logging des requêtes en production

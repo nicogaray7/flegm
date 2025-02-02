@@ -42,4 +42,6 @@ services:
         value: 30000
       - key: DEBUG
         value: "app:*"
+      - key: CACHE_TTL
+        value: 3600
     autoDeploy: true

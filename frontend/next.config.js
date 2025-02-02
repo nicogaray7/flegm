@@ -35,12 +35,18 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production'
   },
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false,
     scrollRestoration: true
   },
   swcMinify: true,
   compress: true,
-  productionBrowserSourceMaps: false
+  productionBrowserSourceMaps: false,
+  typescript: {
+    ignoreBuildErrors: false
+  },
+  eslint: {
+    ignoreDuringBuilds: false
+  }
 }
 
 module.exports = nextConfig 

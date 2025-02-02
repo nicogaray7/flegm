@@ -44,4 +44,23 @@ services:
         value: "app:*"
       - key: CACHE_TTL
         value: 3600
+    disk:
+      name: flegm-data
+      mountPath: /data
+      sizeGB: 1
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+      targetMemoryPercent: 70
+      targetCPUPercent: 70
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: https://flegm.fr
+      - path: /*
+        name: Access-Control-Allow-Methods
+        value: GET,POST,PUT,DELETE,OPTIONS,PATCH
+      - path: /*
+        name: Access-Control-Allow-Headers
+        value: Content-Type,Authorization,X-Requested-With
     autoDeploy: true

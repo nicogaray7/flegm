@@ -2,54 +2,48 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 10000,
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+  timeout: 10000,
 });
 
 // Intercepteur pour les requêtes
 api.interceptors.request.use(
   (config) => {
-    console.log('📤 Requête sortante:', {
-      method: config.method?.toUpperCase(),
-      url: config.url,
-      headers: config.headers,
-      data: config.data
-    });
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
-    console.error('❌ Erreur de requête:', error);
+    console.error('Erreur de requête:', error);
     return Promise.reject(error);
   }
 );
 
 // Intercepteur pour les réponses
 api.interceptors.response.use(
-  (response) => {
-    console.log('📥 Réponse reçue:', {
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
-      data: response.data
+  (response) => response,
+  async (error) => {
+    console.error('Erreur de réponse:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      config: error.config
     });
-    return response;
-  },
-  (error) => {
-    if (error.response) {
-      console.error('❌ Erreur de réponse:', {
-        status: error.response.status,
-        statusText: error.response.statusText,
-        headers: error.response.headers,
-        data: error.response.data
-      });
-    } else if (error.request) {
-      console.error('❌ Pas de réponse:', error.request);
-    } else {
-      console.error('❌ Erreur de configuration:', error.message);
+
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
     }
-    return Promise.reject(error);
+
+    if (!error.response) {
+      throw new Error('Erreur de connexion au serveur. Veuillez réessayer plus tard.');
+    }
+
+    throw error;
   }
 );
 

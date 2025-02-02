@@ -8,7 +8,7 @@ const cld = new Cloudinary({
   }
 });
 
-export const useCloudinaryVideo = (videoId) => {
+export const useCloudinaryVideo = (videoId: string) => {
   const [videoUrls, setVideoUrls] = useState({
     streaming: '',
     thumbnail: '',
@@ -23,11 +23,11 @@ export const useCloudinaryVideo = (videoId) => {
         .toURL();
 
       const thumbnailUrl = cld.video(videoId)
-        .transformation(videoTransforms.thumbnail)
+        .addTransformation(videoTransforms.thumbnail)
         .toURL();
 
       const previewUrl = cld.video(videoId)
-        .transformation(videoTransforms.preview)
+        .addTransformation(videoTransforms.preview)
         .toURL();
 
       setVideoUrls({

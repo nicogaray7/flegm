@@ -67,11 +67,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ post }) => {
         <Image
           src={`https://img.youtube.com/vi/${post.youtubeId}/mqdefault.jpg`}
           alt={post.title}
-          layout="fill"
-          objectFit="cover"
-          priority={true}
+          fill
+          priority
           sizes="(max-width: 640px) 100vw, 192px"
-          className="transition-transform duration-200 group-hover:scale-105"
+          className="object-cover transition-transform duration-200 group-hover:scale-105"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200">
           <svg 

@@ -26,4 +26,16 @@ services:
         value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
       - key: CORS_ORIGIN
         value: https://frontend-4qp9auwn1-nicogaray7s-projects.vercel.app
+      - key: API_URL
+        value: https://flegm-api.onrender.com
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX
+        value: 100
+      - key: MONGODB_MAX_POOL_SIZE
+        value: 20
+      - key: MONGODB_MIN_POOL_SIZE
+        value: 5
+      - key: MONGODB_TIMEOUT_MS
+        value: 30000
     autoDeploy: true 

@@ -1,36 +1,36 @@
+# Exported from Render on 2025-02-03T02:01:15Z
 services:
   - type: web
-    name: flegm-api
-    env: node
-    region: frankfurt
-    buildCommand: npm install && npm run build
-    startCommand: npm start
-    rootDir: backend
-    healthCheckPath: /api/health
-    healthCheckTimeout: 5
-    autoDeploy: true
+    name: flegm
+    runtime: node
+    repo: https://github.com/nicogaray7/flegm
+    plan: free
     envVars:
+      - key: FRONTEND_URL
+        value: https://flegm.fr
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dfupyozxe
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 8080
-      - key: MONGODB_URI
-        sync: false
       - key: JWT_SECRET
         sync: false
-      - key: CLOUDINARY_CLOUD_NAME
-        value: dfupyozxe
-      - key: CLOUDINARY_API_KEY
+      - key: MONGODB_URI
         sync: false
-      - key: CLOUDINARY_API_SECRET
-        sync: false
-      - key: FRONTEND_URL
-        value: https://flegm.vercel.app
+    region: oregon
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && NODE_ENV=production node dist/server.js
+    healthCheckPath: /api/health
+    rootDir: backend
     scaling:
       minInstances: 1
       maxInstances: 1
       targetMemoryPercent: 80
-    buildFilter:
-      paths:
-        - backend/**/*.js
-        - backend/package*.json 
+    previews:
+      generation: automatic
+version: "1" 

@@ -1,12 +1,13 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
+  "buildCommand": "npm install --force && npm run build",
+  "installCommand": "npm install --force",
   "outputDirectory": ".next",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://flegm-api.onrender.com",
     "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "dfupyozxe",
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "NEXT_SHARP_PATH": "/tmp/node_modules/sharp"
   },
   "headers": [
     {

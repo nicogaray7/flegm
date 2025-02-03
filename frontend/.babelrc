@@ -1,0 +1,15 @@
+{
+  "presets": [
+    "next/babel"
+  ],
+  "plugins": [
+    [
+      "styled-jsx/babel",
+      {
+        "optimizeForSpeed": true,
+        "sourceMaps": true,
+        "pure": true
+      }
+    ]
+  ]
+} 

@@ -49,21 +49,6 @@ function App({ Component, pageProps }: AppProps) {
 
     // Scripts tiers
     const loadScripts = () => {
-      // Google Analytics
-      const script1 = document.createElement('script');
-      script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-SBM8F87PNN';
-      script1.async = true;
-      document.head.appendChild(script1);
-
-      const script2 = document.createElement('script');
-      script2.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-SBM8F87PNN');
-      `;
-      document.head.appendChild(script2);
-
       // Google AdSense
       const adSenseScript = document.createElement('script');
       adSenseScript.async = true;
@@ -72,8 +57,6 @@ function App({ Component, pageProps }: AppProps) {
       document.head.appendChild(adSenseScript);
 
       return () => {
-        document.head.removeChild(script1);
-        document.head.removeChild(script2);
         document.head.removeChild(adSenseScript);
       };
     };

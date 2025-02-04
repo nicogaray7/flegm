@@ -3,7 +3,7 @@ services:
     name: flegm
     env: node
     region: Oregon
-    buildCommand: cd backend && yarn install && yarn build
+    buildCommand: cd backend && NODE_ENV=production yarn install --ignore-scripts && yarn build
     startCommand: cd backend && yarn start
     healthCheckPath: /api/health
     healthCheckTimeout: 5

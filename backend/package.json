@@ -14,7 +14,7 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "test": "jest",
     "seed": "ts-node seeds/seed.ts",
-    "prepare": "husky install"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
   },
   "dependencies": {
     "@cloudinary/url-gen": "1.21.0",

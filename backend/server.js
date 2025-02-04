@@ -24,21 +24,34 @@ const app = express();
 // Middleware de sécurité de base
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  crossOriginEmbedderPolicy: false
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://flegm.fr'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://flegm.fr'],
+      imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
+      connectSrc: ["'self'", 'https://flegm.fr', 'https://api.cloudinary.com']
+    }
+  },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
 }));
 app.use(cors(corsOptions));
 app.use(...securityConfig);
 
-// Rate limiting
+// Rate limiting renforcé
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limite chaque IP à 100 requêtes par fenêtre
+  max: 200, // augmenter à 200 requêtes
+  standardHeaders: true, // Informer l'utilisateur des limites via les headers
+  legacyHeaders: false, // Désactiver les headers X-RateLimit-*
+  message: 'Trop de requêtes, veuillez réessayer plus tard'
 });
 
 const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 50, // ralentir après 50 requêtes
-  delayMs: 500 // ajouter 500ms de délai par requête
+  delayAfter: 100, // ralentir après 100 requêtes
+  delayMs: (hits) => hits * 500 // délai progressif
 });
 
 app.use(limiter);

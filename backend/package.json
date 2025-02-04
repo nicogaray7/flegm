@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
     "dev": "nodemon server.js",
-    "build": "npm install && npx tsc && mkdir -p dist && cp -r src dist/ && cp package.json dist/ && cp server.js dist/",
+    "build": "yarn install && yarn add typescript && yarn tsc && mkdir -p dist && cp -r src dist/ && cp package.json dist/ && cp server.js dist/",
     "seed": "node seeds/seed.js"
   },
   "dependencies": {

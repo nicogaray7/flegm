@@ -14,17 +14,17 @@ services:
       - key: PORT
         value: 8080
       - key: MONGODB_URI
-        sync: false
+        sync: true
       - key: JWT_SECRET
-        sync: false
+        sync: true
       - key: CLOUDINARY_CLOUD_NAME
         value: dfupyozxe
       - key: CLOUDINARY_API_KEY
-        sync: false
+        sync: true
       - key: CLOUDINARY_API_SECRET
-        sync: false
+        sync: true
       - key: FRONTEND_URL
-        value: https://flegm.vercel.app
+        value: https://flegm.fr
     scaling:
       minInstances: 1
       maxInstances: 1

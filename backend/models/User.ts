@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 export interface IUser extends mongoose.Document {
   username: string;
@@ -9,6 +9,8 @@ export interface IUser extends mongoose.Document {
   googleId?: string;
   facebookId?: string;
   tiktokId?: string;
+  createdAt: Date;
+  updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -56,11 +58,18 @@ const userSchema = new mongoose.Schema({
 
 // Hash le mot de passe avant la sauvegarde
 userSchema.pre('save', async function(next) {
+  // Ne hash le mot de passe que s'il a été modifié
   if (this.isModified('password') && this.password) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+      next();
+    } catch (error) {
+      next(error as mongoose.CallbackError);
+    }
+  } else {
+    next();
   }
-  next();
 });
 
 // Méthode pour comparer les mots de passe

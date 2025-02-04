@@ -1,55 +1,95 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
+import bcrypt from 'bcryptjs';
+
+// Interface personnalisée pour la requête avec utilisateur
+interface CustomRequest extends Request {
+  user?: any;
+}
 
 const router = express.Router();
 
 // Fonction utilitaire pour générer le token JWT
-const generateToken = (userId: string) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET!, {
-    expiresIn: '7d',
-  });
+const generateToken = (user: any): string => {
+  const token = jwt.sign(
+    { id: user._id.toString() }, 
+    process.env.JWT_SECRET || '', 
+    { expiresIn: '7d' }
+  );
+  return token;
 };
 
 // Routes d'authentification classique
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
-    const userExists = await User.findOne({ $or: [{ email }, { username }] });
 
-    if (userExists) {
-      return res.status(400).json({
-        message: 'Un utilisateur existe déjà avec cet email ou ce nom d'utilisateur',
-      });
+    // Vérifier si l'utilisateur existe déjà
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Un utilisateur avec cet email ou ce nom d\'utilisateur existe déjà' });
     }
 
-    const user = await User.create({
+    // Créer un nouvel utilisateur
+    const newUser = new User({
       username,
       email,
-      password,
+      password
     });
 
-    const token = generateToken(user._id);
-    res.status(201).json({ token });
+    await newUser.save();
+
+    // Générer un token
+    const token = generateToken(newUser);
+
+    res.status(201).json({ 
+      message: 'Utilisateur enregistré avec succès', 
+      token,
+      user: { 
+        id: newUser._id, 
+        username: newUser.username, 
+        email: newUser.email 
+      } 
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de l\'inscription' });
+    console.error('Erreur lors de l\'inscription :', error);
+    res.status(500).json({ message: 'Erreur serveur lors de l\'inscription' });
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
 
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+    // Trouver l'utilisateur
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'Identifiants invalides' });
     }
 
-    const token = generateToken(user._id);
-    res.json({ token });
+    // Vérifier le mot de passe
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Identifiants invalides' });
+    }
+
+    // Générer un token
+    const token = generateToken(user);
+
+    res.json({ 
+      message: 'Connexion réussie', 
+      token,
+      user: { 
+        id: user._id, 
+        username: user.username, 
+        email: user.email 
+      } 
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la connexion' });
+    console.error('Erreur lors de la connexion :', error);
+    res.status(500).json({ message: 'Erreur serveur lors de la connexion' });
   }
 });
 
@@ -58,10 +98,15 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: false }),
-  (req, res) => {
-    const token = generateToken(req.user!._id);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  (req: CustomRequest, res: Response) => {
+    // Rediriger ou renvoyer un token
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: 'Authentification échouée' });
+    }
+    const token = generateToken(user);
+    res.redirect(`https://flegm.fr/oauth-callback?token=${token}`);
   }
 );
 
@@ -70,22 +115,30 @@ router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }))
 
 router.get(
   '/facebook/callback',
-  passport.authenticate('facebook', { session: false }),
-  (req, res) => {
-    const token = generateToken(req.user!._id);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  (req: CustomRequest, res: Response) => {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: 'Authentification échouée' });
+    }
+    const token = generateToken(user);
+    res.redirect(`https://flegm.fr/oauth-callback?token=${token}`);
   }
 );
 
 // Routes d'authentification TikTok
-router.get('/tiktok', passport.authenticate('tiktok'));
+router.get('/tiktok', passport.authenticate('tiktok', { scope: ['user.info.basic'] }));
 
 router.get(
   '/tiktok/callback',
-  passport.authenticate('tiktok', { session: false }),
-  (req, res) => {
-    const token = generateToken(req.user!._id);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+  passport.authenticate('tiktok', { failureRedirect: '/login' }),
+  (req: CustomRequest, res: Response) => {
+    const user = req.user;
+    if (!user) {
+      return res.status(401).json({ message: 'Authentification échouée' });
+    }
+    const token = generateToken(user);
+    res.redirect(`https://flegm.fr/oauth-callback?token=${token}`);
   }
 );
 

@@ -1,15 +1,28 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2020",
     "module": "commonjs",
+    "lib": ["es2020", "dom"],
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "allowJs": true
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true
   },
-  "include": ["src/**/*.ts", "server.js"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts", 
+    "routes/**/*.ts", 
+    "models/**/*.ts", 
+    "server.ts",
+    "seeds/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
 } 

@@ -17,7 +17,7 @@ const mongooseOptions = {
   w: 'majority',
   ssl: true,
   tls: true,
-  tlsAllowInvalidCertificates: false,
+  tlsAllowInvalidCertificates: process.env.NODE_ENV === 'development',
   useNewUrlParser: true,
   useUnifiedTopology: true
 };

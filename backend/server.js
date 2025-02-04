@@ -55,10 +55,12 @@ mongoose.set('bufferCommands', false);
 mongoose.set('autoIndex', process.env.NODE_ENV !== 'production');
 
 // Connexion MongoDB et démarrage du serveur
-const startServer = async () => {
+async function startServer() {
   try {
+    console.log('Tentative de connexion à MongoDB Atlas...');
+    console.log('URI de connexion:', process.env.MONGODB_URI.replace(/:[^:]*@/, ':****@'));
     await mongoose.connect(process.env.MONGODB_URI, mongooseOptions);
-    console.log('✅ Connexion réussie à MongoDB');
+    console.log('Connecté à MongoDB Atlas avec succès');
     
     // Middleware de logging en développement
     if (process.env.NODE_ENV === 'development') {

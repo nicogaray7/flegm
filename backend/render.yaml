@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: flegm-api
+    name: flegm
     env: node
-    region: frankfurt
-    buildCommand: cd backend && npm install && npm run build
-    startCommand: cd backend && npm start
+    region: Oregon
+    buildCommand: cd backend && yarn install && yarn build
+    startCommand: cd backend && yarn start
     healthCheckPath: /api/health
     healthCheckTimeout: 5
     autoDeploy: true

@@ -32,4 +32,5 @@ services:
     buildFilter:
       paths:
         - backend/**/*.js
+        - backend/**/*.ts
         - backend/package*.json 

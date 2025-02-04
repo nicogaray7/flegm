@@ -4,9 +4,9 @@
   "description": "Backend pour l'application Flegm - Plateforme de découverte de créateurs de contenu",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production node dist/server.js",
     "dev": "nodemon server.js",
-    "build": "npm install",
+    "build": "npm install && npx tsc && mkdir -p dist && cp -r src dist/ && cp package.json dist/ && cp server.js dist/",
     "seed": "node seeds/seed.js"
   },
   "dependencies": {
@@ -39,10 +39,12 @@
     "xss": "1.0.15"
   },
   "devDependencies": {
+    "@types/node": "22.13.1",
     "@types/passport": "1.0.17",
     "@types/passport-facebook": "3.0.3",
     "@types/passport-google-oauth20": "2.0.16",
-    "nodemon": "3.1.9"
+    "nodemon": "3.1.9",
+    "typescript": "5.7.3"
   },
   "engines": {
     "node": ">=18.x"

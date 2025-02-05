@@ -5,9 +5,9 @@ services:
     region: Oregon
     buildCommand: |
       cd backend
-      NODE_ENV=production yarn install --frozen-lockfile --production=false
-      yarn build
-    startCommand: cd backend && yarn start
+      npm install
+      npm run build
+    startCommand: cd backend && npm run start
     healthCheckPath: /api/health
     healthCheckTimeout: 10
     autoDeploy: true

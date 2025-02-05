@@ -3,11 +3,12 @@ services:
     name: flegm
     env: node
     region: Oregon
+    plan: starter
     buildCommand: |
       cd backend
-      yarn install --frozen-lockfile
+      yarn install --frozen-lockfile --production=false
       yarn build
-    startCommand: cd backend && yarn start
+    startCommand: cd backend && NODE_ENV=production node dist/server.js
     healthCheckPath: /api/health
     healthCheckTimeout: 10
     autoDeploy: true

@@ -7,7 +7,7 @@
   "scripts": {
     "start": "NODE_ENV=production node dist/server.js",
     "dev": "nodemon --exec ts-node server.ts",
-    "build": "yarn clean && yarn tsc && yarn copy-files",
+    "build": "yarn clean && npx tsc && yarn copy-files",
     "clean": "rm -rf dist",
     "copy-files": "mkdir -p dist && cp package.json dist/ && cp server.ts dist/",
     "lint": "eslint . --ext .ts",

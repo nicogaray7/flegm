@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: flegm
+    env: node
+    region: Oregon
+    plan: starter
+    buildCommand: |
+      cd backend
+      yarn install --frozen-lockfile --production=false --ignore-workspace-root-check
+      yarn add -D @types/node@22.13.1
+      yarn build
+    startCommand: cd backend && NODE_ENV=production node dist/server.js
+    healthCheckPath: /api/health
+    healthCheckTimeout: 10 

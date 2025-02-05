@@ -9,7 +9,7 @@ services:
       yarn build
     startCommand: cd backend && yarn start
     healthCheckPath: /api/health
-    healthCheckTimeout: 5
+    healthCheckTimeout: 10
     autoDeploy: true
     envVars:
       - key: NODE_ENV
@@ -31,7 +31,7 @@ services:
       - key: FRONTEND_URL
         value: https://flegm.fr
       - key: API_URL
-        value: https://flegm-api.onrender.com
+        value: https://flegm.onrender.com
       - key: FACEBOOK_APP_ID
         sync: true
       - key: FACEBOOK_APP_SECRET
@@ -40,10 +40,14 @@ services:
         sync: true
       - key: GOOGLE_CLIENT_SECRET
         sync: true
+      - key: GOOGLE_CALLBACK_URL
+        value: https://flegm.onrender.com/auth/google/callback
       - key: TIKTOK_CLIENT_KEY
         sync: true
       - key: TIKTOK_CLIENT_SECRET
         sync: true
+      - key: TIKTOK_CALLBACK_URL
+        value: https://flegm.onrender.com/auth/tiktok/callback
       - key: REDIS_URL
         sync: true
       - key: LOG_LEVEL

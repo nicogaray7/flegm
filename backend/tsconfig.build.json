@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "sourceMap": true,
+    "outDir": "dist",
+    "noImplicitAny": false,
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "jest.config.ts",
+    "src/__tests__"
+  ],
+  "include": ["src/**/*.ts"]
+} 

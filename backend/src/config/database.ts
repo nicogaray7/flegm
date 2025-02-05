@@ -9,6 +9,8 @@ const connectDB = async (): Promise<void> => {
       throw new Error('MONGODB_URI n\'est pas défini dans les variables d\'environnement');
     }
 
+    logger.info('🔄 Tentative de connexion à MongoDB avec l\'URI:', mongoURI);
+
     await mongoose.connect(mongoURI, {
       // Options de connexion recommandées
       retryWrites: true,
@@ -27,7 +29,8 @@ const connectDB = async (): Promise<void> => {
     logger.info('✅ Connexion à MongoDB réussie');
   } catch (error) {
     logger.error('❌ Échec de la connexion à MongoDB', { 
-      error: error instanceof Error ? error.message : 'Erreur inconnue' 
+      error: error instanceof Error ? error.message : 'Erreur inconnue',
+      stack: error instanceof Error ? error.stack : undefined
     });
     
     // Arrêter le processus en cas d'échec de connexion
@@ -37,15 +40,15 @@ const connectDB = async (): Promise<void> => {
 
 // Gestion des événements de connexion mongoose
 mongoose.connection.on('disconnected', () => {
-  logger.warn('Déconnexion de MongoDB');
+  logger.warn('⚠️ Déconnexion de MongoDB');
 });
 
 mongoose.connection.on('reconnected', () => {
-  logger.info('Reconnexion à MongoDB réussie');
+  logger.info('✅ Reconnexion à MongoDB réussie');
 });
 
 mongoose.connection.on('error', (error) => {
-  logger.error('Erreur de connexion MongoDB', { error });
+  logger.error('❌ Erreur de connexion MongoDB', { error });
 });
 
 export default connectDB; 

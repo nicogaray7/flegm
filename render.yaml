@@ -6,8 +6,8 @@ services:
     plan: starter
     buildCommand: |
       cd backend
+      npm install @types/node@22.13.1 --save-dev
       yarn install --frozen-lockfile --production=false --ignore-workspace-root-check --ignore-engines
-      yarn add -D @types/node@22.13.1
       yarn build
     startCommand: cd backend && NODE_ENV=production node dist/server.js
     healthCheckPath: /api/health

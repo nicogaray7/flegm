@@ -6,6 +6,7 @@ services:
     plan: starter
     buildCommand: |
       cd backend
+      yarn global add @types/node@22.13.1
       yarn install --frozen-lockfile --production=false --ignore-workspace-root-check
       yarn add -D @types/node@22.13.1
       yarn build

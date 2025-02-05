@@ -3,13 +3,14 @@ services:
     name: flegm
     env: node
     region: Oregon
+    plan: starter
     buildCommand: |
       cd backend
-      NODE_ENV=production yarn install --frozen-lockfile --production=false
-      yarn build
-    startCommand: cd backend && yarn start
+      npm install --production=false
+      npm run build
+    startCommand: cd backend && NODE_ENV=production node dist/server.js
     healthCheckPath: /api/health
-    healthCheckTimeout: 5
+    healthCheckTimeout: 10
     autoDeploy: true
     envVars:
       - key: NODE_ENV
@@ -31,7 +32,7 @@ services:
       - key: FRONTEND_URL
         value: https://flegm.fr
       - key: API_URL
-        value: https://flegm-api.onrender.com
+        value: https://flegm.onrender.com
       - key: FACEBOOK_APP_ID
         sync: true
       - key: FACEBOOK_APP_SECRET
@@ -52,12 +53,6 @@ services:
       minInstances: 1
       maxInstances: 1
       targetMemoryPercent: 80
-    buildFilter:
-      paths:
-        - backend/**/*.js
-        - backend/**/*.ts
-        - backend/package.json
-        - backend/yarn.lock
     headers:
       - path: /*
         name: Strict-Transport-Security

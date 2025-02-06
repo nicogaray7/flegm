@@ -1,0 +1,140 @@
+services:
+  # Main backend API service
+  - type: web
+    name: flegm-api
+    runtime: node
+    plan: starter
+    repo: https://github.com/nicogaray7/flegm
+    region: oregon
+    buildCommand: |
+      cd backend
+      yarn install --frozen-lockfile --production=false
+      yarn add -D tsc-alias@1.8.8 tsconfig-paths@4.2.0
+      yarn build
+    startCommand: cd backend && NODE_ENV=production node dist/server.js
+    healthCheckPath: /health
+    healthCheckTimeout: 30
+    maxShutdownDelaySeconds: 60
+    autoDeploy: true
+    domains:
+      - https://flegm.onrender.com
+    scaling:
+      minInstances: 1
+      maxInstances: 2
+      targetMemoryPercent: 80
+      targetCPUPercent: 70
+    headers:
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000; includeSubDomains; preload
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; connect-src 'self' https://flegm.fr; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+    disk:
+      name: tmp
+      mountPath: /tmp
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      # Security-related variables
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
+      # Database configuration
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_MAX_POOL_SIZE
+        value: 20
+      - key: MONGODB_MIN_POOL_SIZE
+        value: 5
+      - key: MONGODB_TIMEOUT_MS
+        value: 30000
+      # Application URLs
+      - key: FRONTEND_URL
+        value: https://flegm.fr
+      - key: API_URL
+        value: https://flegm.onrender.com
+      # OAuth credentials
+      - key: FACEBOOK_APP_ID
+        sync: false
+      - key: FACEBOOK_APP_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      # Rate limiting
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX
+        value: 100
+      # Logging
+      - key: LOG_LEVEL
+        value: info
+      # Cache configuration
+      - key: CACHE_TTL
+        value: 3600
+
+  # Frontend Next.js service
+  - type: web
+    name: flegm-frontend
+    env: node
+    region: frankfurt
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    startCommand: cd frontend && npm start
+    healthCheckPath: /
+    healthCheckTimeout: 5
+    autoDeploy: true
+    domains:
+      - flegm.fr
+      - www.flegm.fr
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://flegm.onrender.com
+      - key: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+        value: dfupyozxe
+      - key: NEXT_PUBLIC_CLOUDINARY_API_KEY
+        value: 165535318843775
+      - key: NEXT_SHARP_PATH
+        value: /tmp/node_modules/sharp
+      - key: NEXT_TELEMETRY_DISABLED
+        value: 1
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+      targetMemoryPercent: 80
+    buildFilter:
+      paths:
+        - frontend/**/*.tsx
+        - frontend/**/*.ts
+        - frontend/package*.json
+
+# Environment variable groups
+envVarGroups:
+  - name: monitoring
+    envVars:
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_ENVIRONMENT
+        value: production
+  - name: security
+    envVars:
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://flegm.fr,https://www.flegm.fr"
+      - key: SECURE_COOKIES
+        value: "true" 

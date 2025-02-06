@@ -8,9 +8,9 @@ services:
     region: oregon
     buildCommand: |
       cd backend
-      npm ci
+      NODE_ENV=production npm ci
       npm run build
-    startCommand: cd backend && node dist/server.js
+    startCommand: cd backend && NODE_ENV=production node dist/server.js
     healthCheckPath: /health
     healthCheckTimeout: 60
     maxShutdownDelaySeconds: 60
@@ -39,6 +39,12 @@ services:
       name: tmp
       mountPath: /tmp
       sizeGB: 1
+    buildFilter:
+      paths:
+        - backend/**/*.ts
+        - backend/**/*.js
+        - backend/package*.json
+        - backend/tsconfig*.json
     envVars:
       - key: NODE_ENV
         value: production
@@ -91,11 +97,11 @@ services:
     region: frankfurt
     buildCommand: |
       cd frontend
-      npm install
+      NODE_ENV=production npm ci
       npm run build
-    startCommand: cd frontend && npm start
+    startCommand: cd frontend && NODE_ENV=production npm start
     healthCheckPath: /
-    healthCheckTimeout: 5
+    healthCheckTimeout: 30
     autoDeploy: true
     domains:
       - flegm.fr
@@ -112,6 +118,8 @@ services:
         value: /tmp/node_modules/sharp
       - key: NEXT_TELEMETRY_DISABLED
         value: 1
+      - key: PORT
+        value: 3000
     scaling:
       minInstances: 1
       maxInstances: 1
@@ -120,7 +128,12 @@ services:
       paths:
         - frontend/**/*.tsx
         - frontend/**/*.ts
+        - frontend/**/*.js
         - frontend/package*.json
+        - frontend/next.config.*
+        - frontend/tsconfig*.json
+        - frontend/postcss.config.*
+        - frontend/tailwind.config.*
 
 # Environment variable groups
 envVarGroups:

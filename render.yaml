@@ -4,12 +4,9 @@ services:
     name: flegm-api
     runtime: node
     plan: starter
-    repo: https://github.com/nicogaray7/flegm
+    repo: https://github.com/nicogaray7/flegm.git
     region: oregon
-    buildCommand: |
-      cd backend
-      NODE_ENV=production npm ci
-      npm run build
+    buildCommand: cd backend && NODE_ENV=production npm ci && npm run build
     startCommand: cd backend && NODE_ENV=production node dist/server.js
     healthCheckPath: /health
     healthCheckTimeout: 60
@@ -95,10 +92,7 @@ services:
     name: flegm-frontend
     env: node
     region: frankfurt
-    buildCommand: |
-      cd frontend
-      NODE_ENV=production npm ci
-      npm run build
+    buildCommand: cd frontend && NODE_ENV=production npm ci && npm run build
     startCommand: cd frontend && NODE_ENV=production npm start
     healthCheckPath: /
     healthCheckTimeout: 30

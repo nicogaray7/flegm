@@ -8,12 +8,11 @@ services:
     region: oregon
     buildCommand: |
       cd backend
-      yarn install --frozen-lockfile --production=false
-      yarn add -D tsc-alias@1.8.8 tsconfig-paths@4.2.0
+      yarn install --frozen-lockfile
       yarn build
-    startCommand: cd backend && NODE_ENV=production node dist/server.js
+    startCommand: cd backend && node dist/server.js
     healthCheckPath: /health
-    healthCheckTimeout: 30
+    healthCheckTimeout: 60
     maxShutdownDelaySeconds: 60
     autoDeploy: true
     domains:

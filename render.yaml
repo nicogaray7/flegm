@@ -6,7 +6,7 @@ services:
     plan: starter
     repo: https://github.com/nicogaray7/flegm.git
     region: oregon
-    buildCommand: cd backend && NODE_ENV=production npm install && npm run build
+    buildCommand: cd backend && NODE_ENV=production npm install --ignore-scripts && npm run build
     startCommand: cd backend && NODE_ENV=production node dist/server.js
     healthCheckPath: /health
     healthCheckTimeout: 60

@@ -17,8 +17,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "prepare": "husky install"
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

@@ -8,8 +8,8 @@ services:
     region: oregon
     buildCommand: |
       cd backend
-      yarn install --frozen-lockfile
-      yarn build
+      npm ci
+      npm run build
     startCommand: cd backend && node dist/server.js
     healthCheckPath: /health
     healthCheckTimeout: 60

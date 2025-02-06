@@ -2,14 +2,10 @@
   "name": "flegm",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
     "dev": "concurrently \"cd frontend && yarn dev\" \"cd backend && yarn dev\"",
     "start": "concurrently \"cd frontend && yarn start\" \"cd backend && yarn start\"",
-    "build": "cd frontend && yarn build && cd backend && yarn build",
+    "build": "cd frontend && yarn build && cd ../backend && yarn build",
     "clean": "rm -rf node_modules frontend/node_modules backend/node_modules frontend/.next backend/dist",
     "install:all": "yarn install && cd frontend && yarn install && cd ../backend && yarn install",
     "check-env": "node scripts/check-env.js",

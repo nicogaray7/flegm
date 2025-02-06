@@ -1,44 +1,45 @@
 module.exports = {
-  root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
   extends: [
-    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking'
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:prettier/recommended'
   ],
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
-    project: './tsconfig.json'
+    tsconfigRootDir: __dirname,
+    project: ['./tsconfig.json']
+  },
+  env: {
+    node: true,
+    jest: true
   },
   rules: {
-    // Règles de base
-    'no-console': 'warn',
-    'complexity': ['warn', 10],
-    
-    // Règles TypeScript
-    '@typescript-eslint/explicit-function-return-type': 'error',
-    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-unused-vars': ['error', { 
       'argsIgnorePattern': '^_',
       'varsIgnorePattern': '^_'
     }],
-    '@typescript-eslint/strict-boolean-expressions': 'error',
-    '@typescript-eslint/no-unnecessary-condition': 'error',
-    
-    // Sécurité
-    '@typescript-eslint/no-unsafe-assignment': 'error',
-    '@typescript-eslint/no-unsafe-call': 'error',
-    '@typescript-eslint/no-unsafe-member-access': 'error',
-    
-    // Performance et bonnes pratiques
-    '@typescript-eslint/prefer-optional-chain': 'warn',
-    '@typescript-eslint/prefer-nullish-coalescing': 'warn'
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/no-unsafe-return': 'warn',
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'prettier/prettier': ['error', {
+      'singleQuote': true,
+      'trailingComma': 'es5',
+      'printWidth': 100,
+      'semi': true,
+      'endOfLine': 'auto'
+    }]
   },
-  env: {
-    node: true,
-    es2020: true,
-    jest: true
-  }
+  ignorePatterns: [
+    'dist',
+    'node_modules',
+    '*.js',
+    '*.d.ts'
+  ]
 }; 

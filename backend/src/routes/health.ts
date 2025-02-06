@@ -1,46 +1,77 @@
-import express from 'express';
+import { Router, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import mongoose from 'mongoose';
+import redisClient from '../config/redis';
+import logger from '../config/logger';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/health', async (req, res) => {
+router.get('/', (req: Request, res: Response) => {
   try {
-    // Vérification de la connexion MongoDB
-    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    // Check MongoDB connection
+    const isMongoConnected = mongoose.connection.readyState === 1;
 
-    // Vérification de la mémoire
+    // Check Redis connection
+    const isRedisConnected = redisClient.isReady;
+
+    // Get uptime in seconds
+    const uptime = process.uptime();
+
+    // Format uptime
+    const formatUptime = (seconds: number): string => {
+      const days = Math.floor(seconds / (3600 * 24));
+      const hours = Math.floor((seconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+
+      const parts = [];
+      if (days > 0) parts.push(`${days}d`);
+      if (hours > 0) parts.push(`${hours}h`);
+      if (minutes > 0) parts.push(`${minutes}m`);
+      if (remainingSeconds > 0) parts.push(`${remainingSeconds}s`);
+
+      return parts.join(' ');
+    };
+
+    // Get memory usage
     const memoryUsage = process.memoryUsage();
-    const memoryStatus = memoryUsage.heapUsed < (memoryUsage.heapTotal * 0.9) ? 'ok' : 'warning';
+    const formatMemory = (bytes: number): string => {
+      return `${Math.round((bytes / 1024 / 1024) * 100) / 100} MB`;
+    };
 
-    // Statut global
-    const status = dbStatus === 'connected' && memoryStatus === 'ok' ? 'healthy' : 'unhealthy';
-
-    res.json({
-      status,
+    const healthStatus = {
+      status: 'healthy',
       timestamp: new Date().toISOString(),
+      uptime: formatUptime(uptime),
+      memory: {
+        rss: formatMemory(memoryUsage.rss), // Resident Set Size
+        heapTotal: formatMemory(memoryUsage.heapTotal), // V8's memory usage
+        heapUsed: formatMemory(memoryUsage.heapUsed), // V8's memory usage
+        external: formatMemory(memoryUsage.external), // C++ objects bound to JavaScript objects
+      },
       services: {
-        database: {
-          status: dbStatus,
+        mongodb: {
+          status: isMongoConnected ? 'connected' : 'disconnected',
+          host: mongoose.connection.host,
         },
-        memory: {
-          status: memoryStatus,
-          details: {
-            heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024) + 'MB',
-            heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024) + 'MB',
-            rss: Math.round(memoryUsage.rss / 1024 / 1024) + 'MB',
-          },
+        redis: {
+          status: isRedisConnected ? 'connected' : 'disconnected',
         },
       },
-      version: process.env.npm_package_version || 'unknown',
-      uptime: Math.round(process.uptime()),
-    });
+    };
+
+    // Log health check
+    logger.info('Health check performed', healthStatus);
+
+    res.status(StatusCodes.OK).json(healthStatus);
   } catch (error) {
-    res.status(500).json({
+    logger.error('Health check failed:', error);
+    res.status(StatusCodes.SERVICE_UNAVAILABLE).json({
       status: 'error',
+      message: 'Service health check failed',
       timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });
 
-export default router; 
+export default router;

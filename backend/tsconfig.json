@@ -1,45 +1,22 @@
 {
-  "extends": "./tsconfig.paths.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
-    "lib": ["es2020"],
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": false,
-    "baseUrl": ".",
     "outDir": "dist",
-    "paths": {
-      "*": ["node_modules/*", "src/types/*"]
-    },
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    "types": ["node"],
-    "noImplicitAny": false,
-    "allowJs": true,
-    "checkJs": false,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitThis": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "sourceMap": true,
-    "declaration": true,
-    "removeComments": true
+    "rootDir": "src",
+    "types": [
+      "node",
+      "express",
+      "express-serve-static-core"
+    ]
   },
   "include": [
-    "src/**/*.ts",
-    "src/types/**/*.d.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
+    "coverage",
     "**/*.test.ts",
-    "**/*.spec.ts",
-    "tests"
+    "**/*.spec.ts"
   ]
 } 

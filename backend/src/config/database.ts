@@ -1,54 +1,52 @@
 import mongoose from 'mongoose';
 import logger from './logger';
+import { env } from './env';
 
 const connectDB = async (): Promise<void> => {
   try {
-    const mongoURI = process.env.MONGODB_URI;
-    
-    if (!mongoURI) {
-      throw new Error('MONGODB_URI n\'est pas défini dans les variables d\'environnement');
-    }
-
-    logger.info('🔄 Tentative de connexion à MongoDB avec l\'URI:', mongoURI);
-
-    await mongoose.connect(mongoURI, {
-      // Options de connexion recommandées
+    const conn = await mongoose.connect(env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      // Critical security and data integrity options
       retryWrites: true,
       w: 'majority',
-      
-      // Options de sécurité et de performance
       authSource: 'admin',
       ssl: true,
-      
-      // Options de gestion de connexion
-      serverSelectionTimeoutMS: 5000, // Délai de sélection du serveur
-      socketTimeoutMS: 45000, // Délai de socket
-      family: 4 // Forcer IPv4
+      family: 4, // Force IPv4
     });
 
-    logger.info('✅ Connexion à MongoDB réussie');
-  } catch (error) {
-    logger.error('❌ Échec de la connexion à MongoDB', { 
-      error: error instanceof Error ? error.message : 'Erreur inconnue',
-      stack: error instanceof Error ? error.stack : undefined
+    logger.info(`MongoDB Connected: ${conn.connection.host}`);
+
+    // Handle connection events
+    mongoose.connection.on('connected', () => {
+      logger.info('Mongoose connected to DB');
     });
-    
-    // Arrêter le processus en cas d'échec de connexion
+
+    mongoose.connection.on('error', (err) => {
+      logger.error('Mongoose connection error:', err);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      logger.info('Mongoose connection disconnected');
+    });
+
+    // Handle process termination
+    process.on('SIGINT', () => {
+      void mongoose.connection
+        .close()
+        .then(() => {
+          logger.info('Mongoose connection closed through app termination');
+          process.exit(0);
+        })
+        .catch((err) => {
+          logger.error('Error closing Mongoose connection:', err);
+          process.exit(1);
+        });
+    });
+  } catch (error) {
+    logger.error('Error connecting to MongoDB:', error);
     process.exit(1);
   }
 };
 
-// Gestion des événements de connexion mongoose
-mongoose.connection.on('disconnected', () => {
-  logger.warn('⚠️ Déconnexion de MongoDB');
-});
-
-mongoose.connection.on('reconnected', () => {
-  logger.info('✅ Reconnexion à MongoDB réussie');
-});
-
-mongoose.connection.on('error', (error) => {
-  logger.error('❌ Erreur de connexion MongoDB', { error });
-});
-
-export default connectDB; 
+export default connectDB;

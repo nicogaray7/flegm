@@ -4,9 +4,10 @@ import { Header } from "./components/header";
 
 export const dynamic = "force-dynamic";
 
-const emptyHomeData = {
-  today: [] as Awaited<ReturnType<typeof getHomeVideos>>["today"],
-  yesterday: [] as Awaited<ReturnType<typeof getHomeVideos>>["yesterday"],
+type HomeData = Awaited<ReturnType<typeof getHomeVideos>>;
+const emptyHomeData: HomeData = {
+  today: [],
+  yesterday: [],
   lastWeek: { videos: [], count: 0 },
   lastMonth: { videos: [], count: 0 },
 };

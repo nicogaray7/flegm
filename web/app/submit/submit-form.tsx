@@ -9,9 +9,9 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+      className="w-full rounded-lg bg-emerald-500 px-4 py-2.5 font-medium text-white hover:bg-emerald-600 disabled:opacity-50 transition-colors"
     >
-      {pending ? "Submitting…" : "Submit"}
+      {pending ? "Submitting..." : "Submit"}
     </button>
   );
 }
@@ -22,7 +22,7 @@ export function SubmitForm() {
   return (
     <form action={formAction} className="space-y-4">
       <div>
-        <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1.5">
           YouTube URL
         </label>
         <input
@@ -30,7 +30,7 @@ export function SubmitForm() {
           name="url"
           type="url"
           placeholder="https://www.youtube.com/watch?v=..."
-          className="w-full rounded border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
           required
         />
       </div>

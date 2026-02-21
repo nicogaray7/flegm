@@ -26,8 +26,8 @@ export function HomeSection({
 }: Props) {
   return (
     <section className="mb-10">
-      <div className="flex items-center gap-2.5 mb-4">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">
+      <div className="mb-3 flex items-baseline gap-2.5">
+        <h2 className="text-lg font-bold tracking-tight text-[var(--foreground)]">
           {title}
         </h2>
         {videos.length > 0 && (
@@ -37,7 +37,7 @@ export function HomeSection({
         )}
       </div>
       {summary && (
-        <p className="text-[var(--muted)] text-sm mb-3">{summary}</p>
+        <p className="mb-4 text-sm text-[var(--muted)]">{summary}</p>
       )}
       {videos.length === 0 ? (
         <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center">

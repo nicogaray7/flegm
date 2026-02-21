@@ -18,39 +18,39 @@ export async function Header() {
     user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture ?? null;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
         <Link
           href="/"
-          className="flex items-center gap-2 hover:opacity-75 transition-opacity"
+          className="pill flex items-center gap-2 bg-zinc-100 px-3 py-1.5 hover:bg-zinc-200 transition-colors"
           aria-label="Flegm home"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500 text-white text-xs font-bold">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">
             F
           </span>
-          <span className="text-base font-bold tracking-tight text-[var(--foreground)]">
+          <span className="text-sm font-bold tracking-tight text-[var(--foreground)]">
             Flegm
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-6">
           <Link
             href="/leaderboard"
-            className="rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-zinc-100 transition-colors"
+            className="text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
           >
             Leaderboard
           </Link>
           <Link
             href="/submit"
-            className="ml-1 inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-emerald-600 transition-colors"
+            className="pill inline-flex items-center gap-2 bg-[var(--foreground)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
             Submit
           </Link>
           {user ? (
-            <div className="ml-2 flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5">
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}

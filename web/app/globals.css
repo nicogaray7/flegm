@@ -36,4 +36,10 @@ body {
   .card:hover {
     @apply border-[var(--border-hover)] bg-[var(--surface-hover)];
   }
+  .card-shadow {
+    @apply rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-sm;
+  }
+  .pill {
+    @apply rounded-full;
+  }
 }

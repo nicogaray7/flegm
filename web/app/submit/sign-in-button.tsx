@@ -19,7 +19,7 @@ export function SignInButton({ next, context = "submit" }: Props) {
       type="button"
       onClick={handleClick}
       disabled={isPending}
-      className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-5 py-2.5 font-medium text-white hover:bg-zinc-800 disabled:opacity-50 transition-colors"
+      className="pill inline-flex items-center gap-2 bg-[var(--foreground)] px-5 py-2.5 font-semibold text-white hover:opacity-90 disabled:opacity-50 transition-opacity"
     >
       <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>

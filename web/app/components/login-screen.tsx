@@ -63,14 +63,14 @@ export function LoginScreen({
         <p className="text-center text-xs text-[var(--muted)] leading-relaxed">
           By continuing, you accept our{" "}
           <Link
-            href="/#terms"
+            href="/terms"
             className="underline hover:text-purple-600 transition-colors"
           >
             Terms of Use
           </Link>{" "}
           and{" "}
           <Link
-            href="/#privacy"
+            href="/privacy"
             className="underline hover:text-purple-600 transition-colors"
           >
             Privacy Policy

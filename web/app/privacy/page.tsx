@@ -2,9 +2,12 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import Link from "next/link";
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+
 export const metadata = {
   title: "Privacy Policy",
   description: "Flegm privacy policy — how we handle your data.",
+  alternates: { canonical: `${baseUrl}/privacy` },
 };
 
 export default function PrivacyPage() {
@@ -69,10 +72,17 @@ export default function PrivacyPage() {
             <h3 className="font-bold text-[var(--foreground)] mt-4 mb-1">Cookies</h3>
             <p>We use cookies for:</p>
             <ul className="list-disc pl-5 space-y-1 mt-1">
-              <li><strong>Authentication:</strong> keeping you signed in across pages (Supabase session cookies)</li>
-              <li><strong>Analytics:</strong> Google Analytics cookies to track usage patterns</li>
+              <li><strong>Necessary:</strong> keeping you signed in (Supabase session) and storing your consent preference</li>
+              <li><strong>Analytics:</strong> Google Analytics cookies to understand usage patterns (opt-in)</li>
+              <li><strong>Marketing:</strong> advertising and retargeting cookies (opt-in)</li>
             </ul>
-            <p className="mt-1">We don&apos;t use cookies for ads or tracking you across other sites.</p>
+            <p className="mt-1">
+              Analytics and marketing cookies are only set after you give consent.
+              You can manage your preferences any time on our{" "}
+              <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">
+                Cookie Policy
+              </Link>{" "}page.
+            </p>
           </section>
 
           <section>
@@ -138,7 +148,7 @@ export default function PrivacyPage() {
               <li><strong>Access</strong> your data — ask us what we have</li>
               <li><strong>Delete</strong> your account — email us and we&apos;ll wipe it</li>
               <li><strong>Export</strong> your data — we can provide what we store</li>
-              <li><strong>Opt out</strong> of analytics — use a browser extension to block GA</li>
+              <li><strong>Opt out</strong> of analytics — use the <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">cookie settings</Link> or a browser extension</li>
             </ul>
             <p className="mt-2">
               If you&apos;re in the EU, you have additional rights under GDPR
@@ -185,6 +195,10 @@ export default function PrivacyPage() {
             See also:{" "}
             <Link href="/terms" className="font-semibold text-purple-600 hover:underline">
               Terms of Use
+            </Link>
+            {" "}&middot;{" "}
+            <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">
+              Cookie Policy
             </Link>
           </p>
         </div>

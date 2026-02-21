@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getHomeVideos } from "@/lib/home-data";
 import { GaEvent } from "./components/ga-event";
@@ -6,7 +7,13 @@ import { Header } from "./components/header";
 import { Footer } from "./components/footer";
 import { SubmitIntentLink } from "./components/submit-intent-link";
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  alternates: { canonical: baseUrl },
+};
 
 type HomeData = Awaited<ReturnType<typeof getHomeVideos>>;
 const emptyHomeData: HomeData = {

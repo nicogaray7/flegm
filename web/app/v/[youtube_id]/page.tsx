@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -13,11 +14,54 @@ import { SignInButton } from "@/app/submit/sign-in-button";
 import { GaEvent } from "@/app/components/ga-event";
 import { SubmitSuccessBanner } from "@/app/components/submit-success-banner";
 import { formatDurationHMS } from "@/lib/format-duration";
+import { formatDurationISO } from "@/lib/format-duration";
+import { db } from "@/db";
+import { videos } from "@/db/schema";
+import { eq } from "drizzle-orm";
+
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
 
 type Props = {
   params: Promise<{ youtube_id: string }>;
   searchParams: Promise<{ submitted?: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { youtube_id } = await params;
+  const video = await db.query.videos.findFirst({
+    where: eq(videos.youtubeId, youtube_id),
+  });
+  if (!video) return { title: "Video Not Found" };
+
+  const title = `${video.title} — ${video.channelName}`;
+  const description = `Watch "${video.title}" by ${video.channelName} on Flegm. ${video.upvotesCount} upvotes. Drop, upvote, and discover the top YouTube videos.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `${baseUrl}/v/${youtube_id}` },
+    openGraph: {
+      title,
+      description,
+      type: "video.other",
+      url: `${baseUrl}/v/${youtube_id}`,
+      images: [
+        {
+          url: `https://i.ytimg.com/vi/${youtube_id}/hqdefault.jpg`,
+          width: 480,
+          height: 360,
+          alt: video.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`https://i.ytimg.com/vi/${youtube_id}/hqdefault.jpg`],
+    },
+  };
+}
 
 export default async function VideoPage({ params, searchParams }: Props) {
   const { youtube_id } = await params;
@@ -33,8 +77,43 @@ export default async function VideoPage({ params, searchParams }: Props) {
 
   const durationFormatted = formatDurationHMS(video.duration);
 
+  const videoJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: video.title,
+    description: `${video.title} by ${video.channelName} — community-ranked on Flegm`,
+    thumbnailUrl: `https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`,
+    uploadDate: video.createdAt.toISOString(),
+    duration: formatDurationISO(video.duration),
+    contentUrl: `https://www.youtube.com/watch?v=${video.youtubeId}`,
+    embedUrl: `https://www.youtube.com/embed/${video.youtubeId}`,
+    interactionStatistic: {
+      "@type": "InteractionCounter",
+      interactionType: "https://schema.org/LikeAction",
+      userInteractionCount: video.upvotesCount,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Flegm", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: video.channelName, item: `${baseUrl}/channel/${encodeURIComponent(video.channelId)}` },
+      { "@type": "ListItem", position: 3, name: video.title, item: `${baseUrl}/v/${video.youtubeId}` },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <GaEvent
         eventName="video_view"
         params={{

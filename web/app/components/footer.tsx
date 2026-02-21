@@ -11,12 +11,16 @@ export function Footer() {
           <span className="text-sm font-bold text-[var(--foreground)]">flegm</span>
           <span className="text-xs text-[var(--muted)]">the youtube leaderboard</span>
         </div>
-        <nav className="flex items-center gap-6 text-sm font-medium text-[var(--muted)]">
+        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-[var(--muted)]">
           <Link href="/" className="hover:text-purple-600 transition-colors">Home</Link>
+          <Link href="/trending" className="hover:text-purple-600 transition-colors">Trending</Link>
           <Link href="/leaderboard" className="hover:text-purple-600 transition-colors">Leaderboard</Link>
+          <Link href="/top/all-time" className="hover:text-purple-600 transition-colors">All-Time Best</Link>
           <Link href="/submit" className="hover:text-purple-600 transition-colors">Drop a video</Link>
+          <Link href="/about" className="hover:text-purple-600 transition-colors">About</Link>
           <Link href="/terms" className="hover:text-purple-600 transition-colors">Terms</Link>
           <Link href="/privacy" className="hover:text-purple-600 transition-colors">Privacy</Link>
+          <Link href="/cookies" className="hover:text-purple-600 transition-colors">Cookies</Link>
         </nav>
       </div>
     </footer>

@@ -8,10 +8,13 @@ import { GaEvent } from "@/app/components/ga-event";
 
 export const dynamic = "force-dynamic";
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+
 export const metadata = {
-  title: "Leaderboard",
+  title: "Leaderboard — Top YouTube Videos Ranked by the Community",
   description:
-    "Top 100 YouTube videos ranked by community upvotes on Flegm.",
+    "Top 100 YouTube videos ranked by community upvotes on Flegm. Discover the most popular videos voted by real people.",
+  alternates: { canonical: `${baseUrl}/leaderboard` },
 };
 
 export default async function LeaderboardPage() {

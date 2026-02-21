@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
@@ -8,7 +9,37 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+
 type Props = { params: Promise<{ channel_id: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { channel_id } = await params;
+  const decodedId = decodeURIComponent(channel_id);
+  const first = await db.query.videos.findFirst({
+    where: eq(videos.channelId, decodedId),
+  });
+  if (!first) return { title: "Channel Not Found" };
+
+  const title = `${first.channelName} — Videos on Flegm`;
+  const description = `Watch and upvote the best videos from ${first.channelName} on Flegm, the community YouTube leaderboard.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `${baseUrl}/channel/${channel_id}` },
+    openGraph: {
+      title,
+      description,
+      type: "profile",
+      url: `${baseUrl}/channel/${channel_id}`,
+      ...(first.channelThumbnail
+        ? { images: [{ url: first.channelThumbnail, width: 88, height: 88, alt: first.channelName }] }
+        : {}),
+    },
+    twitter: { card: "summary", title, description },
+  };
+}
 
 export default async function ChannelPage({ params }: Props) {
   const { channel_id } = await params;

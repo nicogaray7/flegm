@@ -2,9 +2,12 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import Link from "next/link";
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+
 export const metadata = {
   title: "Terms of Use",
   description: "Flegm terms of use — the rules for using the platform.",
+  alternates: { canonical: `${baseUrl}/terms` },
 };
 
 export default function TermsPage() {
@@ -139,6 +142,10 @@ export default function TermsPage() {
             See also:{" "}
             <Link href="/privacy" className="font-semibold text-purple-600 hover:underline">
               Privacy Policy
+            </Link>
+            {" "}&middot;{" "}
+            <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">
+              Cookie Policy
             </Link>
           </p>
         </div>

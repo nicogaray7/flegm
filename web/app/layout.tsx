@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Suspense } from "react";
+import { CookieConsentProvider } from "@/lib/cookie-consent";
+import { Analytics } from "./components/analytics";
+import { CookieBanner } from "./components/cookie-banner";
 import { SignInSuccessTracker } from "./components/sign-in-success-tracker";
 import "./globals.css";
 
@@ -51,15 +53,48 @@ export default function RootLayout({
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteName,
+    url: baseUrl,
+    description,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${baseUrl}/leaderboard`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  const orgJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteName,
+    url: baseUrl,
+    logo: `${baseUrl}/icon.svg`,
+    sameAs: [],
+  };
+
   return (
     <html lang="en">
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
-        {children}
-        <Suspense fallback={null}>
-          <SignInSuccessTracker />
-        </Suspense>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+        <CookieConsentProvider>
+          {children}
+          <Suspense fallback={null}>
+            <SignInSuccessTracker />
+          </Suspense>
+          {gaId && <Analytics gaId={gaId} />}
+          <CookieBanner />
+        </CookieConsentProvider>
       </body>
-      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }

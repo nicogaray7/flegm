@@ -3,6 +3,7 @@ import { videos } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
+import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
 
 export const dynamic = "force-dynamic";
@@ -21,33 +22,33 @@ export default async function LeaderboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--background)]">
       <GaEvent eventName="leaderboard_view" />
       <Header />
       <main className="mx-auto max-w-3xl px-4 py-8">
         {dbError && (
-          <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-amber-100 px-1">npm run db:push</code> if needed.
+          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-red-100 px-1">npm run db:push</code> if needed.
           </div>
         )}
-        <h1 className="text-2xl font-semibold text-slate-900 tracking-tight mb-2">
-          All-time leaderboard
-        </h1>
-        <p className="text-sm text-slate-500 mb-6">
-          Top 100 videos by upvotes
-        </p>
+
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
+            Leaderboard
+          </h1>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Top 100 videos by community upvotes
+          </p>
+        </div>
+
         {topVideos.length === 0 ? (
-          <p className="text-sm text-slate-500">{dbError ? "Database error." : "No videos yet."}</p>
+          <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center">
+            <p className="text-sm text-[var(--muted-light)]">{dbError ? "Database error." : "No videos yet."}</p>
+          </div>
         ) : (
           <ul className="space-y-2">
             {topVideos.map((video, index) => (
-              <li key={video.id} className="flex items-center gap-3">
-                <span
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-medium text-slate-500 bg-slate-100"
-                  aria-hidden
-                >
-                  {index + 1}
-                </span>
+              <li key={video.id}>
                 <VideoCard
                   video={{
                     id: video.id,
@@ -57,12 +58,14 @@ export default async function LeaderboardPage() {
                     upvotesCount: video.upvotesCount,
                     duration: video.duration,
                   }}
+                  rank={index + 1}
                 />
               </li>
             ))}
           </ul>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

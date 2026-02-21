@@ -13,6 +13,19 @@ type Props = {
   signInNext?: string;
 };
 
+function UpvoteIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg width="14" height="10" viewBox="0 0 12 8" fill="none" className="text-current">
+      <path
+        d="M6 0L11.196 7.5H0.804L6 0Z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={filled ? 0 : 1.5}
+      />
+    </svg>
+  );
+}
+
 export function UpvoteButton({
   videoUuid,
   initialCount,
@@ -52,10 +65,10 @@ export function UpvoteButton({
     return (
       <Link
         href={authWallHref}
-        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+        className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)]"
       >
-        <span aria-hidden>△</span>
-        {state.count} upvote{state.count !== 1 ? "s" : ""}
+        <UpvoteIcon filled={false} />
+        <span>{state.count}</span>
       </Link>
     );
   }
@@ -65,14 +78,14 @@ export function UpvoteButton({
       type="button"
       onClick={handleClick}
       disabled={isPending}
-      className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+      className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-all ${
         state.upvoted
-          ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+          ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)]"
       }`}
     >
-      <span aria-hidden>{state.upvoted ? "▲" : "△"}</span>
-      {state.count} upvote{state.count !== 1 ? "s" : ""}
+      <UpvoteIcon filled={state.upvoted} />
+      <span>{state.count}</span>
     </button>
   );
 }

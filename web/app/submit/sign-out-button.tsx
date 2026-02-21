@@ -11,7 +11,7 @@ export function SignOutButton() {
       type="button"
       onClick={() => startTransition(() => signOut())}
       disabled={isPending}
-      className="text-xs font-medium text-slate-500 hover:text-slate-700 disabled:opacity-50"
+      className="text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] disabled:opacity-50 transition-colors"
     >
       {isPending ? "Signing out…" : "Sign out"}
     </button>

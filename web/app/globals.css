@@ -2,21 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* Light mode only - no dark mode */
+:root {
+  --background: #f4f4f5;
+  --foreground: #09090b;
+  --surface: #ffffff;
+  --surface-hover: #f9f9fa;
+  --border: #e4e4e7;
+  --border-hover: #d1d1d6;
+  --muted: #71717a;
+  --muted-light: #a1a1aa;
+  --accent: #10b981;
+  --accent-hover: #059669;
+}
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-[var(--border)] bg-[var(--surface)] transition-all duration-150;
+  }
+  .card:hover {
+    @apply border-[var(--border-hover)] bg-[var(--surface-hover)];
   }
 }

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SubmitForm } from "./submit-form";
 import { SignInButton } from "./sign-in-button";
 import { Header } from "@/app/components/header";
+import { Footer } from "@/app/components/footer";
 
 type Props = { searchParams: Promise<{ next?: string; from?: string }> };
 
@@ -20,34 +21,40 @@ export default async function SubmitPage({ searchParams }: Props) {
     const message =
       (from && AUTH_WALL_MESSAGES[from]) || AUTH_WALL_MESSAGES.submit;
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[var(--background)]">
         <Header />
-        <main className="min-h-screen p-8 max-w-lg mx-auto">
-          <h1 className="text-2xl font-semibold mb-2">
-            {from === "upvote"
-              ? "Sign in to upvote"
-              : from === "comment"
-                ? "Sign in to comment"
-                : "Submit a video"}
-          </h1>
-          <p className="text-gray-600 mb-6">{message}</p>
-          <SignInButton next={next} context={from ?? "submit"} />
+        <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
+          <div className="card p-8">
+            <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">
+              {from === "upvote"
+                ? "Sign in to upvote"
+                : from === "comment"
+                  ? "Sign in to comment"
+                  : "Submit a video"}
+            </h1>
+            <p className="text-[var(--muted)] text-sm mb-6">{message}</p>
+            <SignInButton next={next} context={from ?? "submit"} />
+          </div>
         </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--background)]">
       <Header />
-      <main className="min-h-screen p-8 max-w-lg mx-auto">
-        <h1 className="text-2xl font-semibold mb-2">Submit a video</h1>
-        <p className="text-gray-600 mb-6">
-          Paste a YouTube URL. If it&apos;s already in the database, you&apos;ll be taken
-          to its page. Otherwise we&apos;ll fetch details and add it.
-        </p>
-        <SubmitForm />
+      <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
+        <div className="card p-8">
+          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">Submit a video</h1>
+          <p className="text-[var(--muted)] text-sm mb-6">
+            Paste a YouTube URL. If it&apos;s already in the database, you&apos;ll be taken
+            to its page. Otherwise we&apos;ll fetch details and add it.
+          </p>
+          <SubmitForm />
+        </div>
       </main>
+      <Footer />
     </div>
   );
 }

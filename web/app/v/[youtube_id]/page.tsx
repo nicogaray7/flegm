@@ -8,6 +8,7 @@ import { UpvoteButton } from "./upvote-button";
 import { CommentForm } from "./comment-form";
 import { CommentTree } from "./comment-tree";
 import { Header } from "@/app/components/header";
+import { Footer } from "@/app/components/footer";
 import { SignInButton } from "@/app/submit/sign-in-button";
 import { GaEvent } from "@/app/components/ga-event";
 
@@ -34,7 +35,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
       : `${video.duration}s`;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--background)]">
       <GaEvent
         eventName="video_view"
         params={{
@@ -44,36 +45,34 @@ export default async function VideoPage({ params, searchParams }: Props) {
         }}
       />
       {submitted === "1" && (
-        <GaEvent
-          eventName="video_submit"
-          params={{ youtube_id: video.youtubeId }}
-        />
+        <GaEvent eventName="video_submit" params={{ youtube_id: video.youtubeId }} />
       )}
       <Header />
 
-      <main className="mx-auto max-w-4xl px-4 py-6">
-        <div className="mb-6">
+      <main className="mx-auto max-w-4xl px-4 py-8">
+        {/* Video player */}
+        <div className="mb-6 overflow-hidden rounded-xl shadow-sm">
           <VideoPlayer videoId={video.youtubeId} title={video.title} />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-          <UpvoteButton
-            videoUuid={video.id}
-            initialCount={video.upvotesCount}
-            initialUpvoted={upvoted}
-            signedIn={!!user}
-            signInNext={signInNext}
-          />
-          <span className="text-slate-400 text-sm">·</span>
-          <span className="text-sm text-slate-600">{durationStr}</span>
+        {/* Title + meta row */}
+        <div className="mb-6">
+          <h1 className="text-xl font-bold text-[var(--foreground)] mb-3">{video.title}</h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <UpvoteButton
+              videoUuid={video.id}
+              initialCount={video.upvotesCount}
+              initialUpvoted={upvoted}
+              signedIn={!!user}
+              signInNext={signInNext}
+            />
+            <span className="text-[var(--border)]">|</span>
+            <span className="text-sm text-[var(--muted)]">{durationStr}</span>
+          </div>
         </div>
 
-        <h1 className="text-xl font-semibold text-slate-900 mb-2">{video.title}</h1>
-
-        <section className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 mb-8">
-          <h2 className="text-xs font-medium uppercase tracking-wide text-slate-500 mb-2">
-            Channel
-          </h2>
+        {/* Channel card */}
+        <section className="card p-4 mb-6">
           <Link
             href={`/channel/${encodeURIComponent(video.channelId)}`}
             className="flex items-center gap-3 group"
@@ -82,49 +81,48 @@ export default async function VideoPage({ params, searchParams }: Props) {
               <Image
                 src={video.channelThumbnail}
                 alt=""
-                className="h-10 w-10 rounded-full object-cover"
+                className="h-10 w-10 rounded-full object-cover ring-2 ring-zinc-100"
                 width={40}
                 height={40}
               />
             )}
-            <span className="font-medium text-slate-900 group-hover:text-emerald-600">
-              {video.channelName}
-            </span>
-            <span className="text-slate-400 group-hover:text-emerald-500">→</span>
+            <div className="min-w-0 flex-1">
+              <p className="font-medium text-[var(--foreground)] group-hover:text-emerald-600 transition-colors">
+                {video.channelName}
+              </p>
+              <p className="text-xs text-[var(--muted)]">View channel</p>
+            </div>
+            <svg className="h-4 w-4 text-[var(--muted-light)] group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
         </section>
 
-        <section className="border-t border-slate-200 pt-6">
-          <h2 className="text-sm font-medium uppercase tracking-wide text-slate-500 mb-4">
+        {/* Comments */}
+        <section className="card p-5">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)] mb-4">
             Comments
           </h2>
           {user && (
             <div className="mb-6">
-              <CommentForm
-                youtubeId={youtube_id}
-                videoUuid={video.id}
-                parentId={null}
-              />
+              <CommentForm youtubeId={youtube_id} videoUuid={video.id} parentId={null} />
             </div>
           )}
           {!user && (
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <p className="text-sm text-slate-500">Sign in to comment.</p>
+            <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg bg-zinc-50 px-4 py-3">
+              <p className="text-sm text-[var(--muted)]">Sign in to join the discussion.</p>
               <SignInButton next={signInNext} context="comment" />
             </div>
           )}
           {commentTree.length === 0 ? (
-            <p className="text-sm text-slate-400">No comments yet.</p>
+            <p className="text-sm text-[var(--muted-light)] py-2">No comments yet. Be the first to share your thoughts.</p>
           ) : (
-            <CommentTree
-              youtubeId={youtube_id}
-              videoUuid={video.id}
-              tree={commentTree}
-              signedIn={!!user}
-            />
+            <CommentTree youtubeId={youtube_id} videoUuid={video.id} tree={commentTree} signedIn={!!user} />
           )}
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

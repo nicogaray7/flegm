@@ -16,7 +16,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">{children}</body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );

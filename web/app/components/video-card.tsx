@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { formatDurationHMS } from "@/lib/format-duration";
 
 type Video = {
   id: string;
@@ -9,14 +10,6 @@ type Video = {
   upvotesCount: number;
   duration: number;
 };
-
-function formatDuration(duration: number) {
-  const minutes = Math.floor(duration / 60);
-  const seconds = duration % 60;
-  return minutes > 0
-    ? `${minutes}:${seconds.toString().padStart(2, "0")}`
-    : `0:${seconds.toString().padStart(2, "0")}`;
-}
 
 export function VideoCard({
   video,
@@ -48,8 +41,8 @@ export function VideoCard({
           sizes="112px"
           unoptimized
         />
-        <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white leading-none">
-          {formatDuration(video.duration)}
+        <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white leading-none tabular-nums">
+          {formatDurationHMS(video.duration)}
         </span>
       </div>
 

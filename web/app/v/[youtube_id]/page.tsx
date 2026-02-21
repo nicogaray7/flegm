@@ -11,6 +11,7 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { SignInButton } from "@/app/submit/sign-in-button";
 import { GaEvent } from "@/app/components/ga-event";
+import { formatDurationHMS } from "@/lib/format-duration";
 
 type Props = {
   params: Promise<{ youtube_id: string }>;
@@ -29,10 +30,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
   const upvoted = await getUserUpvoteStatus(video.id, user?.id ?? null);
   const signInNext = `/v/${youtube_id}`;
 
-  const durationStr =
-    Math.floor(video.duration / 60) > 0
-      ? `${Math.floor(video.duration / 60)}m ${video.duration % 60}s`
-      : `${video.duration}s`;
+  const durationFormatted = formatDurationHMS(video.duration);
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -67,7 +65,9 @@ export default async function VideoPage({ params, searchParams }: Props) {
               signInNext={signInNext}
             />
             <span className="text-[var(--border)]">|</span>
-            <span className="text-sm text-[var(--muted)]">{durationStr}</span>
+            <span className="text-sm text-[var(--muted)]">
+              Duration {durationFormatted}
+            </span>
           </div>
         </div>
 

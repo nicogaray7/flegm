@@ -40,6 +40,14 @@ export async function Header() {
           >
             Leaderboard
           </Link>
+          {!user ? (
+            <Link
+              href="/login"
+              className="text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+            >
+              Log in
+            </Link>
+          ) : null}
           <Link
             href="/submit"
             className="pill inline-flex items-center gap-2 bg-[var(--foreground)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity"

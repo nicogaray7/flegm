@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { SubmitForm } from "./submit-form";
-import { SignInButton } from "./sign-in-button";
 import { Header } from "@/app/components/header";
+import { LoginScreen } from "@/app/components/login-screen";
 import { Footer } from "@/app/components/footer";
 
 export const metadata = {
@@ -12,35 +12,28 @@ export const metadata = {
 
 type Props = { searchParams: Promise<{ next?: string; from?: string }> };
 
-const AUTH_WALL_MESSAGES: Record<string, string> = {
-  upvote: "Sign in with Google to upvote.",
-  comment: "Sign in with Google to comment.",
-  submit: "Sign in with Google to submit a YouTube video.",
-};
-
 export default async function SubmitPage({ searchParams }: Props) {
   const { next, from } = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    const message =
-      (from && AUTH_WALL_MESSAGES[from]) || AUTH_WALL_MESSAGES.submit;
+    const subline =
+      from === "upvote"
+        ? "Sign in with Google to upvote."
+        : from === "comment"
+          ? "Sign in with Google to comment."
+          : "Sign in with Google to submit a YouTube video.";
     return (
-      <div className="min-h-screen bg-[var(--background)]">
+      <div className="min-h-screen flex flex-col bg-[var(--background)]">
         <Header />
-        <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
-          <div className="card p-8">
-            <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">
-              {from === "upvote"
-                ? "Sign in to upvote"
-                : from === "comment"
-                  ? "Sign in to comment"
-                  : "Submit a video"}
-            </h1>
-            <p className="text-[var(--muted)] text-sm mb-6">{message}</p>
-            <SignInButton next={next} context={from ?? "submit"} />
-          </div>
+        <main className="flex-1">
+          <LoginScreen
+            next={next}
+            context={from ?? "submit"}
+            subline={subline}
+            variant="signin"
+          />
         </main>
         <Footer />
       </div>

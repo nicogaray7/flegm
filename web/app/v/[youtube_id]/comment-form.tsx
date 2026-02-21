@@ -18,7 +18,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="rounded-lg bg-emerald-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-600 disabled:opacity-50 transition-colors"
+      className="rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-zinc-900 hover:bg-zinc-200 disabled:opacity-50 transition-colors"
     >
       {pending ? "Posting..." : "Post"}
     </button>
@@ -55,11 +55,11 @@ export function CommentForm({
         rows={2}
         maxLength={2000}
         placeholder={parentAuthor ? `Reply to ${parentAuthor}...` : "Add a comment..."}
-        className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+        className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm text-white placeholder-zinc-600 focus:border-emerald-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-colors"
         required
       />
       {state?.error && (
-        <p className="text-sm text-red-600">{state.error}</p>
+        <p className="text-sm text-red-400">{state.error}</p>
       )}
       <div className="flex items-center gap-2">
         <SubmitButton />
@@ -67,7 +67,7 @@ export function CommentForm({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            className="rounded-full px-3 py-1.5 text-sm text-zinc-500 hover:text-white hover:bg-white/[0.06] transition-colors"
           >
             Cancel
           </button>

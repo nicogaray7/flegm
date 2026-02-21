@@ -27,21 +27,21 @@ export function HomeSection({
   return (
     <section className="mb-10">
       <div className="flex items-center gap-3 mb-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
           {title}
         </h2>
         {videos.length > 0 && (
-          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+          <span className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-xs font-medium text-zinc-500">
             {videos.length}
           </span>
         )}
       </div>
       {summary && (
-        <p className="text-gray-500 text-sm mb-3">{summary}</p>
+        <p className="text-zinc-500 text-sm mb-3">{summary}</p>
       )}
       {videos.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-gray-200 bg-white px-6 py-8 text-center">
-          <p className="text-gray-400 text-sm">{emptyMessage}</p>
+        <div className="rounded-2xl border border-dashed border-white/[0.08] px-6 py-8 text-center">
+          <p className="text-zinc-600 text-sm">{emptyMessage}</p>
         </div>
       ) : (
         <ul className="space-y-2">

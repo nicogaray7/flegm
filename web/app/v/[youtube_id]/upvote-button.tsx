@@ -65,7 +65,7 @@ export function UpvoteButton({
     return (
       <Link
         href={authWallHref}
-        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50"
+        className="inline-flex items-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-sm font-semibold text-zinc-400 transition-colors hover:border-white/[0.15] hover:bg-white/[0.07]"
       >
         <UpvoteIcon filled={false} />
         <span>{state.count}</span>
@@ -78,10 +78,10 @@ export function UpvoteButton({
       type="button"
       onClick={handleClick}
       disabled={isPending}
-      className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-all ${
+      className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition-all ${
         state.upvoted
-          ? "border-emerald-400 bg-emerald-50 text-emerald-700 shadow-sm shadow-emerald-100"
-          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+          : "border-white/[0.1] bg-white/[0.04] text-zinc-400 hover:border-white/[0.15] hover:bg-white/[0.07]"
       }`}
     >
       <UpvoteIcon filled={state.upvoted} />

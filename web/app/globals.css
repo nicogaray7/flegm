@@ -2,19 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --background: #fafafa;
-  --foreground: #171717;
+  --background: #050505;
+  --foreground: #ffffff;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-hover: rgba(255, 255, 255, 0.07);
+  --muted: #a1a1aa;
+  --muted-darker: #71717a;
+  --accent: #10b981;
+  --accent-hover: #059669;
 }
-
-/* Light mode only - no dark mode */
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Prismatic background glow effect */
+.prismatic-bg {
+  position: relative;
+  overflow: hidden;
+}
+.prismatic-bg::before {
+  content: '';
+  position: fixed;
+  top: -40%;
+  left: -20%;
+  width: 140%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 20%, rgba(139, 92, 246, 0.08), transparent),
+    radial-gradient(ellipse 500px 350px at 80% 10%, rgba(59, 130, 246, 0.06), transparent),
+    radial-gradient(ellipse 400px 300px at 50% 60%, rgba(236, 72, 153, 0.04), transparent),
+    radial-gradient(ellipse 300px 250px at 70% 80%, rgba(16, 185, 129, 0.04), transparent);
+  pointer-events: none;
+  z-index: 0;
 }
 
 @layer utilities {
@@ -24,10 +50,13 @@ body {
 }
 
 @layer components {
-  .card-hover {
-    @apply transition-all duration-200 ease-out;
+  .card-dark {
+    @apply rounded-2xl border border-white/[0.08] bg-white/[0.04] transition-all duration-200 ease-out;
   }
-  .card-hover:hover {
-    @apply shadow-sm;
+  .card-dark:hover {
+    @apply border-white/[0.12] bg-white/[0.07];
+  }
+  .glass-nav {
+    @apply border border-white/[0.1] bg-white/[0.06] backdrop-blur-xl;
   }
 }

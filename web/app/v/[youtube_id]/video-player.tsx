@@ -8,7 +8,7 @@ type Props = { videoId: string; title: string };
 export function VideoPlayer({ videoId, title }: Props) {
   return (
     <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-      <div className="absolute inset-0 rounded-xl overflow-hidden bg-gray-100">
+      <div className="absolute inset-0 rounded-2xl overflow-hidden bg-white/[0.04]">
         <LiteYouTubeEmbed id={videoId} title={title} />
       </div>
     </div>

@@ -21,18 +21,18 @@ export default async function SubmitPage({ searchParams }: Props) {
     const message =
       (from && AUTH_WALL_MESSAGES[from]) || AUTH_WALL_MESSAGES.submit;
     return (
-      <div className="min-h-screen bg-[var(--background)]">
+      <div className="prismatic-bg min-h-screen">
         <Header />
-        <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
-          <div className="rounded-xl border border-gray-200 bg-white p-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        <main className="relative z-10 flex-1 px-4 pt-16 pb-12 max-w-lg mx-auto">
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8">
+            <h1 className="text-2xl font-bold text-white mb-2">
               {from === "upvote"
                 ? "Sign in to upvote"
                 : from === "comment"
                   ? "Sign in to comment"
                   : "Submit a video"}
             </h1>
-            <p className="text-gray-500 text-sm mb-6">{message}</p>
+            <p className="text-zinc-500 text-sm mb-6">{message}</p>
             <SignInButton next={next} context={from ?? "submit"} />
           </div>
         </main>
@@ -42,12 +42,12 @@ export default async function SubmitPage({ searchParams }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="prismatic-bg min-h-screen">
       <Header />
-      <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
-        <div className="rounded-xl border border-gray-200 bg-white p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Submit a video</h1>
-          <p className="text-gray-500 text-sm mb-6">
+      <main className="relative z-10 flex-1 px-4 pt-16 pb-12 max-w-lg mx-auto">
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8">
+          <h1 className="text-2xl font-bold text-white mb-2">Submit a video</h1>
+          <p className="text-zinc-500 text-sm mb-6">
             Paste a YouTube URL. If it&apos;s already in the database, you&apos;ll be taken
             to its page. Otherwise we&apos;ll fetch details and add it.
           </p>

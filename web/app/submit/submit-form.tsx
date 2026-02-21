@@ -9,7 +9,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-lg bg-emerald-500 px-4 py-2.5 font-medium text-white hover:bg-emerald-600 disabled:opacity-50 transition-colors"
+      className="w-full rounded-full bg-white px-4 py-2.5 font-semibold text-zinc-900 hover:bg-zinc-200 disabled:opacity-50 transition-colors"
     >
       {pending ? "Submitting..." : "Submit"}
     </button>
@@ -22,7 +22,7 @@ export function SubmitForm() {
   return (
     <form action={formAction} className="space-y-4">
       <div>
-        <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label htmlFor="url" className="block text-sm font-medium text-zinc-400 mb-1.5">
           YouTube URL
         </label>
         <input
@@ -30,12 +30,12 @@ export function SubmitForm() {
           name="url"
           type="url"
           placeholder="https://www.youtube.com/watch?v=..."
-          className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-colors"
+          className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-white placeholder-zinc-600 focus:border-emerald-500/50 focus:bg-white/[0.06] focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-colors"
           required
         />
       </div>
       {state?.error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-red-400" role="alert">
           {state.error}
         </p>
       )}

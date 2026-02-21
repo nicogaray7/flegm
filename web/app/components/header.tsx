@@ -18,31 +18,35 @@ export async function Header() {
     user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture ?? null;
 
   return (
-    <header className="sticky top-0 z-10 border-b border-gray-200/80 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+    <header className="sticky top-4 z-50 mx-auto max-w-4xl px-4">
+      <div className="glass-nav flex h-12 items-center justify-between rounded-full px-5">
         <Link
           href="/"
-          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
           aria-label="Flegm home"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-white font-bold text-sm">
-            F
-          </span>
-          <span className="text-lg font-bold tracking-tight text-gray-900">
-            Flegm
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-white">
+            <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="2" />
+            <path d="M8 8l4 4-4 4M13 16h3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span className="text-base font-bold tracking-tight text-white">
+            flegm
           </span>
         </Link>
         <nav className="flex items-center gap-1">
           <Link
             href="/leaderboard"
-            className="rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
           >
             Leaderboard
           </Link>
           <Link
             href="/submit"
-            className="ml-1 rounded-lg bg-emerald-500 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-emerald-600 transition-colors"
+            className="ml-1 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white px-4 py-1.5 text-sm font-semibold text-zinc-900 hover:bg-zinc-100 transition-colors"
           >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
             Submit
           </Link>
           {user ? (
@@ -51,14 +55,14 @@ export async function Header() {
                 <Image
                   src={avatarUrl}
                   alt=""
-                  className="h-8 w-8 rounded-full object-cover ring-2 ring-gray-100"
-                  width={32}
-                  height={32}
+                  className="h-7 w-7 rounded-full object-cover ring-2 ring-white/20"
+                  width={28}
+                  height={28}
                   unoptimized={false}
                 />
               ) : (
                 <span
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-white"
                   aria-hidden
                 >
                   {user.user_metadata?.full_name?.[0] ??

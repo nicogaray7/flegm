@@ -38,32 +38,32 @@ function CommentItem({
 
   return (
     <div
-      className={depth > 0 ? "ml-6 mt-3 border-l-2 border-gray-100 pl-4" : "py-3"}
+      className={depth > 0 ? "ml-6 mt-3 border-l-2 border-white/[0.06] pl-4" : "py-3"}
     >
       <div className="flex items-start gap-3">
         {/* Avatar placeholder */}
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-xs font-semibold text-zinc-400">
           {node.authorName?.[0]?.toUpperCase() ?? "?"}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-gray-900">{node.authorName}</p>
-            <span className="text-xs text-gray-400">{formatDate(node.createdAt)}</span>
+            <p className="text-sm font-semibold text-white">{node.authorName}</p>
+            <span className="text-xs text-zinc-600">{formatDate(node.createdAt)}</span>
             {node.status === "pending" && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+              <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400">
                 Pending
               </span>
             )}
           </div>
-          <p className="mt-1 text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">
+          <p className="mt-1 text-sm text-zinc-400 whitespace-pre-wrap leading-relaxed">
             {node.content}
           </p>
-          <div className="mt-1.5 flex items-center gap-3 text-xs text-gray-400">
+          <div className="mt-1.5 flex items-center gap-3 text-xs text-zinc-600">
             {signedIn && (
               <button
                 type="button"
                 onClick={() => setShowReply((v) => !v)}
-                className="font-medium hover:text-emerald-600 transition-colors"
+                className="font-medium hover:text-emerald-400 transition-colors"
               >
                 Reply
               </button>
@@ -102,7 +102,7 @@ function CommentItem({
 
 export function CommentTree({ youtubeId, videoUuid, tree, signedIn }: Props) {
   return (
-    <div className="divide-y divide-gray-100">
+    <div className="divide-y divide-white/[0.06]">
       {tree.map((node) => (
         <CommentItem
           key={node.id}

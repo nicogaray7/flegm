@@ -22,28 +22,28 @@ export default async function LeaderboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="prismatic-bg min-h-screen">
       <GaEvent eventName="leaderboard_view" />
       <Header />
-      <main className="mx-auto max-w-3xl px-4 py-8">
+      <main className="relative z-10 mx-auto max-w-3xl px-4 pt-12 pb-8">
         {dbError && (
-          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-            Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-amber-100 px-1">npm run db:push</code> if needed.
+          <div className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+            Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-red-500/20 px-1">npm run db:push</code> if needed.
           </div>
         )}
 
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+        <div className="mb-10">
+          <h1 className="text-3xl font-extrabold text-white tracking-tight">
             Leaderboard
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-zinc-500">
             Top 100 videos by community upvotes
           </p>
         </div>
 
         {topVideos.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-gray-200 bg-white px-6 py-8 text-center">
-            <p className="text-sm text-gray-400">{dbError ? "Database error." : "No videos yet."}</p>
+          <div className="rounded-2xl border border-dashed border-white/[0.08] px-6 py-8 text-center">
+            <p className="text-sm text-zinc-600">{dbError ? "Database error." : "No videos yet."}</p>
           </div>
         ) : (
           <ul className="space-y-2">

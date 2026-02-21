@@ -12,6 +12,9 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      borderColor: {
+        DEFAULT: "rgba(255, 255, 255, 0.08)",
+      },
     },
   },
   plugins: [],

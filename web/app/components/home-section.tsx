@@ -26,22 +26,22 @@ export function HomeSection({
 }: Props) {
   return (
     <section className="mb-10">
-      <div className="flex items-center gap-3 mb-4">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+      <div className="flex items-center gap-2.5 mb-4">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">
           {title}
         </h2>
         {videos.length > 0 && (
-          <span className="rounded-full bg-white/[0.06] px-2.5 py-0.5 text-xs font-medium text-zinc-500">
+          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-[var(--muted)]">
             {videos.length}
           </span>
         )}
       </div>
       {summary && (
-        <p className="text-zinc-500 text-sm mb-3">{summary}</p>
+        <p className="text-[var(--muted)] text-sm mb-3">{summary}</p>
       )}
       {videos.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/[0.08] px-6 py-8 text-center">
-          <p className="text-zinc-600 text-sm">{emptyMessage}</p>
+        <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center">
+          <p className="text-[var(--muted-light)] text-sm">{emptyMessage}</p>
         </div>
       ) : (
         <ul className="space-y-2">

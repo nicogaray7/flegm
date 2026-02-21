@@ -30,16 +30,16 @@ export function VideoCard({
   return (
     <Link
       href={`/v/${video.youtubeId}`}
-      className="group flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 transition-all duration-200 hover:border-white/[0.15] hover:bg-white/[0.07]"
+      className="group card flex items-center gap-4 px-4 py-3 hover:shadow-sm"
     >
       {rank !== undefined && (
-        <span className="hidden sm:flex h-7 w-7 shrink-0 items-center justify-center text-sm font-semibold text-zinc-600">
+        <span className="hidden sm:flex h-7 w-7 shrink-0 items-center justify-center text-sm font-semibold text-[var(--muted-light)]">
           {rank}
         </span>
       )}
 
       {/* Thumbnail */}
-      <div className="relative shrink-0 h-16 w-28 overflow-hidden rounded-xl bg-white/[0.06]">
+      <div className="relative shrink-0 h-16 w-28 overflow-hidden rounded-lg bg-zinc-100">
         <Image
           src={thumbUrl}
           alt=""
@@ -48,30 +48,24 @@ export function VideoCard({
           sizes="112px"
           unoptimized
         />
-        <span className="absolute bottom-1 right-1 rounded-md bg-black/75 px-1.5 py-0.5 text-[10px] font-medium text-white leading-none">
+        <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white leading-none">
           {formatDuration(video.duration)}
         </span>
       </div>
 
       {/* Info */}
       <div className="min-w-0 flex-1">
-        <p className="font-medium text-white group-hover:text-emerald-400 truncate text-sm leading-snug">
+        <p className="font-medium text-[var(--foreground)] group-hover:text-emerald-600 truncate text-sm leading-snug transition-colors">
           {video.title}
         </p>
-        <p className="mt-1 text-xs text-zinc-500 truncate">
+        <p className="mt-0.5 text-xs text-[var(--muted)] truncate">
           {video.channelName}
         </p>
       </div>
 
       {/* Upvote badge */}
-      <div className="shrink-0 flex flex-col items-center gap-0.5 rounded-xl border border-white/[0.1] px-3 py-1.5 text-zinc-500 group-hover:border-emerald-500/40 group-hover:text-emerald-400 transition-colors">
-        <svg
-          width="12"
-          height="8"
-          viewBox="0 0 12 8"
-          fill="none"
-          className="text-current"
-        >
+      <div className="shrink-0 flex flex-col items-center gap-0.5 rounded-lg border border-[var(--border)] px-3 py-1.5 text-[var(--muted)] group-hover:border-emerald-300 group-hover:text-emerald-600 transition-colors">
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="text-current">
           <path d="M6 0L11.196 7.5H0.804L6 0Z" fill="currentColor" />
         </svg>
         <span className="text-xs font-semibold leading-none">{video.upvotesCount}</span>

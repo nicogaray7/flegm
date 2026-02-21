@@ -15,7 +15,7 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">{children}</body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>

@@ -37,33 +37,30 @@ function CommentItem({
   const [showReply, setShowReply] = useState(false);
 
   return (
-    <div
-      className={depth > 0 ? "ml-6 mt-3 border-l-2 border-white/[0.06] pl-4" : "py-3"}
-    >
+    <div className={depth > 0 ? "ml-6 mt-3 border-l-2 border-[var(--border)] pl-4" : "py-3"}>
       <div className="flex items-start gap-3">
-        {/* Avatar placeholder */}
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-xs font-semibold text-zinc-400">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
           {node.authorName?.[0]?.toUpperCase() ?? "?"}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-white">{node.authorName}</p>
-            <span className="text-xs text-zinc-600">{formatDate(node.createdAt)}</span>
+            <p className="text-sm font-semibold text-[var(--foreground)]">{node.authorName}</p>
+            <span className="text-xs text-[var(--muted-light)]">{formatDate(node.createdAt)}</span>
             {node.status === "pending" && (
-              <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400">
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
                 Pending
               </span>
             )}
           </div>
-          <p className="mt-1 text-sm text-zinc-400 whitespace-pre-wrap leading-relaxed">
+          <p className="mt-1 text-sm text-[var(--muted)] whitespace-pre-wrap leading-relaxed">
             {node.content}
           </p>
-          <div className="mt-1.5 flex items-center gap-3 text-xs text-zinc-600">
+          <div className="mt-1.5 flex items-center gap-3 text-xs text-[var(--muted-light)]">
             {signedIn && (
               <button
                 type="button"
                 onClick={() => setShowReply((v) => !v)}
-                className="font-medium hover:text-emerald-400 transition-colors"
+                className="font-medium hover:text-emerald-600 transition-colors"
               >
                 Reply
               </button>
@@ -102,7 +99,7 @@ function CommentItem({
 
 export function CommentTree({ youtubeId, videoUuid, tree, signedIn }: Props) {
   return (
-    <div className="divide-y divide-white/[0.06]">
+    <div className="divide-y divide-[var(--border)]">
       {tree.map((node) => (
         <CommentItem
           key={node.id}

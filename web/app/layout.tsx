@@ -7,7 +7,7 @@ import "./globals.css";
 const siteName = "Flegm";
 const tagline = "The YouTube Leaderboard";
 const description =
-  "Join a community to submit, upvote, and discover the top YouTube videos every day.";
+  "Drop, upvote, and discover the top YouTube videos every day.";
 const baseUrl =
   process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
 

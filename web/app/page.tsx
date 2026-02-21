@@ -51,7 +51,7 @@ export default async function Home() {
             <span className="gradient-text">Leaderboard</span>
           </h1>
           <p className="mx-auto mt-4 max-w-md text-base text-[var(--muted)] leading-relaxed">
-            Submit bangers, upvote the best, and watch what the community is loving rn
+            Drop bangers, upvote the best, and watch what the community is loving rn
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <SubmitIntentLink
@@ -124,7 +124,7 @@ export default async function Home() {
           videos={lastWeek.videos}
           summary={
             lastWeek.count > 0
-              ? `${lastWeek.count} video${lastWeek.count !== 1 ? "s" : ""} submitted this week`
+              ? `${lastWeek.count} video${lastWeek.count !== 1 ? "s" : ""} dropped this week`
               : undefined
           }
           emptyMessage="No videos from the past week."
@@ -135,7 +135,7 @@ export default async function Home() {
           videos={lastMonth.videos}
           summary={
             lastMonth.count > 0
-              ? `${lastMonth.count} video${lastMonth.count !== 1 ? "s" : ""} submitted this month`
+              ? `${lastMonth.count} video${lastMonth.count !== 1 ? "s" : ""} dropped this month`
               : undefined
           }
           emptyMessage="No videos from the past month."

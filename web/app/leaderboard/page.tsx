@@ -50,7 +50,7 @@ export default async function LeaderboardPage() {
 
         {topVideos.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 px-6 py-8 text-center">
-            <p className="text-sm text-[var(--muted)]">{dbError ? "Something went wrong." : "No videos yet. Be the first to submit one!"}</p>
+            <p className="text-sm text-[var(--muted)]">{dbError ? "Something went wrong." : "No videos yet. Be the first to drop one!"}</p>
           </div>
         ) : (
           <ul className="space-y-2">

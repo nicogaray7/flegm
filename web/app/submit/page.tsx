@@ -6,9 +6,9 @@ import { LoginScreen } from "@/app/components/login-screen";
 import { Footer } from "@/app/components/footer";
 
 export const metadata = {
-  title: "Submit a video",
+  title: "Drop a video",
   description:
-    "Add a YouTube video to the Flegm leaderboard. Submit, upvote, and discover the top videos.",
+    "Drop a YouTube video on the Flegm leaderboard. Upvote and discover the top videos.",
 };
 
 type Props = { searchParams: Promise<{ next?: string; from?: string }> };

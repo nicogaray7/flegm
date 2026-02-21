@@ -11,7 +11,7 @@ function SubmitButton() {
       disabled={pending}
       className="w-full rounded-xl gradient-bg px-4 py-3 font-bold text-white hover:opacity-90 disabled:opacity-50 transition-all active:scale-[0.98]"
     >
-      {pending ? "Submitting..." : "Submit"}
+      {pending ? "Dropping..." : "Drop it"}
     </button>
   );
 }

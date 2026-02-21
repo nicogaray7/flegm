@@ -14,7 +14,7 @@ export function Footer() {
         <nav className="flex items-center gap-6 text-sm font-medium text-[var(--muted)]">
           <Link href="/" className="hover:text-purple-600 transition-colors">Home</Link>
           <Link href="/leaderboard" className="hover:text-purple-600 transition-colors">Leaderboard</Link>
-          <Link href="/submit" className="hover:text-purple-600 transition-colors">Submit</Link>
+          <Link href="/submit" className="hover:text-purple-600 transition-colors">Drop a video</Link>
         </nav>
       </div>
     </footer>

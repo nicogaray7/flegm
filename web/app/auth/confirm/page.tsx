@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * Handles magic link callback from email. Supports:
+ * 1. Fragment: #access_token=...&refresh_token=... (default Supabase redirect)
+ * 2. Query: ?token_hash=...&type=email (use if your email client strips the hash;
+ *    set Magic Link template to {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next={{ .RedirectTo }})
+ */
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -11,32 +17,45 @@ export default function AuthConfirmPage() {
 
   useEffect(() => {
     const next = searchParams.get("next");
-    const redirectTo = next?.startsWith("/") && !next.startsWith("//") ? next : "/";
-
-    const hash = typeof window !== "undefined" ? window.location.hash : "";
-    if (!hash) {
-      setStatus("error");
-      return;
-    }
-
-    const params = new URLSearchParams(hash.replace(/^#/, ""));
-    const access_token = params.get("access_token");
-    const refresh_token = params.get("refresh_token");
-
-    if (!access_token || !refresh_token) {
-      setStatus("error");
-      return;
-    }
+    const redirectTo =
+      next?.startsWith("/") && !next.startsWith("//") ? next : "/";
 
     const supabase = createClient();
-    supabase.auth
-      .setSession({ access_token, refresh_token })
-      .then(() => {
-        setStatus("ok");
-        const sep = redirectTo.includes("?") ? "&" : "?";
-        router.replace(`${redirectTo}${sep}signed_in=1`);
-      })
-      .catch(() => setStatus("error"));
+
+    const finish = () => {
+      setStatus("ok");
+      const sep = redirectTo.includes("?") ? "&" : "?";
+      router.replace(`${redirectTo}${sep}signed_in=1`);
+    };
+
+    const hash = typeof window !== "undefined" ? window.location.hash : "";
+    if (hash) {
+      const params = new URLSearchParams(hash.replace(/^#/, ""));
+      const access_token = params.get("access_token");
+      const refresh_token = params.get("refresh_token");
+      if (access_token && refresh_token) {
+        supabase.auth
+          .setSession({ access_token, refresh_token })
+          .then(finish)
+          .catch(() => setStatus("error"));
+        return;
+      }
+    }
+
+    const tokenHash = searchParams.get("token_hash");
+    const type = searchParams.get("type") ?? "email";
+    if (tokenHash) {
+      supabase.auth
+        .verifyOtp({ token_hash: tokenHash, type: type as "email" | "magiclink" })
+        .then(({ error }) => {
+          if (error) setStatus("error");
+          else finish();
+        })
+        .catch(() => setStatus("error"));
+      return;
+    }
+
+    setStatus("error");
   }, [router, searchParams]);
 
   if (status === "loading") {
@@ -49,9 +68,12 @@ export default function AuthConfirmPage() {
 
   if (status === "error") {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--background)] px-4">
-        <p className="text-center text-[var(--foreground)]">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--background)] px-4 text-center">
+        <p className="text-[var(--foreground)]">
           This link is invalid or has expired.
+        </p>
+        <p className="text-sm text-[var(--muted)] max-w-sm">
+          Request a new sign-in link from the app, or try opening the link from your email in your browser’s address bar.
         </p>
         <a
           href="/submit"

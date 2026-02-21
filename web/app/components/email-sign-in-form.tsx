@@ -29,14 +29,17 @@ export function EmailSignInForm({ next, className }: Props) {
 
   if (status === "success") {
     return (
-      <p className="text-center text-sm text-[var(--muted)]">
+      <p
+        className="text-center text-sm text-[var(--muted)]"
+        data-testid="email-sign-in-success"
+      >
         Check your email for a sign-in link.
       </p>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className={className}>
+    <form onSubmit={handleSubmit} className={className} data-testid="email-sign-in-form">
       <div className="flex flex-col gap-2 sm:flex-row sm:gap-2">
         <input
           type="email"
@@ -57,7 +60,9 @@ export function EmailSignInForm({ next, className }: Props) {
         </button>
       </div>
       {message && (
-        <p className="mt-2 text-sm text-red-600">{message}</p>
+        <p className="mt-2 text-sm text-red-600" data-testid="email-sign-in-error">
+          {message}
+        </p>
       )}
     </form>
   );

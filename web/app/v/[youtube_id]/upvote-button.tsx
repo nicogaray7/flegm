@@ -65,10 +65,10 @@ export function UpvoteButton({
     return (
       <Link
         href={authWallHref}
-        className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)]"
+        className="inline-flex flex-col items-center gap-0.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)] min-w-[56px]"
       >
         <UpvoteIcon filled={false} />
-        <span>{state.count}</span>
+        <span className="text-xs tabular-nums">{state.count}</span>
       </Link>
     );
   }
@@ -78,14 +78,14 @@ export function UpvoteButton({
       type="button"
       onClick={handleClick}
       disabled={isPending}
-      className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-all ${
+      className={`inline-flex flex-col items-center gap-0.5 rounded-xl border px-3 py-2 text-sm font-semibold transition-all min-w-[56px] ${
         state.upvoted
-          ? "border-emerald-300 bg-emerald-50 text-emerald-700"
-          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)]"
+          ? "border-[var(--accent)] bg-[var(--accent)]/20 text-[var(--accent)]"
+          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)] hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)] hover:text-[var(--foreground)]"
       }`}
     >
       <UpvoteIcon filled={state.upvoted} />
-      <span>{state.count}</span>
+      <span className="text-xs tabular-nums">{state.count}</span>
     </button>
   );
 }

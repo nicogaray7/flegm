@@ -45,8 +45,8 @@ export default async function SubmitPage({ searchParams }: Props) {
     <div className="min-h-screen bg-[var(--background)]">
       <GaEvent eventName="submit_form_view" />
       <Header />
-      <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
-        <div className="card p-8">
+      <main className="flex-1 px-4 py-8 pb-24 max-w-lg mx-auto sm:pb-8">
+        <div className="card p-6 sm:p-8">
           <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">Submit a video</h1>
           <p className="text-[var(--muted)] text-sm mb-6">
             Paste a YouTube URL to add it to the leaderboard. If it&apos;s already there,

@@ -49,7 +49,7 @@ export function EmailSignInForm({ next, className }: Props) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "loading"}
-          className="flex-1 rounded-full border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="flex-1 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
         />
         <button
           type="submit"
@@ -60,7 +60,7 @@ export function EmailSignInForm({ next, className }: Props) {
         </button>
       </div>
       {message && (
-        <p className="mt-2 text-sm text-red-600" data-testid="email-sign-in-error">
+        <p className="mt-2 text-sm text-red-400" data-testid="email-sign-in-error">
           {message}
         </p>
       )}

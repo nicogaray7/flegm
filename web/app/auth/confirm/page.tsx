@@ -13,7 +13,10 @@ import { createClient } from "@/lib/supabase/client";
 export default function AuthConfirmPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
+  const hasErrorParam = searchParams.get("error") === "invalid";
+  const [status, setStatus] = useState<"loading" | "ok" | "error">(
+    hasErrorParam ? "error" : "loading"
+  );
 
   useEffect(() => {
     const next = searchParams.get("next");
@@ -73,11 +76,14 @@ export default function AuthConfirmPage() {
           This link is invalid or has expired.
         </p>
         <p className="text-sm text-[var(--muted)] max-w-sm">
-          Request a new sign-in link from the app, or try opening the link from your email in your browser’s address bar.
+          Request a new sign-in link from the app. If this keeps happening, your
+          email client may be stripping the link. Ask your admin to set the
+          Supabase Magic Link template to use the verify-email URL (see
+          app/auth/verify-email/route.ts).
         </p>
         <a
           href="/submit"
-          className="text-sm font-medium text-emerald-600 hover:underline"
+          className="text-sm font-medium text-[var(--accent)] hover:underline"
         >
           Back to sign in
         </a>

@@ -31,28 +31,28 @@ export default async function LeaderboardPage() {
     <div className="min-h-screen bg-[var(--background)]">
       <GaEvent eventName="leaderboard_view" />
       <Header />
-      <main className="mx-auto max-w-3xl px-4 py-8">
+      <main className="mx-auto max-w-2xl px-3 py-6 pb-24 sm:px-4 sm:pb-8">
         {dbError && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-red-100 px-1">npm run db:push</code> if needed.
+          <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-red-500/20 px-1">npm run db:push</code> if needed.
           </div>
         )}
 
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight sm:text-3xl">
-            The YouTube Leaderboard
+        <div className="mb-6">
+          <h1 className="text-xl font-bold text-[var(--foreground)] tracking-tight sm:text-2xl">
+            Leaderboard
           </h1>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            Top 100 videos by community upvotes
+          <p className="mt-0.5 text-xs text-[var(--muted)]">
+            Top 100 by upvotes
           </p>
         </div>
 
         {topVideos.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center">
-            <p className="text-sm text-[var(--muted-light)]">{dbError ? "Database error." : "No videos yet."}</p>
+          <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)]/50 px-6 py-10 text-center">
+            <p className="text-sm text-[var(--muted)]">{dbError ? "Database error." : "No videos yet."}</p>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul className="grid gap-3 sm:grid-cols-2">
             {topVideos.map((video, index) => (
               <li key={video.id}>
                 <VideoCard

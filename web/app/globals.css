@@ -5,16 +5,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --background: #f4f4f5;
-  --foreground: #09090b;
-  --surface: #ffffff;
-  --surface-hover: #f9f9fa;
-  --border: #e4e4e7;
-  --border-hover: #d1d1d6;
-  --muted: #71717a;
-  --muted-light: #a1a1aa;
-  --accent: #10b981;
-  --accent-hover: #059669;
+  --background: #0f0f0f;
+  --foreground: #fafafa;
+  --surface: #1a1a1a;
+  --surface-hover: #262626;
+  --border: #2a2a2a;
+  --border-hover: #404040;
+  --muted: #a1a1aa;
+  --muted-light: #71717a;
+  --accent: #22c55e;
+  --accent-hover: #16a34a;
 }
 
 body {
@@ -31,15 +31,18 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-xl border border-[var(--border)] bg-[var(--surface)] transition-all duration-150;
+    @apply rounded-2xl border border-[var(--border)] bg-[var(--surface)] transition-all duration-200;
   }
   .card:hover {
     @apply border-[var(--border-hover)] bg-[var(--surface-hover)];
   }
   .card-shadow {
-    @apply rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-sm;
+    @apply rounded-2xl border border-[var(--border)] bg-[var(--surface)];
   }
   .pill {
     @apply rounded-full;
+  }
+  .feed-card {
+    @apply rounded-2xl overflow-hidden bg-[var(--surface)] border border-[var(--border)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99];
   }
 }

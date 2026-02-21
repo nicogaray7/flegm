@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { sendGAEvent } from "@next/third-parties/google";
+import { trackEvent } from "@/lib/gtag";
 
 type Props = {
   eventName: string;
@@ -14,7 +14,7 @@ type Props = {
  */
 export function GaEvent({ eventName, params }: Props) {
   useEffect(() => {
-    sendGAEvent("event", eventName, params ?? {});
+    trackEvent(eventName, params);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { sendGAEvent } from "@next/third-parties/google";
+import { trackEvent } from "@/lib/gtag";
 import { signInWithGoogle } from "@/actions/auth";
 
 type Props = {
@@ -21,7 +21,7 @@ export function SignInButton({
   const [isPending, startTransition] = useTransition();
 
   function handleClick() {
-    sendGAEvent("event", "sign_in_start", { from_context: context });
+    trackEvent("sign_in_start", { from_context: context });
     startTransition(() => signInWithGoogle(next));
   }
 

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { CookieConsentProvider } from "@/lib/cookie-consent";
 import { Analytics } from "./components/analytics";
 import { CookieBanner } from "./components/cookie-banner";
+import { GaUserId } from "./components/ga-user-id";
 import { SignInSuccessTracker } from "./components/sign-in-success-tracker";
 import "./globals.css";
 
@@ -92,6 +93,7 @@ export default function RootLayout({
             <SignInSuccessTracker />
           </Suspense>
           {gaId && <Analytics gaId={gaId} />}
+          <GaUserId />
           <CookieBanner />
         </CookieConsentProvider>
       </body>

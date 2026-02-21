@@ -1,15 +1,39 @@
 "use client";
 
 import Script from "next/script";
+import { useEffect, useRef } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useConsent } from "@/lib/cookie-consent";
 
-/**
- * Loads GA4 with Google Consent Mode v2.
- * - Sets default consent to "denied" before loading the script.
- * - The CookieConsentProvider updates consent when the user decides.
- */
 export function Analytics({ gaId }: { gaId: string }) {
   const { consent } = useConsent();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const prevConsent = useRef(consent);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+    if (
+      prevConsent.current.analytics === consent.analytics &&
+      prevConsent.current.marketing === consent.marketing
+    ) return;
+    prevConsent.current = consent;
+
+    window.gtag("consent", "update", {
+      analytics_storage: consent.analytics ? "granted" : "denied",
+      ad_storage: consent.marketing ? "granted" : "denied",
+      ad_user_data: consent.marketing ? "granted" : "denied",
+      ad_personalization: consent.marketing ? "granted" : "denied",
+    });
+  }, [consent]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+    window.gtag("event", "page_view", {
+      page_path: pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ""),
+      page_location: window.location.href,
+    });
+  }, [pathname, searchParams]);
 
   return (
     <>
@@ -42,13 +66,7 @@ export function Analytics({ gaId }: { gaId: string }) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${gaId}');
-            gtag('consent', 'update', {
-              'analytics_storage': '${consent.analytics ? "granted" : "denied"}',
-              'ad_storage': '${consent.marketing ? "granted" : "denied"}',
-              'ad_user_data': '${consent.marketing ? "granted" : "denied"}',
-              'ad_personalization': '${consent.marketing ? "granted" : "denied"}'
-            });
+            gtag('config', '${gaId}', { send_page_view: false });
           `,
         }}
       />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { sendGAEvent } from "@next/third-parties/google";
+import { trackEvent } from "@/lib/gtag";
 
 type Props = {
   href: string;
@@ -12,7 +12,7 @@ type Props = {
 
 export function SubmitIntentLink({ href, source, className, children }: Props) {
   function handleClick() {
-    sendGAEvent("event", "submit_intent", { source });
+    trackEvent("submit_intent", { source });
   }
 
   return (

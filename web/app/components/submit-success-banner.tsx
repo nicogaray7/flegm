@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { trackEvent } from "@/lib/gtag";
 
 type Props = {
   /** Path of the video page (e.g. /v/abc123) for building share URL */
@@ -18,6 +19,7 @@ export function SubmitSuccessBanner({ path }: Props) {
     if (!url) return;
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
+      trackEvent("share_click", { method: "copy_link", content_type: "video", item_id: path });
       setTimeout(() => setCopied(false), 2000);
     });
   }

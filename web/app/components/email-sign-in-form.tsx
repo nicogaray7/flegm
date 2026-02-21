@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { signInWithEmail } from "@/actions/auth";
+import { trackEvent } from "@/lib/gtag";
 
 type Props = {
   next?: string;
@@ -17,14 +18,17 @@ export function EmailSignInForm({ next, className }: Props) {
     e.preventDefault();
     setStatus("loading");
     setMessage("");
+    trackEvent("sign_in_start", { from_context: "email" });
     const result = await signInWithEmail(email, next);
     if (result.error) {
       setStatus("error");
       setMessage(result.error);
+      trackEvent("sign_in_error", { method: "email", error: result.error });
       return;
     }
     setStatus("success");
     setMessage("Check your email for a sign-in link.");
+    trackEvent("magic_link_sent");
   }
 
   if (status === "success") {

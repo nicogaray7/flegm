@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { trackEvent } from "@/lib/gtag";
 
 export type ConsentCategories = {
   necessary: true;
@@ -83,6 +84,7 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
     setDecided(true);
     persist(c);
     syncGtagConsent(c);
+    trackEvent("consent_update", { analytics: "granted", marketing: "granted", action: "accept_all" });
   }, []);
 
   const rejectAll = useCallback(() => {
@@ -91,6 +93,7 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
     setDecided(true);
     persist(c);
     syncGtagConsent(c);
+    trackEvent("consent_update", { analytics: "denied", marketing: "denied", action: "reject_all" });
   }, []);
 
   const save = useCallback((partial: Omit<ConsentCategories, "necessary">) => {
@@ -99,6 +102,11 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
     setDecided(true);
     persist(c);
     syncGtagConsent(c);
+    trackEvent("consent_update", {
+      analytics: c.analytics ? "granted" : "denied",
+      marketing: c.marketing ? "granted" : "denied",
+      action: "custom",
+    });
   }, []);
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormStatus, useFormState } from "react-dom";
-import { sendGAEvent } from "@next/third-parties/google";
+import { trackEvent } from "@/lib/gtag";
 import { addComment } from "@/actions/comments";
 
 type Props = {
@@ -37,7 +37,7 @@ export function CommentForm({
       const content = formData.get("content") as string;
       const res = await addComment(youtubeId, videoUuid, content, parentId);
       if (!res.error) {
-        sendGAEvent("event", "comment_submit", {
+        trackEvent("comment_submit", {
           video_id: videoUuid,
           is_reply: parentId !== null,
         });

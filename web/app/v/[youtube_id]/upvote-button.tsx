@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useOptimistic, useTransition } from "react";
-import { sendGAEvent } from "@next/third-parties/google";
+import { trackEvent } from "@/lib/gtag";
 import { toggleUpvote } from "@/actions/upvote";
 
 type Props = {
@@ -51,7 +51,7 @@ export function UpvoteButton({
       if (result.error) {
         setState({ count: state.count, upvoted: state.upvoted });
       } else {
-        sendGAEvent("event", "video_upvote", {
+        trackEvent("video_upvote", {
           video_id: videoUuid,
           action: willUpvote ? "upvote" : "undo",
         });

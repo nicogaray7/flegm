@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { sendGAEvent } from "@next/third-parties/google";
+import { trackEvent } from "@/lib/gtag";
 
 /**
  * Fires sign_in_success when the URL has signed_in=1 (after auth redirect),
@@ -20,7 +20,7 @@ export function SignInSuccessTracker() {
     if (signedIn !== "1") return;
 
     fired.current = true;
-    sendGAEvent("event", "sign_in_success", {});
+    trackEvent("sign_in_success");
 
     const next = new URLSearchParams(searchParams);
     next.delete("signed_in");

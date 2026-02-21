@@ -91,9 +91,9 @@ export default function RootLayout({
           {children}
           <Suspense fallback={null}>
             <SignInSuccessTracker />
+            {gaId && <Analytics gaId={gaId} />}
+            <GaUserId />
           </Suspense>
-          {gaId && <Analytics gaId={gaId} />}
-          <GaUserId />
           <CookieBanner />
         </CookieConsentProvider>
       </body>

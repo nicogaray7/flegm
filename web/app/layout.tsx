@@ -11,7 +11,7 @@ const tagline = "The YouTube Leaderboard";
 const description =
   "Drop, upvote, and discover the top YouTube videos every day.";
 const baseUrl =
-  process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+  process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

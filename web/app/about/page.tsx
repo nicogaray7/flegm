@@ -3,7 +3,7 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import Link from "next/link";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export const metadata: Metadata = {
   title: "About Flegm — The Community YouTube Leaderboard",

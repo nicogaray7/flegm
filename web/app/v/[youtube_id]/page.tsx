@@ -19,7 +19,7 @@ import { db } from "@/db";
 import { videos } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 type Props = {
   params: Promise<{ youtube_id: string }>;

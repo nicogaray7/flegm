@@ -3,7 +3,7 @@ import { Footer } from "@/app/components/footer";
 import Link from "next/link";
 import { CookiePreferencesButton } from "./cookie-preferences-button";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export const metadata = {
   title: "Cookie Policy",

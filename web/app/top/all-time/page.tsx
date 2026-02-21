@@ -8,7 +8,7 @@ import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
 import Link from "next/link";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export const dynamic = "force-dynamic";
 

@@ -7,7 +7,7 @@ import { Header } from "./components/header";
 import { Footer } from "./components/footer";
 import { SubmitIntentLink } from "./components/submit-intent-link";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export const dynamic = "force-dynamic";
 

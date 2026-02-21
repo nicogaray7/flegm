@@ -8,7 +8,7 @@ import { GaEvent } from "@/app/components/ga-event";
 
 export const dynamic = "force-dynamic";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export const metadata = {
   title: "Leaderboard — Top YouTube Videos Ranked by the Community",

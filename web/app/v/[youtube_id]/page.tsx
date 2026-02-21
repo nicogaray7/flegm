@@ -53,13 +53,13 @@ export default async function VideoPage({ params, searchParams }: Props) {
           <SubmitSuccessBanner path={`/v/${youtube_id}`} />
         )}
         {/* Video player */}
-        <div className="mb-6 overflow-hidden rounded-xl shadow-sm">
+        <div className="mb-6 overflow-hidden rounded-2xl shadow-lg shadow-purple-500/10">
           <VideoPlayer videoId={video.youtubeId} title={video.title} />
         </div>
 
         {/* Title + meta row */}
         <div className="mb-6">
-          <h1 className="text-xl font-bold text-[var(--foreground)] mb-3">{video.title}</h1>
+          <h1 className="text-xl font-extrabold text-[var(--foreground)] mb-3">{video.title}</h1>
           <div className="flex flex-wrap items-center gap-3">
             <UpvoteButton
               videoUuid={video.id}
@@ -69,8 +69,8 @@ export default async function VideoPage({ params, searchParams }: Props) {
               signInNext={signInNext}
             />
             <span className="text-[var(--border)]">|</span>
-            <span className="text-sm text-[var(--muted)]">
-              Duration {durationFormatted}
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-[var(--muted)]">
+              {"\u{23F1}"} {durationFormatted}
             </span>
           </div>
         </div>
@@ -85,18 +85,18 @@ export default async function VideoPage({ params, searchParams }: Props) {
               <Image
                 src={video.channelThumbnail}
                 alt=""
-                className="h-10 w-10 rounded-full object-cover ring-2 ring-zinc-100"
-                width={40}
-                height={40}
+                className="h-11 w-11 rounded-xl object-cover ring-2 ring-purple-100"
+                width={44}
+                height={44}
               />
             )}
             <div className="min-w-0 flex-1">
-              <p className="font-medium text-[var(--foreground)] group-hover:text-emerald-600 transition-colors">
+              <p className="font-bold text-[var(--foreground)] group-hover:text-purple-600 transition-colors">
                 {video.channelName}
               </p>
               <p className="text-xs text-[var(--muted)]">View channel</p>
             </div>
-            <svg className="h-4 w-4 text-[var(--muted-light)] group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4 text-[var(--muted-light)] group-hover:text-purple-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </Link>
@@ -104,8 +104,8 @@ export default async function VideoPage({ params, searchParams }: Props) {
 
         {/* Comments */}
         <section className="card p-5">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)] mb-4">
-            Comments
+          <h2 className="flex items-center gap-2 text-sm font-extrabold text-[var(--foreground)] mb-4">
+            <span>{"\u{1F4AC}"}</span> Comments
           </h2>
           {user && (
             <div className="mb-6">
@@ -113,13 +113,13 @@ export default async function VideoPage({ params, searchParams }: Props) {
             </div>
           )}
           {!user && (
-            <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg bg-zinc-50 px-4 py-3">
-              <p className="text-sm text-[var(--muted)]">Sign in to join the discussion.</p>
+            <div className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl bg-purple-50 border border-purple-100 px-4 py-3">
+              <p className="text-sm text-[var(--muted)]">Join the convo</p>
               <SignInButton next={signInNext} context="comment" />
             </div>
           )}
           {commentTree.length === 0 ? (
-            <p className="text-sm text-[var(--muted-light)] py-2">No comments yet. Be the first to share your thoughts.</p>
+            <p className="text-sm text-[var(--muted-light)] py-4 text-center">No comments yet. Be the first to share your take</p>
           ) : (
             <CommentTree youtubeId={youtube_id} videoUuid={video.id} tree={commentTree} signedIn={!!user} />
           )}

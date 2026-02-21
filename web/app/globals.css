@@ -2,19 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --background: #f4f4f5;
-  --foreground: #09090b;
+  --background: #fafafa;
+  --foreground: #18181b;
   --surface: #ffffff;
-  --surface-hover: #f9f9fa;
+  --surface-hover: #f5f3ff;
   --border: #e4e4e7;
-  --border-hover: #d1d1d6;
+  --border-hover: #c4b5fd;
   --muted: #71717a;
   --muted-light: #a1a1aa;
-  --accent: #10b981;
-  --accent-hover: #059669;
+  --accent: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --accent-light: #ede9fe;
+  --pink: #ec4899;
+  --pink-light: #fce7f3;
+  --gradient-start: #8b5cf6;
+  --gradient-mid: #ec4899;
+  --gradient-end: #f59e0b;
 }
 
 body {
@@ -27,19 +33,53 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  .gradient-text {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .gradient-bg {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
+  }
+  .gradient-bg-warm {
+    background: linear-gradient(135deg, var(--gradient-mid), var(--gradient-end));
+  }
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(139, 92, 246, 0.15);
+  }
+  .hover-scale {
+    transition: transform 0.15s ease;
+  }
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
 }
 
 @layer components {
   .card {
-    @apply rounded-xl border border-[var(--border)] bg-[var(--surface)] transition-all duration-150;
+    @apply rounded-2xl border border-[var(--border)] bg-[var(--surface)] transition-all duration-200;
   }
   .card:hover {
-    @apply border-[var(--border-hover)] bg-[var(--surface-hover)];
+    @apply border-[var(--border-hover)] bg-[var(--surface-hover)] shadow-md;
   }
   .card-shadow {
-    @apply rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-sm;
+    @apply rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm;
   }
   .pill {
     @apply rounded-full;
+  }
+  .btn-primary {
+    @apply pill inline-flex items-center gap-2 gradient-bg px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 transition-all hover:shadow-lg hover:shadow-purple-500/25 active:scale-95;
+  }
+  .btn-secondary {
+    @apply pill inline-flex items-center gap-2 border-2 border-[var(--border)] bg-[var(--surface)] px-5 py-2.5 text-sm font-bold text-[var(--foreground)] hover:border-purple-300 hover:bg-purple-50 transition-all active:scale-95;
+  }
+  .input-field {
+    @apply w-full rounded-xl border border-[var(--border)] bg-zinc-50 px-4 py-3 text-[var(--foreground)] placeholder-[var(--muted-light)] focus:border-purple-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-400/30 transition-all;
   }
 }

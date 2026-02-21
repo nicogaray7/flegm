@@ -36,88 +36,91 @@ export default async function Home() {
 
       <main className="mx-auto max-w-3xl px-4 py-10">
         {dbError && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             Could not load videos: {dbError}. Check DATABASE_URL in .env.local and run <code className="rounded bg-red-100 px-1">npm run db:push</code> if needed.
           </div>
         )}
 
         {/* Hero */}
-        <section className="mb-10 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)] sm:text-4xl">
-            The YouTube Leaderboard
+        <section className="mb-12 text-center">
+          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">
+            <span>{"\u{1F525}"}</span> community-powered
+          </div>
+          <h1 className="text-4xl font-black tracking-tight text-[var(--foreground)] sm:text-5xl">
+            The YouTube{" "}
+            <span className="gradient-text">Leaderboard</span>
           </h1>
-          <p className="mx-auto mt-2 text-sm font-medium uppercase tracking-widest text-[var(--muted)]">
-            Top videos, every day
+          <p className="mx-auto mt-4 max-w-md text-base text-[var(--muted)] leading-relaxed">
+            Submit bangers, upvote the best, and watch what the community is loving rn
           </p>
-          <p className="mx-auto mt-3 max-w-xl text-base text-[var(--muted)] leading-relaxed">
-            Join a community to submit, upvote, and discover the top YouTube videos every day.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <SubmitIntentLink
               href="/submit"
               source="hero"
-              className="pill inline-flex items-center gap-2 bg-[var(--foreground)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+              className="btn-primary px-6 py-3 text-base"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M12 5v14M5 12h14" />
               </svg>
-              Submit a video
+              Drop a video
             </SubmitIntentLink>
             <Link
               href="/leaderboard"
-              className="pill inline-flex items-center gap-2 border-2 border-[var(--border)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--foreground)] hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)] transition-colors"
+              className="btn-secondary px-6 py-3 text-base"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+              <span>{"\u{1F3C6}"}</span>
               Leaderboard
             </Link>
           </div>
         </section>
 
-        {/* KPI row */}
-        <section className="mb-10 grid grid-cols-3 gap-3">
-          <div className="card-shadow flex flex-col px-4 py-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">
-              Videos today
-            </span>
-            <span className="mt-2 text-2xl font-bold tabular-nums text-[var(--foreground)]">
+        {/* Stats */}
+        <section className="mb-12 grid grid-cols-3 gap-3">
+          <div className="card-shadow flex flex-col items-center px-4 py-5 text-center hover-lift">
+            <span className="text-2xl mb-1">{"\u{1F4F9}"}</span>
+            <span className="text-2xl font-black tabular-nums text-[var(--foreground)]">
               {today.length}
             </span>
-          </div>
-          <div className="card-shadow flex flex-col px-4 py-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">
-              This week
+            <span className="text-xs font-semibold text-[var(--muted)] mt-0.5">
+              today
             </span>
-            <span className="mt-2 text-2xl font-bold tabular-nums text-[var(--foreground)]">
+          </div>
+          <div className="card-shadow flex flex-col items-center px-4 py-5 text-center hover-lift">
+            <span className="text-2xl mb-1">{"\u{1F4C8}"}</span>
+            <span className="text-2xl font-black tabular-nums text-[var(--foreground)]">
               {videosThisWeek}
             </span>
-          </div>
-          <div className="card-shadow flex flex-col px-4 py-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">
-              This month
+            <span className="text-xs font-semibold text-[var(--muted)] mt-0.5">
+              this week
             </span>
-            <span className="mt-2 text-2xl font-bold tabular-nums text-[var(--foreground)]">
+          </div>
+          <div className="card-shadow flex flex-col items-center px-4 py-5 text-center hover-lift">
+            <span className="text-2xl mb-1">{"\u{1F680}"}</span>
+            <span className="text-2xl font-black tabular-nums text-[var(--foreground)]">
               {videosThisMonth}
+            </span>
+            <span className="text-xs font-semibold text-[var(--muted)] mt-0.5">
+              this month
             </span>
           </div>
         </section>
 
         {/* Sections */}
         <HomeSection
-          title="Launching Today"
+          title="Dropping Today"
+          emoji={"\u{26A1}"}
           videos={today}
-          emptyMessage="No videos submitted today yet. Be the first!"
+          emptyMessage="Nothing yet today — be the first to drop something fire"
         />
         <HomeSection
           title="Yesterday"
+          emoji={"\u{23EA}"}
           videos={yesterday}
           emptyMessage="No videos from yesterday."
         />
         <HomeSection
           title="This Week"
+          emoji={"\u{1F4C5}"}
           videos={lastWeek.videos}
           summary={
             lastWeek.count > 0
@@ -128,6 +131,7 @@ export default async function Home() {
         />
         <HomeSection
           title="This Month"
+          emoji={"\u{1F30D}"}
           videos={lastMonth.videos}
           summary={
             lastMonth.count > 0

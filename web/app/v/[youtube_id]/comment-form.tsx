@@ -18,7 +18,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="rounded-lg bg-emerald-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-600 disabled:opacity-50 transition-colors"
+      className="rounded-xl gradient-bg px-4 py-1.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50 transition-all active:scale-95"
     >
       {pending ? "Posting..." : "Post"}
     </button>
@@ -54,8 +54,8 @@ export function CommentForm({
         name="content"
         rows={2}
         maxLength={2000}
-        placeholder={parentAuthor ? `Reply to ${parentAuthor}...` : "Add a comment..."}
-        className="w-full rounded-lg border border-[var(--border)] bg-zinc-50 px-3 py-2 text-sm text-[var(--foreground)] placeholder-[var(--muted-light)] focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors"
+        placeholder={parentAuthor ? `Reply to ${parentAuthor}...` : "Share your thoughts..."}
+        className="input-field text-sm resize-none"
         required
       />
       {state?.error && (
@@ -67,7 +67,7 @@ export function CommentForm({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-lg px-3 py-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-zinc-100 transition-colors"
+            className="rounded-xl px-3 py-1.5 text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-zinc-100 transition-colors"
           >
             Cancel
           </button>

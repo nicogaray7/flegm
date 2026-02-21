@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { SubmitForm } from "./submit-form";
+import { GaEvent } from "@/app/components/ga-event";
 import { Header } from "@/app/components/header";
 import { LoginScreen } from "@/app/components/login-screen";
 import { Footer } from "@/app/components/footer";
@@ -42,6 +43,7 @@ export default async function SubmitPage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      <GaEvent eventName="submit_form_view" />
       <Header />
       <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
         <div className="card p-8">

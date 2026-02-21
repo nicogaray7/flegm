@@ -5,7 +5,10 @@ import { createClient } from "@/lib/supabase/server";
 import { db } from "@/db";
 import { videos, profiles } from "@/db/schema";
 import { extractVideoId, fetchVideoMetadata } from "@/lib/youtube";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
+
+/** Cooldown between submissions per user (minutes). */
+const SUBMIT_COOLDOWN_MINUTES = 5;
 
 export type SubmitResult = { error?: string; youtubeId?: string };
 
@@ -27,6 +30,22 @@ export async function submitVideo(
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
     return { error: "You must be signed in to submit a video." };
+  }
+
+  const cooldownMs = SUBMIT_COOLDOWN_MINUTES * 60 * 1000;
+  const [lastSubmitted] = await db
+    .select({ createdAt: videos.createdAt })
+    .from(videos)
+    .where(eq(videos.clippeurId, user.id))
+    .orderBy(desc(videos.createdAt))
+    .limit(1);
+  if (
+    lastSubmitted &&
+    lastSubmitted.createdAt.getTime() > Date.now() - cooldownMs
+  ) {
+    return {
+      error: `You can only submit one video every ${SUBMIT_COOLDOWN_MINUTES} minutes. Try again later.`,
+    };
   }
 
   const existing = await db.query.videos.findFirst({

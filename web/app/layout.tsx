@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Suspense } from "react";
+import { SignInSuccessTracker } from "./components/sign-in-success-tracker";
 import "./globals.css";
 
 const siteName = "Flegm";
@@ -51,7 +53,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">{children}</body>
+      <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
+        {children}
+        <Suspense fallback={null}>
+          <SignInSuccessTracker />
+        </Suspense>
+      </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );

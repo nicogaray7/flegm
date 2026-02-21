@@ -33,7 +33,8 @@ export default function AuthConfirmPage() {
       .setSession({ access_token, refresh_token })
       .then(() => {
         setStatus("ok");
-        router.replace(redirectTo);
+        const sep = redirectTo.includes("?") ? "&" : "?";
+        router.replace(`${redirectTo}${sep}signed_in=1`);
       })
       .catch(() => setStatus("error"));
   }, [router, searchParams]);
@@ -53,10 +54,10 @@ export default function AuthConfirmPage() {
           This link is invalid or has expired.
         </p>
         <a
-          href="/login"
+          href="/submit"
           className="text-sm font-medium text-emerald-600 hover:underline"
         >
-          Back to log in
+          Back to sign in
         </a>
       </div>
     );

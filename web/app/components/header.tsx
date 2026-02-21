@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/app/submit/sign-out-button";
+import { SubmitIntentLink } from "@/app/components/submit-intent-link";
 import type { User } from "@supabase/supabase-js";
 
 export async function Header() {
@@ -40,23 +41,16 @@ export async function Header() {
           >
             Leaderboard
           </Link>
-          {!user ? (
-            <Link
-              href="/login"
-              className="text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-            >
-              Log in
-            </Link>
-          ) : null}
-          <Link
+          <SubmitIntentLink
             href="/submit"
+            source="header"
             className="pill inline-flex items-center gap-2 bg-[var(--foreground)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
             Submit
-          </Link>
+          </SubmitIntentLink>
           {user ? (
             <div className="flex items-center gap-2.5">
               {avatarUrl ? (

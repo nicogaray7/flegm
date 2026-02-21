@@ -11,6 +11,7 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { SignInButton } from "@/app/submit/sign-in-button";
 import { GaEvent } from "@/app/components/ga-event";
+import { SubmitSuccessBanner } from "@/app/components/submit-success-banner";
 import { formatDurationHMS } from "@/lib/format-duration";
 
 type Props = {
@@ -48,6 +49,9 @@ export default async function VideoPage({ params, searchParams }: Props) {
       <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-8">
+        {submitted === "1" && (
+          <SubmitSuccessBanner path={`/v/${youtube_id}`} />
+        )}
         {/* Video player */}
         <div className="mb-6 overflow-hidden rounded-xl shadow-sm">
           <VideoPlayer videoId={video.youtubeId} title={video.title} />

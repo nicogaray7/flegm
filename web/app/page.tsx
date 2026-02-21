@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { getHomeVideos } from "@/lib/home-data";
+import { GaEvent } from "./components/ga-event";
 import { HomeSection } from "./components/home-section";
 import { Header } from "./components/header";
 import { Footer } from "./components/footer";
+import { SubmitIntentLink } from "./components/submit-intent-link";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +31,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      <GaEvent eventName="home_view" />
       <Header />
 
       <main className="mx-auto max-w-3xl px-4 py-10">
@@ -50,15 +53,16 @@ export default async function Home() {
             Join a community to submit, upvote, and discover the top YouTube videos every day.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <Link
+            <SubmitIntentLink
               href="/submit"
+              source="hero"
               className="pill inline-flex items-center gap-2 bg-[var(--foreground)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M12 5v14M5 12h14" />
               </svg>
               Submit a video
-            </Link>
+            </SubmitIntentLink>
             <Link
               href="/leaderboard"
               className="pill inline-flex items-center gap-2 border-2 border-[var(--border)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--foreground)] hover:border-[var(--border-hover)] hover:bg-[var(--surface-hover)] transition-colors"

@@ -41,10 +41,13 @@ export default async function Home() {
         {/* Hero */}
         <section className="mb-10 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)] sm:text-4xl">
-            Top videos
+            The YouTube Leaderboard
           </h1>
-          <p className="mx-auto mt-3 max-w-xl text-base text-[var(--muted)]">
-            The best videos, ranked by the community. Submit, upvote, and discover.
+          <p className="mx-auto mt-2 text-sm font-medium uppercase tracking-widest text-[var(--muted)]">
+            Top videos, every day
+          </p>
+          <p className="mx-auto mt-3 max-w-xl text-base text-[var(--muted)] leading-relaxed">
+            Join a community to submit, upvote, and discover the top YouTube videos every day.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link

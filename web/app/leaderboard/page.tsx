@@ -8,6 +8,12 @@ import { GaEvent } from "@/app/components/ga-event";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Leaderboard",
+  description:
+    "Top 100 YouTube videos ranked by community upvotes on Flegm.",
+};
+
 export default async function LeaderboardPage() {
   let topVideos: { id: string; youtubeId: string; title: string; channelName: string; upvotesCount: number; duration: number }[] = [];
   let dbError: string | null = null;
@@ -33,8 +39,8 @@ export default async function LeaderboardPage() {
         )}
 
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">
-            Leaderboard
+          <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight sm:text-3xl">
+            The YouTube Leaderboard
           </h1>
           <p className="mt-1 text-sm text-[var(--muted)]">
             Top 100 videos by community upvotes

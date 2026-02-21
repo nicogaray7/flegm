@@ -4,6 +4,12 @@ import { SignInButton } from "./sign-in-button";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 
+export const metadata = {
+  title: "Submit a video",
+  description:
+    "Add a YouTube video to the Flegm leaderboard. Submit, upvote, and discover the top videos.",
+};
+
 type Props = { searchParams: Promise<{ next?: string; from?: string }> };
 
 const AUTH_WALL_MESSAGES: Record<string, string> = {
@@ -48,8 +54,8 @@ export default async function SubmitPage({ searchParams }: Props) {
         <div className="card p-8">
           <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">Submit a video</h1>
           <p className="text-[var(--muted)] text-sm mb-6">
-            Paste a YouTube URL. If it&apos;s already in the database, you&apos;ll be taken
-            to its page. Otherwise we&apos;ll fetch details and add it.
+            Paste a YouTube URL to add it to the leaderboard. If it&apos;s already there,
+            you&apos;ll go straight to its page.
           </p>
           <SubmitForm />
         </div>

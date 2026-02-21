@@ -33,23 +33,24 @@ export default async function LeaderboardPage() {
       <Header />
       <main className="mx-auto max-w-3xl px-4 py-8">
         {dbError && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-red-100 px-1">npm run db:push</code> if needed.
           </div>
         )}
 
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight sm:text-3xl">
-            The YouTube Leaderboard
+        <div className="mb-8 text-center">
+          <span className="text-4xl mb-2 block">{"\u{1F3C6}"}</span>
+          <h1 className="text-3xl font-black text-[var(--foreground)] tracking-tight sm:text-4xl">
+            <span className="gradient-text">Leaderboard</span>
           </h1>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            Top 100 videos by community upvotes
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            Top 100 videos voted by the community
           </p>
         </div>
 
         {topVideos.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center">
-            <p className="text-sm text-[var(--muted-light)]">{dbError ? "Database error." : "No videos yet."}</p>
+          <div className="rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 px-6 py-8 text-center">
+            <p className="text-sm text-[var(--muted)]">{dbError ? "Something went wrong." : "No videos yet. Be the first to drop one!"}</p>
           </div>
         ) : (
           <ul className="space-y-2">

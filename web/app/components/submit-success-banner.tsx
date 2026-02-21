@@ -29,24 +29,24 @@ export function SubmitSuccessBanner({ path }: Props) {
   return (
     <div
       role="status"
-      className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm"
+      className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-purple-200 bg-purple-50 px-4 py-3 text-sm"
       aria-live="polite"
     >
-      <p className="font-medium text-emerald-800">
-        Video added. Share it?
+      <p className="font-bold text-purple-800">
+        {"\u{1F389}"} Video added! Share it with your friends
       </p>
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={handleCopy}
-          className="rounded-lg bg-emerald-600 px-3 py-1.5 font-medium text-white hover:bg-emerald-700 transition-colors"
+          className="rounded-xl gradient-bg px-3 py-1.5 font-bold text-white hover:opacity-90 transition-all active:scale-95"
         >
           {copied ? "Copied!" : "Copy link"}
         </button>
         <button
           type="button"
           onClick={handleDismiss}
-          className="text-emerald-700 hover:text-emerald-900 hover:underline"
+          className="text-purple-600 font-semibold hover:text-purple-800 hover:underline transition-colors"
         >
           Dismiss
         </button>

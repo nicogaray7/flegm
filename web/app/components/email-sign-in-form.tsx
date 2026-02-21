@@ -29,12 +29,15 @@ export function EmailSignInForm({ next, className }: Props) {
 
   if (status === "success") {
     return (
-      <p
-        className="text-center text-sm text-[var(--muted)]"
+      <div
+        className="text-center rounded-2xl bg-purple-50 border border-purple-100 px-4 py-4"
         data-testid="email-sign-in-success"
       >
-        Check your email for a sign-in link.
-      </p>
+        <span className="text-2xl block mb-1">{"\u{2728}"}</span>
+        <p className="text-sm font-semibold text-purple-700">
+          Check your email for a sign-in link
+        </p>
+      </div>
     );
   }
 
@@ -49,14 +52,14 @@ export function EmailSignInForm({ next, className }: Props) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "loading"}
-          className="flex-1 rounded-full border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="flex-1 rounded-full border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-[var(--foreground)] placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="pill shrink-0 bg-[var(--foreground)] px-5 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-50 transition-opacity"
+          className="pill shrink-0 gradient-bg px-5 py-3 font-bold text-white hover:opacity-90 disabled:opacity-50 transition-all active:scale-95"
         >
-          {status === "loading" ? "Sending…" : "Continue with Email"}
+          {status === "loading" ? "Sending..." : "Continue with Email"}
         </button>
       </div>
       {message && (

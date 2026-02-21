@@ -15,7 +15,7 @@ export default async function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #f4f4f5 0%, #e4e4e7 100%)",
+          background: "linear-gradient(135deg, #faf5ff 0%, #fce7f3 50%, #fffbeb 100%)",
           fontFamily: "system-ui, sans-serif",
         }}
       >
@@ -26,15 +26,16 @@ export default async function Image() {
             justifyContent: "center",
             width: 120,
             height: 120,
-            borderRadius: 24,
-            background: "#10b981",
+            borderRadius: 28,
+            background: "linear-gradient(135deg, #8b5cf6, #ec4899)",
             marginBottom: 40,
+            boxShadow: "0 20px 40px rgba(139, 92, 246, 0.3)",
           }}
         >
           <span
             style={{
               fontSize: 64,
-              fontWeight: 700,
+              fontWeight: 900,
               color: "white",
             }}
           >
@@ -44,19 +45,19 @@ export default async function Image() {
         <div
           style={{
             fontSize: 56,
-            fontWeight: 700,
-            color: "#09090b",
+            fontWeight: 900,
+            color: "#18181b",
             letterSpacing: "-0.02em",
             textAlign: "center",
             maxWidth: 900,
           }}
         >
-          Flegm
+          flegm
         </div>
         <div
           style={{
             fontSize: 32,
-            fontWeight: 600,
+            fontWeight: 700,
             color: "#71717a",
             marginTop: 12,
             textAlign: "center",
@@ -73,7 +74,7 @@ export default async function Image() {
             maxWidth: 700,
           }}
         >
-          Submit, upvote, and discover the top videos every day.
+          Drop, upvote, and discover the top videos every day.
         </div>
       </div>
     ),

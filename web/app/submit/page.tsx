@@ -6,9 +6,9 @@ import { LoginScreen } from "@/app/components/login-screen";
 import { Footer } from "@/app/components/footer";
 
 export const metadata = {
-  title: "Submit a video",
+  title: "Drop a video",
   description:
-    "Add a YouTube video to the Flegm leaderboard. Submit, upvote, and discover the top videos.",
+    "Drop a YouTube video on the Flegm leaderboard. Upvote and discover the top videos.",
 };
 
 type Props = { searchParams: Promise<{ next?: string; from?: string }> };
@@ -21,10 +21,10 @@ export default async function SubmitPage({ searchParams }: Props) {
   if (!user) {
     const subline =
       from === "upvote"
-        ? "Sign in with Google to upvote."
+        ? "Sign in to upvote your faves"
         : from === "comment"
-          ? "Sign in with Google to comment."
-          : "Sign in with Google to submit a YouTube video.";
+          ? "Sign in to join the convo"
+          : "Sign in to drop a video";
     return (
       <div className="min-h-screen flex flex-col bg-[var(--background)]">
         <Header />
@@ -47,11 +47,13 @@ export default async function SubmitPage({ searchParams }: Props) {
       <Header />
       <main className="flex-1 px-4 py-12 max-w-lg mx-auto">
         <div className="card p-8">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">Submit a video</h1>
-          <p className="text-[var(--muted)] text-sm mb-6">
-            Paste a YouTube URL to add it to the leaderboard. If it&apos;s already there,
-            you&apos;ll go straight to its page.
-          </p>
+          <div className="text-center mb-6">
+            <span className="text-3xl mb-2 block">{"\u{1F3AC}"}</span>
+            <h1 className="text-2xl font-extrabold text-[var(--foreground)]">Drop a video</h1>
+            <p className="text-[var(--muted)] text-sm mt-1">
+              Paste a YouTube link and let the community decide if it&apos;s fire
+            </p>
+          </div>
           <SubmitForm />
         </div>
       </main>

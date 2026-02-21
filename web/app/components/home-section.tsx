@@ -11,6 +11,7 @@ type Video = {
 
 type Props = {
   title: string;
+  emoji?: string;
   videos: Video[];
   summary?: string;
   emptyMessage?: string;
@@ -19,6 +20,7 @@ type Props = {
 
 export function HomeSection({
   title,
+  emoji,
   videos,
   summary,
   emptyMessage = "No videos yet.",
@@ -26,12 +28,13 @@ export function HomeSection({
 }: Props) {
   return (
     <section className="mb-10">
-      <div className="mb-3 flex items-baseline gap-2.5">
-        <h2 className="text-lg font-bold tracking-tight text-[var(--foreground)]">
+      <div className="mb-4 flex items-center gap-2.5">
+        {emoji && <span className="text-xl">{emoji}</span>}
+        <h2 className="text-lg font-extrabold tracking-tight text-[var(--foreground)]">
           {title}
         </h2>
         {videos.length > 0 && (
-          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-[var(--muted)]">
+          <span className="rounded-full gradient-bg px-2.5 py-0.5 text-xs font-bold text-white">
             {videos.length}
           </span>
         )}
@@ -40,8 +43,8 @@ export function HomeSection({
         <p className="mb-4 text-sm text-[var(--muted)]">{summary}</p>
       )}
       {videos.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center">
-          <p className="text-[var(--muted-light)] text-sm">{emptyMessage}</p>
+        <div className="rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 px-6 py-8 text-center">
+          <p className="text-[var(--muted)] text-sm">{emptyMessage}</p>
         </div>
       ) : (
         <ul className="space-y-2">

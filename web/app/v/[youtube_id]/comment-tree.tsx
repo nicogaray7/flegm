@@ -37,30 +37,30 @@ function CommentItem({
   const [showReply, setShowReply] = useState(false);
 
   return (
-    <div className={depth > 0 ? "ml-6 mt-3 border-l-2 border-[var(--border)] pl-4" : "py-3"}>
+    <div className={depth > 0 ? "ml-6 mt-3 border-l-2 border-purple-200 pl-4" : "py-3"}>
       <div className="flex items-start gap-3">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl gradient-bg text-xs font-bold text-white">
           {node.authorName?.[0]?.toUpperCase() ?? "?"}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-[var(--foreground)]">{node.authorName}</p>
+            <p className="text-sm font-bold text-[var(--foreground)]">{node.authorName}</p>
             <span className="text-xs text-[var(--muted-light)]">{formatDate(node.createdAt)}</span>
             {node.status === "pending" && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">
                 Pending
               </span>
             )}
           </div>
-          <p className="mt-1 text-sm text-[var(--muted)] whitespace-pre-wrap leading-relaxed">
+          <p className="mt-1 text-sm text-[var(--foreground)]/80 whitespace-pre-wrap leading-relaxed">
             {node.content}
           </p>
-          <div className="mt-1.5 flex items-center gap-3 text-xs text-[var(--muted-light)]">
+          <div className="mt-2 flex items-center gap-3 text-xs">
             {signedIn && (
               <button
                 type="button"
                 onClick={() => setShowReply((v) => !v)}
-                className="font-medium hover:text-emerald-600 transition-colors"
+                className="font-bold text-[var(--muted)] hover:text-purple-600 transition-colors"
               >
                 Reply
               </button>
@@ -69,7 +69,7 @@ function CommentItem({
         </div>
       </div>
       {showReply && (
-        <div className="mt-2 ml-10">
+        <div className="mt-2 ml-11">
           <CommentForm
             youtubeId={youtubeId}
             videoUuid={videoUuid}

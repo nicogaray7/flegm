@@ -33,36 +33,36 @@ export default async function ChannelPage({ params }: Props) {
       />
       <Header />
 
-      <main className="mx-auto max-w-2xl px-3 py-6 pb-24 sm:px-4 sm:pb-8">
-        <section className="mb-6 card flex items-center gap-4 p-4">
+      <main className="mx-auto max-w-3xl px-4 py-8">
+        <section className="mb-8 card flex items-center gap-4 p-5">
           {channelThumbnail ? (
             <Image
               src={channelThumbnail}
               alt=""
-              className="h-14 w-14 rounded-full object-cover ring-2 ring-[var(--border)]"
+              className="h-14 w-14 rounded-full object-cover ring-2 ring-zinc-100"
               width={56}
               height={56}
             />
           ) : (
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/20 text-lg font-bold text-[var(--accent)]">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold text-emerald-700">
               {channelName?.[0]?.toUpperCase() ?? "?"}
             </span>
           )}
-          <div className="min-w-0">
-            <h1 className="text-lg font-bold text-[var(--foreground)] truncate">{channelName}</h1>
-            <p className="mt-0.5 text-xs text-[var(--muted)]">
+          <div>
+            <h1 className="text-xl font-bold text-[var(--foreground)]">{channelName}</h1>
+            <p className="mt-0.5 text-sm text-[var(--muted)]">
               {channelVideos.length} video{channelVideos.length !== 1 ? "s" : ""} on Flegm
             </p>
           </div>
         </section>
 
-        <div className="mb-3 flex items-center gap-2">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">Videos</h2>
-          <span className="rounded-full bg-[var(--surface)] px-2 py-0.5 text-xs font-medium text-[var(--muted)]">
+        <div className="flex items-center gap-2.5 mb-4">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">Videos</h2>
+          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-[var(--muted)]">
             {channelVideos.length}
           </span>
         </div>
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className="space-y-2">
           {channelVideos.map((video, index) => (
             <li key={video.id}>
               <VideoCard

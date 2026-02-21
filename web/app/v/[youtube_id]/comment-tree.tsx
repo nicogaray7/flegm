@@ -39,7 +39,7 @@ function CommentItem({
   return (
     <div className={depth > 0 ? "ml-6 mt-3 border-l-2 border-[var(--border)] pl-4" : "py-3"}>
       <div className="flex items-start gap-3">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/20 text-xs font-semibold text-[var(--accent)]">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
           {node.authorName?.[0]?.toUpperCase() ?? "?"}
         </span>
         <div className="min-w-0 flex-1">
@@ -60,7 +60,7 @@ function CommentItem({
               <button
                 type="button"
                 onClick={() => setShowReply((v) => !v)}
-                className="font-medium hover:text-[var(--accent)] transition-colors"
+                className="font-medium hover:text-emerald-600 transition-colors"
               >
                 Reply
               </button>

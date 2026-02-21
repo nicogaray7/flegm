@@ -48,43 +48,19 @@ export default async function VideoPage({ params, searchParams }: Props) {
       )}
       <Header />
 
-      <main className="mx-auto max-w-2xl px-3 py-6 pb-24 sm:px-4 sm:pb-8">
+      <main className="mx-auto max-w-4xl px-4 py-8">
         {submitted === "1" && (
           <SubmitSuccessBanner path={`/v/${youtube_id}`} />
         )}
-        {/* Video player: full-bleed feel */}
-        <div className="mb-4 overflow-hidden rounded-2xl bg-[var(--surface)] ring-1 ring-[var(--border)]">
+        {/* Video player */}
+        <div className="mb-6 overflow-hidden rounded-xl shadow-sm">
           <VideoPlayer videoId={video.youtubeId} title={video.title} />
         </div>
 
-        {/* Title + channel + actions row (TikTok-style compact) */}
-        <div className="mb-4 flex gap-3">
-          <div className="min-w-0 flex-1">
-            <h1 className="text-base font-bold text-[var(--foreground)] leading-snug line-clamp-2 sm:text-lg">
-              {video.title}
-            </h1>
-            <Link
-              href={`/channel/${encodeURIComponent(video.channelId)}`}
-              className="mt-2 flex items-center gap-2 group"
-            >
-              {video.channelThumbnail && (
-                <Image
-                  src={video.channelThumbnail}
-                  alt=""
-                  className="h-7 w-7 rounded-full object-cover ring-2 ring-[var(--border)]"
-                  width={28}
-                  height={28}
-                />
-              )}
-              <span className="text-sm font-medium text-[var(--muted)] group-hover:text-[var(--accent)] transition-colors truncate">
-                {video.channelName}
-              </span>
-              <svg className="h-3.5 w-3.5 shrink-0 text-[var(--muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-1 shrink-0">
+        {/* Title + meta row */}
+        <div className="mb-6">
+          <h1 className="text-xl font-bold text-[var(--foreground)] mb-3">{video.title}</h1>
+          <div className="flex flex-wrap items-center gap-3">
             <UpvoteButton
               videoUuid={video.id}
               initialCount={video.upvotesCount}
@@ -92,30 +68,58 @@ export default async function VideoPage({ params, searchParams }: Props) {
               signedIn={!!user}
               signInNext={signInNext}
             />
-            <span className="text-[10px] font-medium text-[var(--muted)] tabular-nums">
-              {durationFormatted}
+            <span className="text-[var(--border)]">|</span>
+            <span className="text-sm text-[var(--muted)]">
+              Duration {durationFormatted}
             </span>
           </div>
         </div>
 
+        {/* Channel card */}
+        <section className="card p-4 mb-6">
+          <Link
+            href={`/channel/${encodeURIComponent(video.channelId)}`}
+            className="flex items-center gap-3 group"
+          >
+            {video.channelThumbnail && (
+              <Image
+                src={video.channelThumbnail}
+                alt=""
+                className="h-10 w-10 rounded-full object-cover ring-2 ring-zinc-100"
+                width={40}
+                height={40}
+              />
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="font-medium text-[var(--foreground)] group-hover:text-emerald-600 transition-colors">
+                {video.channelName}
+              </p>
+              <p className="text-xs text-[var(--muted)]">View channel</p>
+            </div>
+            <svg className="h-4 w-4 text-[var(--muted-light)] group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </section>
+
         {/* Comments */}
-        <section className="card p-4">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)] mb-3">
+        <section className="card p-5">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)] mb-4">
             Comments
           </h2>
           {user && (
-            <div className="mb-4">
+            <div className="mb-6">
               <CommentForm youtubeId={youtube_id} videoUuid={video.id} parentId={null} />
             </div>
           )}
           {!user && (
-            <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] px-4 py-3">
+            <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg bg-zinc-50 px-4 py-3">
               <p className="text-sm text-[var(--muted)]">Sign in to join the discussion.</p>
               <SignInButton next={signInNext} context="comment" />
             </div>
           )}
           {commentTree.length === 0 ? (
-            <p className="text-sm text-[var(--muted)] py-2">No comments yet. Be the first.</p>
+            <p className="text-sm text-[var(--muted-light)] py-2">No comments yet. Be the first to share your thoughts.</p>
           ) : (
             <CommentTree youtubeId={youtube_id} videoUuid={video.id} tree={commentTree} signedIn={!!user} />
           )}

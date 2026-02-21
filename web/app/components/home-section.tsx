@@ -25,26 +25,26 @@ export function HomeSection({
   showRanks = true,
 }: Props) {
   return (
-    <section className="mb-8">
-      <div className="mb-3 flex items-center gap-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+    <section className="mb-10">
+      <div className="mb-3 flex items-baseline gap-2.5">
+        <h2 className="text-lg font-bold tracking-tight text-[var(--foreground)]">
           {title}
         </h2>
         {videos.length > 0 && (
-          <span className="rounded-full bg-[var(--surface)] px-2 py-0.5 text-xs font-medium text-[var(--muted)]">
+          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-[var(--muted)]">
             {videos.length}
           </span>
         )}
       </div>
       {summary && (
-        <p className="mb-3 text-xs text-[var(--muted)]">{summary}</p>
+        <p className="mb-4 text-sm text-[var(--muted)]">{summary}</p>
       )}
       {videos.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--surface)]/50 px-6 py-10 text-center">
-          <p className="text-[var(--muted)] text-sm">{emptyMessage}</p>
+        <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center">
+          <p className="text-[var(--muted-light)] text-sm">{emptyMessage}</p>
         </div>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className="space-y-2">
           {videos.map((video, index) => (
             <li key={video.id}>
               <VideoCard

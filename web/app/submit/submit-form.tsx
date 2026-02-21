@@ -9,7 +9,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded-xl bg-[var(--accent)] px-4 py-2.5 font-semibold text-[var(--background)] hover:opacity-90 disabled:opacity-50 transition-opacity"
+      className="w-full rounded-lg bg-emerald-500 px-4 py-2.5 font-semibold text-white hover:bg-emerald-600 disabled:opacity-50 transition-colors"
     >
       {pending ? "Submitting..." : "Submit"}
     </button>
@@ -30,12 +30,12 @@ export function SubmitForm() {
           name="url"
           type="url"
           placeholder="https://www.youtube.com/watch?v=..."
-          className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-[var(--foreground)] placeholder-[var(--muted)] focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors"
+          className="w-full rounded-lg border border-[var(--border)] bg-zinc-50 px-3 py-2.5 text-[var(--foreground)] placeholder-[var(--muted-light)] focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors"
           required
         />
       </div>
       {state?.error && (
-        <p className="text-sm text-red-400" role="alert">{state.error}</p>
+        <p className="text-sm text-red-600" role="alert">{state.error}</p>
       )}
       <SubmitButton />
     </form>

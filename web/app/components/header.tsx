@@ -19,58 +19,52 @@ export async function Header() {
     user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture ?? null;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-12 max-w-2xl items-center justify-between gap-2 px-4 sm:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="pill flex items-center gap-2 bg-zinc-100 px-3 py-1.5 hover:bg-zinc-200 transition-colors"
           aria-label="Flegm home"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--accent)] text-sm font-black text-[var(--background)]">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">
             F
           </span>
-          <span className="text-base font-bold tracking-tight text-[var(--foreground)] hidden sm:inline">
+          <span className="text-sm font-bold tracking-tight text-[var(--foreground)]">
             Flegm
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1 sm:gap-3">
+        <nav className="flex items-center gap-6">
           <Link
             href="/leaderboard"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-[var(--muted)] hover:bg-[var(--surface)] hover:text-[var(--foreground)] transition-colors sm:h-9 sm:w-auto sm:px-4 sm:gap-2"
-            aria-label="Leaderboard"
+            className="text-sm font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-            <span className="hidden sm:inline text-sm font-medium">Leaderboard</span>
+            Leaderboard
           </Link>
           <SubmitIntentLink
             href="/submit"
             source="header"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--accent)] text-[var(--background)] hover:opacity-90 transition-opacity sm:h-9 sm:w-auto sm:px-4 sm:gap-2 sm:rounded-full"
+            className="pill inline-flex items-center gap-2 bg-[var(--foreground)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
-            <span className="hidden sm:inline text-sm font-semibold">Submit</span>
+            Submit
           </SubmitIntentLink>
           {user ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}
                   alt=""
-                  className="h-8 w-8 rounded-full object-cover ring-2 ring-[var(--border)]"
-                  width={32}
-                  height={32}
+                  className="h-7 w-7 rounded-full object-cover ring-2 ring-zinc-200"
+                  width={28}
+                  height={28}
                   unoptimized={false}
                 />
               ) : (
                 <span
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--surface)] text-xs font-semibold text-[var(--accent)] border border-[var(--border)]"
+                  className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700"
                   aria-hidden
                 >
                   {user.user_metadata?.full_name?.[0] ??

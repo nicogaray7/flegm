@@ -23,42 +23,45 @@ export function VideoCard({
   return (
     <Link
       href={`/v/${video.youtubeId}`}
-      className="group feed-card block"
+      className="group card flex items-center gap-4 px-4 py-3 hover:shadow-sm"
     >
-      {/* Thumbnail: TikTok-style tall-ish block */}
-      <div className="relative aspect-video w-full overflow-hidden bg-[var(--surface)]">
+      {rank !== undefined && (
+        <span className="hidden sm:flex h-7 w-7 shrink-0 items-center justify-center text-sm font-semibold text-[var(--muted-light)]">
+          {rank}
+        </span>
+      )}
+
+      {/* Thumbnail */}
+      <div className="relative shrink-0 h-16 w-28 overflow-hidden rounded-lg bg-zinc-100">
         <Image
           src={thumbUrl}
           alt=""
           fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, 400px"
+          className="object-cover"
+          sizes="112px"
           unoptimized
         />
-        <span className="absolute bottom-2 right-2 rounded-md bg-black/80 px-2 py-1 text-xs font-medium text-white tabular-nums backdrop-blur-sm">
+        <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white leading-none tabular-nums">
           {formatDurationHMS(video.duration)}
-        </span>
-        {rank !== undefined && (
-          <span className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-sm font-bold text-white backdrop-blur-sm">
-            {rank}
-          </span>
-        )}
-        <span className="absolute bottom-2 left-2 flex items-center gap-1.5 rounded-full bg-black/60 px-2 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-          <svg width="10" height="8" viewBox="0 0 12 8" fill="currentColor">
-            <path d="M6 0L11.196 7.5H0.804L6 0Z" />
-          </svg>
-          {video.upvotesCount}
         </span>
       </div>
 
-      {/* Info below thumbnail */}
-      <div className="p-3">
-        <p className="line-clamp-2 text-sm font-semibold text-[var(--foreground)] leading-snug group-hover:text-[var(--accent)] transition-colors">
+      {/* Info */}
+      <div className="min-w-0 flex-1">
+        <p className="font-medium text-[var(--foreground)] group-hover:text-emerald-600 truncate text-sm leading-snug transition-colors">
           {video.title}
         </p>
-        <p className="mt-1 text-xs text-[var(--muted)] truncate">
+        <p className="mt-0.5 text-xs text-[var(--muted)] truncate">
           {video.channelName}
         </p>
+      </div>
+
+      {/* Upvote badge */}
+      <div className="shrink-0 flex flex-col items-center gap-0.5 rounded-lg border border-[var(--border)] px-3 py-1.5 text-[var(--muted)] group-hover:border-emerald-300 group-hover:text-emerald-600 transition-colors">
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="text-current">
+          <path d="M6 0L11.196 7.5H0.804L6 0Z" fill="currentColor" />
+        </svg>
+        <span className="text-xs font-semibold leading-none">{video.upvotesCount}</span>
       </div>
     </Link>
   );

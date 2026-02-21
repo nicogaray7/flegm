@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EmailSignInForm } from "@/app/components/email-sign-in-form";
 import { SignInButton } from "@/app/submit/sign-in-button";
 
 type Props = {
@@ -39,6 +40,15 @@ export function LoginScreen({
         </div>
 
         <div className="space-y-4">
+          <EmailSignInForm next={next} />
+          <div className="relative">
+            <span className="bg-[var(--background)] relative z-10 flex justify-center text-xs text-[var(--muted)]">
+              Or
+            </span>
+            <span className="absolute inset-0 flex items-center" aria-hidden>
+              <span className="w-full border-t border-[var(--border)]" />
+            </span>
+          </div>
           <SignInButton
             next={next}
             context={context}

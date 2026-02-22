@@ -7,7 +7,7 @@ import { GaUserId } from "./components/ga-user-id";
 import { SignInSuccessTracker } from "./components/sign-in-success-tracker";
 import { LocaleProvider } from "@/lib/i18n/locale-context";
 import { getLocale } from "@/lib/i18n/server";
-import { getDictionary, localeHtmlLang } from "@/lib/i18n";
+import { localeHtmlLang } from "@/lib/i18n";
 import "./globals.css";
 
 const siteName = "Flegm";
@@ -57,7 +57,6 @@ export default async function RootLayout({
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
   const locale = await getLocale();
-  const dictionary = getDictionary(locale);
 
   const websiteJsonLd = {
     "@context": "https://schema.org",
@@ -92,7 +91,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
-        <LocaleProvider locale={locale} dictionary={dictionary}>
+        <LocaleProvider locale={locale}>
           <CookieConsentProvider>
             {children}
             <Suspense fallback={null}>

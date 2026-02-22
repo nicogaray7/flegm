@@ -1,0 +1,24 @@
+Category,Event Name,Description,Parameters,Parameter Details,Trigger,Component File,Line
+Page View,page_view,Automatic page view on route change,page_path; page_location,page_path: URL path; page_location: full URL,Route change (auto),web/app/components/analytics.tsx,—
+Page View,home_view,Homepage loaded,—,—,Page mount,web/app/page.tsx,—
+Page View,video_view,Video page loaded,video_id; video_title; channel_name,video_id: YouTube ID; video_title: title string; channel_name: channel string,Page mount,web/app/v/[youtube_id]/page.tsx,—
+Page View,leaderboard_view,Leaderboard page loaded,—,—,Page mount,web/app/leaderboard/page.tsx,—
+Page View,channel_view,Channel page loaded,channel_id; channel_name,channel_id: YouTube channel ID; channel_name: channel string,Page mount,web/app/channel/[channel_id]/page.tsx,—
+Page View,submit_form_view,Submit form page loaded,—,—,Page mount,web/app/submit/page.tsx,—
+Page View,trending_view,Trending page loaded,—,—,Page mount,web/app/trending/page.tsx,—
+Page View,top_week_view,Top this week page loaded,—,—,Page mount,web/app/top/week/page.tsx,—
+Page View,top_month_view,Top this month page loaded,—,—,Page mount,web/app/top/month/page.tsx,—
+Page View,top_alltime_view,Top all-time page loaded,—,—,Page mount,web/app/top/all-time/page.tsx,—
+Authentication,sign_in_start,User initiates sign-in,from_context,from_context: "email" | "submit" | "comment" | "upvote",Click sign-in button,web/app/components/email-sign-in-form.tsx; web/app/submit/sign-in-button.tsx,—
+Authentication,magic_link_sent,Magic link email sent successfully,—,—,After email submit success,web/app/components/email-sign-in-form.tsx,—
+Authentication,sign_in_success,User successfully authenticated,—,—,Auth state change (Supabase callback),web/app/components/sign-in-success-tracker.tsx,—
+Authentication,sign_in_error,Sign-in attempt failed,method; error,method: "email"; error: error message string,After email submit failure,web/app/components/email-sign-in-form.tsx,—
+Engagement,video_upvote,User upvotes or undoes upvote on a video,video_id; action,video_id: YouTube ID; action: "upvote" | "undo",Click upvote button,web/app/v/[youtube_id]/upvote-button.tsx,—
+Engagement,comment_submit,User submits a comment or reply,video_id; is_reply,video_id: YouTube ID; is_reply: true | false,Submit comment form,web/app/v/[youtube_id]/comment-form.tsx,—
+Engagement,video_submit,User submits a new video,youtube_id,youtube_id: YouTube ID,Successful video submission,web/app/v/[youtube_id]/page.tsx,—
+Navigation,submit_intent,User clicks to go to submit page,source,source: "header" | "hero",Click submit link,web/app/components/submit-intent-link.tsx,—
+Navigation,share_click,User copies share link,method; content_type; item_id,method: "copy_link"; content_type: "video"; item_id: URL path,Click share/copy button,web/app/components/submit-success-banner.tsx,—
+Consent,consent_update,User updates cookie consent preferences,analytics; marketing; action,analytics: "granted" | "denied"; marketing: "granted" | "denied"; action: "accept_all" | "reject_all" | "custom",Click consent banner button,web/lib/cookie-consent.tsx,—
+User Property,user_id,Authenticated user ID synced to GA4,user_id,user_id: Supabase user UUID,Auth state change,web/app/components/ga-user-id.tsx,—
+Config,consent_default,Default consent state (all denied),analytics_storage; ad_storage; ad_user_data; ad_personalization,All set to "denied" by default,GA4 initialization,web/app/components/analytics.tsx,—
+Config,measurement_id,GA4 measurement ID,NEXT_PUBLIC_GA_ID,Format: G-XXXXXXXXXX,Environment variable,web/.env.example,—

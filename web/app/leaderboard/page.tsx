@@ -5,6 +5,7 @@ import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
+import { getServerDictionary } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,7 @@ export const metadata = {
 };
 
 export default async function LeaderboardPage() {
+  const { t } = await getServerDictionary();
   let topVideos: { id: string; youtubeId: string; title: string; channelName: string; upvotesCount: number; duration: number }[] = [];
   let dbError: string | null = null;
   try {
@@ -37,23 +39,23 @@ export default async function LeaderboardPage() {
       <main className="mx-auto max-w-3xl px-4 py-8">
         {dbError && (
           <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            Could not load leaderboard: {dbError}. Check DATABASE_URL and run <code className="rounded bg-red-100 px-1">npm run db:push</code> if needed.
+            {t.leaderboard.dbError(dbError)}
           </div>
         )}
 
         <div className="mb-8 text-center">
           <span className="text-4xl mb-2 block">{"\u{1F3C6}"}</span>
           <h1 className="text-3xl font-black text-[var(--foreground)] tracking-tight sm:text-4xl">
-            <span className="gradient-text">Leaderboard</span>
+            <span className="gradient-text">{t.leaderboard.title}</span>
           </h1>
           <p className="mt-2 text-sm text-[var(--muted)]">
-            Top 100 videos voted by the community
+            {t.leaderboard.subtitle}
           </p>
         </div>
 
         {topVideos.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 px-6 py-8 text-center">
-            <p className="text-sm text-[var(--muted)]">{dbError ? "Something went wrong." : "No videos yet. Be the first to drop one!"}</p>
+            <p className="text-sm text-[var(--muted)]">{dbError ? t.leaderboard.somethingWrong : t.leaderboard.empty}</p>
           </div>
         ) : (
           <ul className="space-y-2">

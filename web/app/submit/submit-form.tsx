@@ -2,34 +2,37 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { submitVideo } from "@/actions/submit";
+import { useTranslation } from "@/lib/i18n/locale-context";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
+  const t = useTranslation();
   return (
     <button
       type="submit"
       disabled={pending}
       className="w-full rounded-xl gradient-bg px-4 py-3 font-bold text-white hover:opacity-90 disabled:opacity-50 transition-all active:scale-[0.98]"
     >
-      {pending ? "Dropping..." : "Drop it"}
+      {pending ? t.submit.buttonSubmitting : t.submit.buttonSubmit}
     </button>
   );
 }
 
 export function SubmitForm() {
   const [state, formAction] = useFormState(submitVideo, null);
+  const t = useTranslation();
 
   return (
     <form action={formAction} className="space-y-4">
       <div>
         <label htmlFor="url" className="block text-sm font-bold text-[var(--foreground)] mb-1.5">
-          YouTube URL
+          {t.submit.label}
         </label>
         <input
           id="url"
           name="url"
           type="url"
-          placeholder="https://www.youtube.com/watch?v=..."
+          placeholder={t.submit.placeholder}
           className="input-field"
           required
         />

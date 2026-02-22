@@ -13,6 +13,7 @@ import { Footer } from "@/app/components/footer";
 import { SignInButton } from "@/app/submit/sign-in-button";
 import { GaEvent } from "@/app/components/ga-event";
 import { SubmitSuccessBanner } from "@/app/components/submit-success-banner";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { formatDurationHMS } from "@/lib/format-duration";
 import { formatDurationISO } from "@/lib/format-duration";
 import { db } from "@/db";
@@ -64,6 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function VideoPage({ params, searchParams }: Props) {
+  const { t } = await getServerDictionary();
   const { youtube_id } = await params;
   const { submitted } = await searchParams;
   const supabase = await createClient();
@@ -173,7 +175,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
               <p className="font-bold text-[var(--foreground)] group-hover:text-purple-600 transition-colors">
                 {video.channelName}
               </p>
-              <p className="text-xs text-[var(--muted)]">View channel</p>
+              <p className="text-xs text-[var(--muted)]">{t.video.viewChannel}</p>
             </div>
             <svg className="h-4 w-4 text-[var(--muted-light)] group-hover:text-purple-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -184,7 +186,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
         {/* Comments */}
         <section className="card p-5">
           <h2 className="flex items-center gap-2 text-sm font-extrabold text-[var(--foreground)] mb-4">
-            <span>{"\u{1F4AC}"}</span> Comments
+            <span>{"\u{1F4AC}"}</span> {t.video.comments}
           </h2>
           {user && (
             <div className="mb-6">
@@ -193,12 +195,12 @@ export default async function VideoPage({ params, searchParams }: Props) {
           )}
           {!user && (
             <div className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl bg-purple-50 border border-purple-100 px-4 py-3">
-              <p className="text-sm text-[var(--muted)]">Join the convo</p>
+              <p className="text-sm text-[var(--muted)]">{t.video.joinConvo}</p>
               <SignInButton next={signInNext} context="comment" />
             </div>
           )}
           {commentTree.length === 0 ? (
-            <p className="text-sm text-[var(--muted-light)] py-4 text-center">No comments yet. Be the first to share your take</p>
+            <p className="text-sm text-[var(--muted-light)] py-4 text-center">{t.video.noComments}</p>
           ) : (
             <CommentTree youtubeId={youtube_id} videoUuid={video.id} tree={commentTree} signedIn={!!user} />
           )}

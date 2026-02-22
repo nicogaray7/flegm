@@ -6,6 +6,7 @@ import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
+import { getServerDictionary } from "@/lib/i18n/server";
 import Link from "next/link";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TopWeekPage() {
+  const { t } = await getServerDictionary();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -63,35 +65,35 @@ export default async function TopWeekPage() {
         <div className="mb-8 text-center">
           <span className="text-4xl mb-2 block">{"\u{1F4C5}"}</span>
           <h1 className="text-3xl font-black text-[var(--foreground)] tracking-tight sm:text-4xl">
-            <span className="gradient-text">Top This Week</span>
+            <span className="gradient-text">{t.topWeek.title}</span>
           </h1>
           <p className="mt-2 text-sm text-[var(--muted)]">
-            The best YouTube videos from the past 7 days, ranked by community votes
+            {t.topWeek.subtitle}
           </p>
         </div>
 
         <nav className="mb-6 flex flex-wrap items-center justify-center gap-2 text-sm">
           <Link href="/trending" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            Trending
+            {t.trending.navTrending}
           </Link>
           <span className="pill bg-[var(--accent)] px-4 py-1.5 text-white font-bold text-xs">
-            This Week
+            {t.trending.navThisWeek}
           </span>
           <Link href="/top/month" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            This Month
+            {t.trending.navThisMonth}
           </Link>
           <Link href="/top/all-time" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            All Time
+            {t.trending.navAllTime}
           </Link>
           <Link href="/leaderboard" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            Leaderboard
+            {t.trending.navLeaderboard}
           </Link>
         </nav>
 
         {topVideos.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 px-6 py-8 text-center">
             <p className="text-sm text-[var(--muted)]">
-              No videos this week yet. <Link href="/submit" className="font-bold text-[var(--accent)] hover:underline">Drop the first one!</Link>
+              {t.topWeek.empty} <Link href="/submit" className="font-bold text-[var(--accent)] hover:underline">{t.topWeek.emptyLink}</Link>
             </p>
           </div>
         ) : (
@@ -116,13 +118,10 @@ export default async function TopWeekPage() {
 
         <section className="mt-12 card-shadow p-6">
           <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-3">
-            Weekly YouTube Video Rankings
+            {t.topWeek.seoTitle}
           </h2>
           <p className="text-sm text-[var(--muted)] leading-relaxed">
-            Every week, the Flegm community discovers and ranks the best YouTube videos.
-            These aren&apos;t algorithmic picks &mdash; they&apos;re curated by real viewers who drop
-            videos they love and upvote the ones worth watching. Check back every week
-            to see what&apos;s rising.
+            {t.topWeek.seoText}
           </p>
         </section>
       </main>

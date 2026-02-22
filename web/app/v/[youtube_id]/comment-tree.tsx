@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CommentForm } from "./comment-form";
+import { useTranslation } from "@/lib/i18n/locale-context";
 import type { CommentNode } from "@/lib/video-page-data";
 
 type Props = {
@@ -35,6 +36,7 @@ function CommentItem({
   depth: number;
 }) {
   const [showReply, setShowReply] = useState(false);
+  const t = useTranslation();
 
   return (
     <div className={depth > 0 ? "ml-6 mt-3 border-l-2 border-purple-200 pl-4" : "py-3"}>
@@ -62,7 +64,7 @@ function CommentItem({
                 onClick={() => setShowReply((v) => !v)}
                 className="font-bold text-[var(--muted)] hover:text-purple-600 transition-colors"
               >
-                Reply
+                {t.video.reply}
               </button>
             )}
           </div>

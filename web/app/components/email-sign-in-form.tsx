@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signInWithEmail } from "@/actions/auth";
 import { trackEvent } from "@/lib/gtag";
+import { useTranslation } from "@/lib/i18n/locale-context";
 
 type Props = {
   next?: string;
@@ -13,6 +14,7 @@ export function EmailSignInForm({ next, className }: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const t = useTranslation();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,7 +29,7 @@ export function EmailSignInForm({ next, className }: Props) {
       return;
     }
     setStatus("success");
-    setMessage("Check your email for a sign-in link.");
+    setMessage(t.auth.checkEmail);
     trackEvent("magic_link_sent");
   }
 
@@ -39,7 +41,7 @@ export function EmailSignInForm({ next, className }: Props) {
       >
         <span className="text-2xl block mb-1">{"\u{2728}"}</span>
         <p className="text-sm font-semibold text-purple-700">
-          Check your email for a sign-in link
+          {t.auth.checkEmail}
         </p>
       </div>
     );
@@ -52,7 +54,7 @@ export function EmailSignInForm({ next, className }: Props) {
           type="email"
           name="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder={t.auth.emailPlaceholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={status === "loading"}
@@ -63,7 +65,7 @@ export function EmailSignInForm({ next, className }: Props) {
           disabled={status === "loading"}
           className="pill shrink-0 gradient-bg px-5 py-3 font-bold text-white hover:opacity-90 disabled:opacity-50 transition-all active:scale-95"
         >
-          {status === "loading" ? "Sending..." : "Continue with Email"}
+          {status === "loading" ? t.auth.sending : t.auth.continueWithEmail}
         </button>
       </div>
       {message && (

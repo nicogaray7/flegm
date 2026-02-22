@@ -3,9 +3,11 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/app/submit/sign-out-button";
 import { SubmitIntentLink } from "@/app/components/submit-intent-link";
+import { getServerDictionary } from "@/lib/i18n/server";
 import type { User } from "@supabase/supabase-js";
 
 export async function Header() {
+  const { t } = await getServerDictionary();
   let user: User | null = null;
   try {
     const supabase = await createClient();
@@ -39,13 +41,13 @@ export async function Header() {
             href="/trending"
             className="pill hidden sm:inline-flex px-3 py-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-purple-50 transition-all"
           >
-            Trending
+            {t.nav.trending}
           </Link>
           <Link
             href="/leaderboard"
             className="pill px-3 py-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-purple-50 transition-all"
           >
-            Leaderboard
+            {t.nav.leaderboard}
           </Link>
           <SubmitIntentLink
             href="/submit"
@@ -55,7 +57,7 @@ export async function Header() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
             </svg>
-            Drop a video
+            {t.nav.dropAVideo}
           </SubmitIntentLink>
           {user ? (
             <div className="flex items-center gap-2.5">

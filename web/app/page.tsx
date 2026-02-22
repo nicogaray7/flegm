@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getHomeVideos } from "@/lib/home-data";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { GaEvent } from "./components/ga-event";
 import { HomeSection } from "./components/home-section";
 import { Header } from "./components/header";
@@ -24,6 +25,7 @@ const emptyHomeData: HomeData = {
 };
 
 export default async function Home() {
+  const { t } = await getServerDictionary();
   let data = emptyHomeData;
   let dbError: string | null = null;
   try {
@@ -44,21 +46,21 @@ export default async function Home() {
       <main className="mx-auto max-w-3xl px-4 py-10">
         {dbError && (
           <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            Could not load videos: {dbError}. Check DATABASE_URL in .env.local and run <code className="rounded bg-red-100 px-1">npm run db:push</code> if needed.
+            {t.home.dbError(dbError)}
           </div>
         )}
 
         {/* Hero */}
         <section className="mb-12 text-center">
           <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">
-            <span>{"\u{1F525}"}</span> community-powered
+            <span>{"\u{1F525}"}</span> {t.home.communityPowered}
           </div>
           <h1 className="text-4xl font-black tracking-tight text-[var(--foreground)] sm:text-5xl">
-            The YouTube{" "}
-            <span className="gradient-text">Leaderboard</span>
+            {t.home.heroTitle}{" "}
+            <span className="gradient-text">{t.home.heroTitleHighlight}</span>
           </h1>
           <p className="mx-auto mt-4 max-w-md text-base text-[var(--muted)] leading-relaxed">
-            Drop bangers, upvote the best, and watch what the community is loving rn
+            {t.home.heroSubtitle}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <SubmitIntentLink
@@ -69,14 +71,14 @@ export default async function Home() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M12 5v14M5 12h14" />
               </svg>
-              Drop a video
+              {t.nav.dropAVideo}
             </SubmitIntentLink>
             <Link
               href="/leaderboard"
               className="btn-secondary px-6 py-3 text-base"
             >
               <span>{"\u{1F3C6}"}</span>
-              Leaderboard
+              {t.nav.leaderboard}
             </Link>
           </div>
         </section>
@@ -89,7 +91,7 @@ export default async function Home() {
               {today.length}
             </span>
             <span className="text-xs font-semibold text-[var(--muted)] mt-0.5">
-              today
+              {t.home.today}
             </span>
           </div>
           <div className="card-shadow flex flex-col items-center px-4 py-5 text-center hover-lift">
@@ -98,7 +100,7 @@ export default async function Home() {
               {videosThisWeek}
             </span>
             <span className="text-xs font-semibold text-[var(--muted)] mt-0.5">
-              this week
+              {t.home.thisWeek}
             </span>
           </div>
           <div className="card-shadow flex flex-col items-center px-4 py-5 text-center hover-lift">
@@ -107,45 +109,45 @@ export default async function Home() {
               {videosThisMonth}
             </span>
             <span className="text-xs font-semibold text-[var(--muted)] mt-0.5">
-              this month
+              {t.home.thisMonth}
             </span>
           </div>
         </section>
 
         {/* Sections */}
         <HomeSection
-          title="Dropping Today"
+          title={t.home.droppingToday}
           emoji={"\u{26A1}"}
           videos={today}
-          emptyMessage="Nothing yet today — be the first to drop something fire"
+          emptyMessage={t.home.emptyToday}
         />
         <HomeSection
-          title="Yesterday"
+          title={t.home.yesterday}
           emoji={"\u{23EA}"}
           videos={yesterday}
-          emptyMessage="No videos from yesterday."
+          emptyMessage={t.home.emptyYesterday}
         />
         <HomeSection
-          title="This Week"
+          title={t.home.sectionThisWeek}
           emoji={"\u{1F4C5}"}
           videos={lastWeek.videos}
           summary={
             lastWeek.count > 0
-              ? `${lastWeek.count} video${lastWeek.count !== 1 ? "s" : ""} dropped this week`
+              ? t.home.videosDroppedWeek(lastWeek.count)
               : undefined
           }
-          emptyMessage="No videos from the past week."
+          emptyMessage={t.home.emptyWeek}
         />
         <HomeSection
-          title="This Month"
+          title={t.home.sectionThisMonth}
           emoji={"\u{1F30D}"}
           videos={lastMonth.videos}
           summary={
             lastMonth.count > 0
-              ? `${lastMonth.count} video${lastMonth.count !== 1 ? "s" : ""} dropped this month`
+              ? t.home.videosDroppedMonth(lastMonth.count)
               : undefined
           }
-          emptyMessage="No videos from the past month."
+          emptyMessage={t.home.emptyMonth}
         />
       </main>
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
+import { getServerDictionary } from "@/lib/i18n/server";
 import Link from "next/link";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { t } = await getServerDictionary();
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -73,165 +75,121 @@ export default function AboutPage() {
             <span className="text-3xl font-black text-white">F</span>
           </div>
           <h1 className="text-3xl font-black tracking-tight text-[var(--foreground)] sm:text-4xl">
-            About <span className="gradient-text">Flegm</span>
+            {t.about.title} <span className="gradient-text">{t.about.titleHighlight}</span>
           </h1>
           <p className="mt-3 text-base text-[var(--muted)]">
-            The community-powered YouTube leaderboard
+            {t.about.subtitle}
           </p>
         </div>
 
         <div className="space-y-10 text-sm text-[var(--foreground)]/85 leading-relaxed">
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-3">
-              What is Flegm?
+              {t.about.whatIsTitle}
             </h2>
-            <p>
-              Flegm is a platform where the community decides which YouTube videos
-              deserve the spotlight. No algorithm, no corporate curation &mdash; just
-              real people sharing and voting on the videos they love.
-            </p>
-            <p className="mt-2">
-              Think of it as a living, breathing YouTube chart powered by taste, not
-              data science.
-            </p>
+            <p>{t.about.whatIsText1}</p>
+            <p className="mt-2">{t.about.whatIsText2}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-3">
-              How it works
+              {t.about.howItWorksTitle}
             </h2>
             <ol className="list-decimal pl-5 space-y-3">
               <li>
-                <strong>Drop a video</strong> &mdash; Paste any YouTube URL and it&apos;s
-                instantly live on Flegm.
+                <strong>{t.about.step1Title}</strong> &mdash; {t.about.step1Text}
               </li>
               <li>
-                <strong>Upvote</strong> &mdash; See something great? Hit the upvote
-                button. The more upvotes a video gets, the higher it climbs.
+                <strong>{t.about.step2Title}</strong> &mdash; {t.about.step2Text}
               </li>
               <li>
-                <strong>Discover</strong> &mdash; Browse{" "}
+                <strong>{t.about.step3Title}</strong> &mdash; {t.about.step3Text}{" "}
                 <Link href="/trending" className="font-semibold text-[var(--accent)] hover:underline">
-                  trending videos
+                  {t.about.step3TrendingVideos}
                 </Link>,
-                the{" "}
+                {" "}{t.about.step3The}{" "}
                 <Link href="/leaderboard" className="font-semibold text-[var(--accent)] hover:underline">
-                  leaderboard
-                </Link>, or{" "}
+                  {t.about.step3LeaderboardLink}
+                </Link>, {t.about.step3Or}{" "}
                 <Link href="/top/all-time" className="font-semibold text-[var(--accent)] hover:underline">
-                  all-time bests
+                  {t.about.step3AllTime}
                 </Link>.
               </li>
               <li>
-                <strong>Discuss</strong> &mdash; Leave comments and join the conversation
-                around each video.
+                <strong>{t.about.step4Title}</strong> &mdash; {t.about.step4Text}
               </li>
             </ol>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-3">
-              Why Flegm?
+              {t.about.whyTitle}
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="card-shadow p-4">
                 <span className="text-2xl mb-1 block">{"\u{1F465}"}</span>
-                <p className="font-bold text-[var(--foreground)] text-sm">Community-driven</p>
-                <p className="text-xs text-[var(--muted)] mt-1">
-                  Rankings are 100% based on community votes, not algorithms
-                </p>
+                <p className="font-bold text-[var(--foreground)] text-sm">{t.about.communityDriven}</p>
+                <p className="text-xs text-[var(--muted)] mt-1">{t.about.communityDrivenDesc}</p>
               </div>
               <div className="card-shadow p-4">
                 <span className="text-2xl mb-1 block">{"\u{26A1}"}</span>
-                <p className="font-bold text-[var(--foreground)] text-sm">Real-time</p>
-                <p className="text-xs text-[var(--muted)] mt-1">
-                  See what&apos;s hot right now, updated continuously
-                </p>
+                <p className="font-bold text-[var(--foreground)] text-sm">{t.about.realTime}</p>
+                <p className="text-xs text-[var(--muted)] mt-1">{t.about.realTimeDesc}</p>
               </div>
               <div className="card-shadow p-4">
                 <span className="text-2xl mb-1 block">{"\u{1F48E}"}</span>
-                <p className="font-bold text-[var(--foreground)] text-sm">Surface hidden gems</p>
-                <p className="text-xs text-[var(--muted)] mt-1">
-                  Discover videos that YouTube&apos;s algorithm won&apos;t show you
-                </p>
+                <p className="font-bold text-[var(--foreground)] text-sm">{t.about.hiddenGems}</p>
+                <p className="text-xs text-[var(--muted)] mt-1">{t.about.hiddenGemsDesc}</p>
               </div>
               <div className="card-shadow p-4">
                 <span className="text-2xl mb-1 block">{"\u{1F4AC}"}</span>
-                <p className="font-bold text-[var(--foreground)] text-sm">Real conversations</p>
-                <p className="text-xs text-[var(--muted)] mt-1">
-                  Discuss videos with people who actually watch them
-                </p>
+                <p className="font-bold text-[var(--foreground)] text-sm">{t.about.realConversations}</p>
+                <p className="text-xs text-[var(--muted)] mt-1">{t.about.realConversationsDesc}</p>
               </div>
             </div>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-3">
-              Frequently asked questions
+              {t.about.faqTitle}
             </h2>
             <div className="space-y-4">
               <details className="group card-shadow p-4">
                 <summary className="cursor-pointer font-bold text-[var(--foreground)] text-sm flex items-center justify-between">
-                  Is Flegm free?
-                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">
-                    {"\u25BE"}
-                  </span>
+                  {t.about.faqFreeQ}
+                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">{"\u25BE"}</span>
                 </summary>
-                <p className="mt-2 text-xs text-[var(--muted)]">
-                  Yes, Flegm is completely free. Browse, drop videos, upvote, and comment
-                  at no cost.
-                </p>
+                <p className="mt-2 text-xs text-[var(--muted)]">{t.about.faqFreeA}</p>
               </details>
               <details className="group card-shadow p-4">
                 <summary className="cursor-pointer font-bold text-[var(--foreground)] text-sm flex items-center justify-between">
-                  How is this different from YouTube Trending?
-                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">
-                    {"\u25BE"}
-                  </span>
+                  {t.about.faqDiffQ}
+                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">{"\u25BE"}</span>
                 </summary>
-                <p className="mt-2 text-xs text-[var(--muted)]">
-                  YouTube&apos;s trending page is controlled by an algorithm that favors big
-                  channels and advertisers. Flegm&apos;s rankings are purely community-driven.
-                </p>
+                <p className="mt-2 text-xs text-[var(--muted)]">{t.about.faqDiffA}</p>
               </details>
               <details className="group card-shadow p-4">
                 <summary className="cursor-pointer font-bold text-[var(--foreground)] text-sm flex items-center justify-between">
-                  Can I drop any YouTube video?
-                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">
-                    {"\u25BE"}
-                  </span>
+                  {t.about.faqAnyQ}
+                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">{"\u25BE"}</span>
                 </summary>
-                <p className="mt-2 text-xs text-[var(--muted)]">
-                  Yes, any publicly available YouTube video can be shared on Flegm.
-                  Just paste the URL and it&apos;s live instantly.
-                </p>
+                <p className="mt-2 text-xs text-[var(--muted)]">{t.about.faqAnyA}</p>
               </details>
               <details className="group card-shadow p-4">
                 <summary className="cursor-pointer font-bold text-[var(--foreground)] text-sm flex items-center justify-between">
-                  Do I need an account?
-                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">
-                    {"\u25BE"}
-                  </span>
+                  {t.about.faqAccountQ}
+                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform">{"\u25BE"}</span>
                 </summary>
-                <p className="mt-2 text-xs text-[var(--muted)]">
-                  You can browse without an account. To drop videos, upvote, or comment,
-                  sign in with Google or email.
-                </p>
+                <p className="mt-2 text-xs text-[var(--muted)]">{t.about.faqAccountA}</p>
               </details>
             </div>
           </section>
 
           <section className="text-center pt-4">
-            <p className="text-[var(--muted)] text-sm mb-4">
-              Ready to discover something great?
-            </p>
+            <p className="text-[var(--muted)] text-sm mb-4">{t.about.readyDiscover}</p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link href="/" className="btn-primary px-6 py-3 text-sm">
-                Browse videos
-              </Link>
-              <Link href="/submit" className="btn-secondary px-6 py-3 text-sm">
-                Drop a video
-              </Link>
+              <Link href="/" className="btn-primary px-6 py-3 text-sm">{t.about.browseVideos}</Link>
+              <Link href="/submit" className="btn-secondary px-6 py-3 text-sm">{t.nav.dropAVideo}</Link>
             </div>
           </section>
         </div>

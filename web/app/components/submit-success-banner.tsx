@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { trackEvent } from "@/lib/gtag";
+import { useTranslation } from "@/lib/i18n/locale-context";
 
 type Props = {
   /** Path of the video page (e.g. /v/abc123) for building share URL */
@@ -13,6 +14,7 @@ export function SubmitSuccessBanner({ path }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const [copied, setCopied] = useState(false);
+  const t = useTranslation();
 
   function handleCopy() {
     const url = typeof window !== "undefined" ? `${window.location.origin}${path}` : "";
@@ -35,7 +37,7 @@ export function SubmitSuccessBanner({ path }: Props) {
       aria-live="polite"
     >
       <p className="font-bold text-purple-800">
-        {"\u{1F389}"} Video added! Share it with your friends
+        {"\u{1F389}"} {t.banner.videoAdded}
       </p>
       <div className="flex items-center gap-2">
         <button
@@ -43,14 +45,14 @@ export function SubmitSuccessBanner({ path }: Props) {
           onClick={handleCopy}
           className="rounded-xl gradient-bg px-3 py-1.5 font-bold text-white hover:opacity-90 transition-all active:scale-95"
         >
-          {copied ? "Copied!" : "Copy link"}
+          {copied ? t.banner.copied : t.banner.copyLink}
         </button>
         <button
           type="button"
           onClick={handleDismiss}
           className="text-purple-600 font-semibold hover:text-purple-800 hover:underline transition-colors"
         >
-          Dismiss
+          {t.banner.dismiss}
         </button>
       </div>
     </div>

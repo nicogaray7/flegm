@@ -8,6 +8,7 @@ import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
+import { getServerDictionary } from "@/lib/i18n/server";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
@@ -42,6 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ChannelPage({ params }: Props) {
+  const { t } = await getServerDictionary();
   const { channel_id } = await params;
   const decodedId = decodeURIComponent(channel_id);
 
@@ -82,13 +84,13 @@ export default async function ChannelPage({ params }: Props) {
           <div>
             <h1 className="text-xl font-bold text-[var(--foreground)]">{channelName}</h1>
             <p className="mt-0.5 text-sm text-[var(--muted)]">
-              {channelVideos.length} video{channelVideos.length !== 1 ? "s" : ""} on Flegm
+              {t.channel.videosOnFlegm(channelVideos.length)}
             </p>
           </div>
         </section>
 
         <div className="flex items-center gap-2.5 mb-4">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">Videos</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-[var(--muted)]">{t.channel.videos}</h2>
           <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-[var(--muted)]">
             {channelVideos.length}
           </span>

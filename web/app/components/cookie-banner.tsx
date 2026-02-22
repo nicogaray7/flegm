@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useConsent } from "@/lib/cookie-consent";
+import { useTranslation } from "@/lib/i18n/locale-context";
 
 export function CookieBanner() {
   const { decided, acceptAll, rejectAll, save } = useConsent();
+  const t = useTranslation();
   const [showSettings, setShowSettings] = useState(false);
   const [analytics, setAnalytics] = useState(true);
   const [marketing, setMarketing] = useState(false);
@@ -18,9 +20,9 @@ export function CookieBanner() {
         {!showSettings ? (
           <>
             <p className="text-sm text-[var(--foreground)] leading-relaxed">
-              We use cookies to improve your experience, measure site performance, and show relevant content.{" "}
+              {t.cookie.message}{" "}
               <Link href="/cookies" className="font-medium text-[var(--accent)] hover:underline">
-                Cookie policy
+                {t.cookie.cookiePolicy}
               </Link>
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -29,46 +31,46 @@ export function CookieBanner() {
                 onClick={acceptAll}
                 className="btn-primary px-4 py-2 text-xs"
               >
-                Accept all
+                {t.cookie.acceptAll}
               </button>
               <button
                 type="button"
                 onClick={rejectAll}
                 className="btn-secondary px-4 py-2 text-xs"
               >
-                Reject all
+                {t.cookie.rejectAll}
               </button>
               <button
                 type="button"
                 onClick={() => setShowSettings(true)}
                 className="px-3 py-2 text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
               >
-                Manage
+                {t.cookie.manage}
               </button>
             </div>
           </>
         ) : (
           <>
-            <p className="mb-4 text-sm font-bold text-[var(--foreground)]">Cookie preferences</p>
+            <p className="mb-4 text-sm font-bold text-[var(--foreground)]">{t.cookie.preferences}</p>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center justify-between">
                 <div>
-                  <span className="font-medium text-[var(--foreground)]">Necessary</span>
-                  <p className="text-xs text-[var(--muted)]">Authentication, security, core functions</p>
+                  <span className="font-medium text-[var(--foreground)]">{t.cookie.necessary}</span>
+                  <p className="text-xs text-[var(--muted)]">{t.cookie.necessaryDesc}</p>
                 </div>
-                <span className="text-xs font-medium text-[var(--muted)]">Always on</span>
+                <span className="text-xs font-medium text-[var(--muted)]">{t.cookie.alwaysOn}</span>
               </li>
               <li className="flex items-center justify-between">
                 <div>
-                  <span className="font-medium text-[var(--foreground)]">Analytics</span>
-                  <p className="text-xs text-[var(--muted)]">Google Analytics, page views, usage patterns</p>
+                  <span className="font-medium text-[var(--foreground)]">{t.cookie.analytics}</span>
+                  <p className="text-xs text-[var(--muted)]">{t.cookie.analyticsDesc}</p>
                 </div>
                 <Toggle checked={analytics} onChange={setAnalytics} />
               </li>
               <li className="flex items-center justify-between">
                 <div>
-                  <span className="font-medium text-[var(--foreground)]">Marketing</span>
-                  <p className="text-xs text-[var(--muted)]">Ads, retargeting, personalized content</p>
+                  <span className="font-medium text-[var(--foreground)]">{t.cookie.marketing}</span>
+                  <p className="text-xs text-[var(--muted)]">{t.cookie.marketingDesc}</p>
                 </div>
                 <Toggle checked={marketing} onChange={setMarketing} />
               </li>
@@ -79,14 +81,14 @@ export function CookieBanner() {
                 onClick={() => save({ analytics, marketing })}
                 className="btn-primary px-4 py-2 text-xs"
               >
-                Save preferences
+                {t.cookie.savePreferences}
               </button>
               <button
                 type="button"
                 onClick={() => setShowSettings(false)}
                 className="px-3 py-2 text-xs font-medium text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
               >
-                Back
+                {t.cookie.back}
               </button>
             </div>
           </>

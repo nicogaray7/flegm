@@ -6,6 +6,7 @@ import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
+import { getServerDictionary } from "@/lib/i18n/server";
 import Link from "next/link";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TopMonthPage() {
+  const { t } = await getServerDictionary();
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -63,35 +65,35 @@ export default async function TopMonthPage() {
         <div className="mb-8 text-center">
           <span className="text-4xl mb-2 block">{"\u{1F30D}"}</span>
           <h1 className="text-3xl font-black text-[var(--foreground)] tracking-tight sm:text-4xl">
-            <span className="gradient-text">Top This Month</span>
+            <span className="gradient-text">{t.topMonth.title}</span>
           </h1>
           <p className="mt-2 text-sm text-[var(--muted)]">
-            The best YouTube videos from the past 30 days, ranked by the community
+            {t.topMonth.subtitle}
           </p>
         </div>
 
         <nav className="mb-6 flex flex-wrap items-center justify-center gap-2 text-sm">
           <Link href="/trending" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            Trending
+            {t.trending.navTrending}
           </Link>
           <Link href="/top/week" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            This Week
+            {t.trending.navThisWeek}
           </Link>
           <span className="pill bg-[var(--accent)] px-4 py-1.5 text-white font-bold text-xs">
-            This Month
+            {t.trending.navThisMonth}
           </span>
           <Link href="/top/all-time" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            All Time
+            {t.trending.navAllTime}
           </Link>
           <Link href="/leaderboard" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
-            Leaderboard
+            {t.trending.navLeaderboard}
           </Link>
         </nav>
 
         {topVideos.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 px-6 py-8 text-center">
             <p className="text-sm text-[var(--muted)]">
-              No videos this month yet. <Link href="/submit" className="font-bold text-[var(--accent)] hover:underline">Drop the first one!</Link>
+              {t.topMonth.empty} <Link href="/submit" className="font-bold text-[var(--accent)] hover:underline">{t.topMonth.emptyLink}</Link>
             </p>
           </div>
         ) : (
@@ -116,12 +118,10 @@ export default async function TopMonthPage() {
 
         <section className="mt-12 card-shadow p-6">
           <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-3">
-            Monthly YouTube Video Rankings
+            {t.topMonth.seoTitle}
           </h2>
           <p className="text-sm text-[var(--muted)] leading-relaxed">
-            See which YouTube videos dominated the month. Flegm&apos;s monthly rankings
-            give you a snapshot of the content the community loved most over the past
-            30 days &mdash; from viral hits to hidden gems that deserved more attention.
+            {t.topMonth.seoText}
           </p>
         </section>
       </main>

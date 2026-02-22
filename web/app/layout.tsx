@@ -5,6 +5,9 @@ import { Analytics } from "./components/analytics";
 import { CookieBanner } from "./components/cookie-banner";
 import { GaUserId } from "./components/ga-user-id";
 import { SignInSuccessTracker } from "./components/sign-in-success-tracker";
+import { LocaleProvider } from "@/lib/i18n/locale-context";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary, localeHtmlLang } from "@/lib/i18n";
 import "./globals.css";
 
 const siteName = "Flegm";
@@ -47,12 +50,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const locale = await getLocale();
+  const dictionary = getDictionary(locale);
 
   const websiteJsonLd = {
     "@context": "https://schema.org",
@@ -77,7 +82,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang={localeHtmlLang[locale]}>
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
         <script
           type="application/ld+json"
@@ -87,15 +92,17 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
-        <CookieConsentProvider>
-          {children}
-          <Suspense fallback={null}>
-            <SignInSuccessTracker />
-            {gaId && <Analytics gaId={gaId} />}
-            <GaUserId />
-          </Suspense>
-          <CookieBanner />
-        </CookieConsentProvider>
+        <LocaleProvider locale={locale} dictionary={dictionary}>
+          <CookieConsentProvider>
+            {children}
+            <Suspense fallback={null}>
+              <SignInSuccessTracker />
+              {gaId && <Analytics gaId={gaId} />}
+              <GaUserId />
+            </Suspense>
+            <CookieBanner />
+          </CookieConsentProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

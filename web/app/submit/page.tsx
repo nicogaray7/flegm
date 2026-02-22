@@ -4,6 +4,7 @@ import { GaEvent } from "@/app/components/ga-event";
 import { Header } from "@/app/components/header";
 import { LoginScreen } from "@/app/components/login-screen";
 import { Footer } from "@/app/components/footer";
+import { getServerDictionary } from "@/lib/i18n/server";
 
 export const metadata = {
   title: "Drop a video",
@@ -15,16 +16,17 @@ type Props = { searchParams: Promise<{ next?: string; from?: string }> };
 
 export default async function SubmitPage({ searchParams }: Props) {
   const { next, from } = await searchParams;
+  const { t } = await getServerDictionary();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     const subline =
       from === "upvote"
-        ? "Sign in to upvote your faves"
+        ? t.submit.signInToUpvote
         : from === "comment"
-          ? "Sign in to join the convo"
-          : "Sign in to drop a video";
+          ? t.submit.signInToComment
+          : t.submit.signInToSubmit;
     return (
       <div className="min-h-screen flex flex-col bg-[var(--background)]">
         <Header />
@@ -49,9 +51,9 @@ export default async function SubmitPage({ searchParams }: Props) {
         <div className="card p-8">
           <div className="text-center mb-6">
             <span className="text-3xl mb-2 block">{"\u{1F3AC}"}</span>
-            <h1 className="text-2xl font-extrabold text-[var(--foreground)]">Drop a video</h1>
+            <h1 className="text-2xl font-extrabold text-[var(--foreground)]">{t.submit.title}</h1>
             <p className="text-[var(--muted)] text-sm mt-1">
-              Paste a YouTube link and let the community decide if it&apos;s fire
+              {t.submit.subtitle}
             </p>
           </div>
           <SubmitForm />

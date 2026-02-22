@@ -242,7 +242,41 @@ const en = {
     readyDiscover: "Ready to discover something great?",
     browseVideos: "Browse videos",
   },
-} as const;
+};
 
-export type Dictionary = typeof en;
-export default en;
+export type Dictionary = {
+  nav: { [K in keyof typeof en.nav]: string };
+  footer: { [K in keyof typeof en.footer]: string };
+  home: {
+    [K in keyof typeof en.home]: (typeof en.home)[K] extends (...args: infer A) => string
+      ? (...args: A) => string
+      : string;
+  };
+  leaderboard: {
+    [K in keyof typeof en.leaderboard]: (typeof en.leaderboard)[K] extends (...args: infer A) => string
+      ? (...args: A) => string
+      : string;
+  };
+  trending: { [K in keyof typeof en.trending]: string };
+  topWeek: { [K in keyof typeof en.topWeek]: string };
+  topMonth: { [K in keyof typeof en.topMonth]: string };
+  topAllTime: { [K in keyof typeof en.topAllTime]: string };
+  submit: { [K in keyof typeof en.submit]: string };
+  auth: { [K in keyof typeof en.auth]: string };
+  video: {
+    [K in keyof typeof en.video]: (typeof en.video)[K] extends (...args: infer A) => string
+      ? (...args: A) => string
+      : string;
+  };
+  channel: {
+    [K in keyof typeof en.channel]: (typeof en.channel)[K] extends (...args: infer A) => string
+      ? (...args: A) => string
+      : string;
+  };
+  banner: { [K in keyof typeof en.banner]: string };
+  cookie: { [K in keyof typeof en.cookie]: string };
+  notFound: { [K in keyof typeof en.notFound]: string };
+  about: { [K in keyof typeof en.about]: string };
+};
+
+export default en as Dictionary;

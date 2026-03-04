@@ -1,0 +1,22 @@
+channels:
+  - channel_id: "UCxxxxxx"
+    name: "Nom de la chaîne"
+
+youtube_api_key: "${YOUTUBE_API_KEY}"
+
+# Supabase credentials (found at https://app.supabase.com → Project Settings → API)
+supabase_url: "${SUPABASE_URL}"
+supabase_anon_key: "${SUPABASE_ANON_KEY}"
+
+# Bot account credentials (Supabase user with email+password)
+flegm_bot_email: "${FLEGM_BOT_EMAIL}"
+flegm_bot_password: "${FLEGM_BOT_PASSWORD}"
+
+llm_provider: "anthropic"          # "anthropic" | "openai"
+llm_api_key: "${LLM_API_KEY}"
+llm_model: "claude-3-haiku-20240307"
+
+rss_interval_minutes: 60
+publish_delay_seconds: 3
+initial_popular_count: 5
+initial_recent_count: 5

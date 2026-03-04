@@ -17,9 +17,26 @@ export default function AuthConfirmPage() {
 
   useEffect(() => {
     const next = searchParams.get("next");
-    const redirectTo =
+    const rawRedirect =
       next?.startsWith("/") && !next.startsWith("//") ? next : "/";
 
+    function getLocaleFromCookie(): string {
+      if (typeof document === "undefined") return "en";
+      const match = document.cookie
+        .split(";")
+        .map((c) => c.trim())
+        .find((c) => c.startsWith("flegm_locale="));
+      const locale = match?.split("=")[1];
+      return locale === "fr" || locale === "es" ? locale : "en";
+    }
+
+    function pathWithLocale(path: string): string {
+      if (path.startsWith("/en") || path.startsWith("/fr") || path.startsWith("/es")) return path;
+      const locale = getLocaleFromCookie();
+      return path === "/" ? `/${locale}` : `/${locale}${path}`;
+    }
+
+    const redirectTo = pathWithLocale(rawRedirect);
     const supabase = createClient();
 
     const finish = () => {

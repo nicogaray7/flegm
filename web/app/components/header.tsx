@@ -1,13 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-import { SignOutButton } from "@/app/submit/sign-out-button";
+import { SignOutButton } from "@/app/[locale]/submit/sign-out-button";
 import { SubmitIntentLink } from "@/app/components/submit-intent-link";
 import { getServerDictionary } from "@/lib/i18n/server";
 import type { User } from "@supabase/supabase-js";
 
 export async function Header() {
-  const { t } = await getServerDictionary();
+  const { locale, t } = await getServerDictionary();
   let user: User | null = null;
   try {
     const supabase = await createClient();
@@ -24,7 +24,7 @@ export async function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/90 backdrop-blur-xl">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
         <Link
-          href="/"
+          href={`/${locale}`}
           className="flex items-center gap-2 group"
           aria-label="Flegm home"
         >
@@ -38,19 +38,19 @@ export async function Header() {
 
         <nav className="flex items-center gap-2 sm:gap-4">
           <Link
-            href="/trending"
+            href={`/${locale}/trending`}
             className="pill hidden sm:inline-flex px-3 py-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-purple-50 transition-all"
           >
             {t.nav.trending}
           </Link>
           <Link
-            href="/leaderboard"
+            href={`/${locale}/leaderboard`}
             className="pill px-3 py-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-purple-50 transition-all"
           >
             {t.nav.leaderboard}
           </Link>
           <SubmitIntentLink
-            href="/submit"
+            href={`/${locale}/submit`}
             source="header"
             className="btn-primary text-sm"
           >

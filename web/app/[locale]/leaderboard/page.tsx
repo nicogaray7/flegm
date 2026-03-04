@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { db } from "@/db";
 import { videos } from "@/db/schema";
 import { desc } from "drizzle-orm";
@@ -6,20 +7,28 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
 import { getServerDictionary } from "@/lib/i18n/server";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
+type Props = { params: Promise<{ locale: string }> };
 
-export const metadata = {
-  title: "Leaderboard — Top YouTube Videos Ranked by the Community",
-  description:
-    "Top 100 YouTube videos ranked by community upvotes on Flegm. Discover the most popular videos voted by real people.",
-  alternates: { canonical: `${baseUrl}/leaderboard` },
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: "Leaderboard — Top YouTube Videos Ranked by the Community",
+    description:
+      "Top 100 YouTube videos ranked by community upvotes on Flegm. Discover the most popular videos voted by real people.",
+    alternates: {
+      canonical: getCanonicalForLocale(locale as Locale, "leaderboard"),
+      languages: getAlternateLanguages("leaderboard"),
+    },
+  };
+}
 
-export default async function LeaderboardPage() {
-  const { t } = await getServerDictionary();
+export default async function LeaderboardPage({ params }: Props) {
+  const { locale, t } = await getServerDictionary();
   let topVideos: { id: string; youtubeId: string; title: string; channelName: string; upvotesCount: number; duration: number }[] = [];
   let dbError: string | null = null;
   try {
@@ -71,6 +80,7 @@ export default async function LeaderboardPage() {
                     duration: video.duration,
                   }}
                   rank={index + 1}
+                  locale={locale}
                 />
               </li>
             ))}

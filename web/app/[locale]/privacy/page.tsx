@@ -1,16 +1,27 @@
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import Link from "next/link";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
-export const metadata = {
-  title: "Privacy Policy",
-  description: "Flegm privacy policy — how we handle your data.",
-  alternates: { canonical: `${baseUrl}/privacy` },
-};
+type Props = { params: Promise<{ locale: string }> };
 
-export default function PrivacyPage() {
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  return {
+    title: "Privacy Policy",
+    description: "Flegm privacy policy — how we handle your data.",
+    alternates: {
+      canonical: getCanonicalForLocale(locale as Locale, "privacy"),
+      languages: getAlternateLanguages("privacy"),
+    },
+  };
+}
+
+export default async function PrivacyPage({ params }: Props) {
+  const { locale } = await params;
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
@@ -79,7 +90,7 @@ export default function PrivacyPage() {
             <p className="mt-1">
               Analytics and marketing cookies are only set after you give consent.
               You can manage your preferences any time on our{" "}
-              <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">
+              <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">
                 Cookie Policy
               </Link>{" "}page.
             </p>
@@ -148,7 +159,7 @@ export default function PrivacyPage() {
               <li><strong>Access</strong> your data — ask us what we have</li>
               <li><strong>Delete</strong> your account — email us and we&apos;ll wipe it</li>
               <li><strong>Export</strong> your data — we can provide what we store</li>
-              <li><strong>Opt out</strong> of analytics — use the <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">cookie settings</Link> or a browser extension</li>
+              <li><strong>Opt out</strong> of analytics — use the <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">cookie settings</Link> or a browser extension</li>
             </ul>
             <p className="mt-2">
               If you&apos;re in the EU, you have additional rights under GDPR
@@ -193,11 +204,11 @@ export default function PrivacyPage() {
         <div className="mt-12 pt-6 border-t border-[var(--border)]">
           <p className="text-xs text-[var(--muted)]">
             See also:{" "}
-            <Link href="/terms" className="font-semibold text-purple-600 hover:underline">
+            <Link href={`/${locale}/terms`} className="font-semibold text-purple-600 hover:underline">
               Terms of Use
             </Link>
             {" "}&middot;{" "}
-            <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">
+            <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">
               Cookie Policy
             </Link>
           </p>

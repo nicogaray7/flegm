@@ -5,18 +5,30 @@ import { Header } from "@/app/components/header";
 import { LoginScreen } from "@/app/components/login-screen";
 import { Footer } from "@/app/components/footer";
 import { getServerDictionary } from "@/lib/i18n/server";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
-export const metadata = {
-  title: "Drop a video",
-  description:
-    "Drop a YouTube video on the Flegm leaderboard. Upvote and discover the top videos.",
+type Props = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ next?: string; from?: string }>;
 };
 
-type Props = { searchParams: Promise<{ next?: string; from?: string }> };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return {
+    title: "Drop a video",
+    description:
+      "Drop a YouTube video on the Flegm leaderboard. Upvote and discover the top videos.",
+    alternates: {
+      canonical: getCanonicalForLocale(locale as Locale, "submit"),
+      languages: getAlternateLanguages("submit"),
+    },
+  };
+}
 
-export default async function SubmitPage({ searchParams }: Props) {
+export default async function SubmitPage({ params, searchParams }: Props) {
   const { next, from } = await searchParams;
-  const { t } = await getServerDictionary();
+  const { locale, t } = await getServerDictionary();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 

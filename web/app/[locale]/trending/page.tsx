@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { db } from "@/db";
 import { videos } from "@/db/schema";
 import { desc, gte } from "drizzle-orm";
@@ -7,28 +8,35 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
 import { getServerDictionary } from "@/lib/i18n/server";
-import Link from "next/link";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Trending YouTube Videos Today — Community Picks",
-  description:
-    "See what YouTube videos are trending right now on Flegm. Fresh picks voted by the community, updated every hour.",
-  alternates: { canonical: `${baseUrl}/trending` },
-  openGraph: {
-    title: "Trending YouTube Videos Today — Flegm",
-    description:
-      "Fresh YouTube videos trending right now, voted by the community.",
-    type: "website",
-    url: `${baseUrl}/trending`,
-  },
-};
+type Props = { params: Promise<{ locale: string }> };
 
-export default async function TrendingPage() {
-  const { t } = await getServerDictionary();
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const canonical = getCanonicalForLocale(locale as Locale, "trending");
+  return {
+    title: "Trending YouTube Videos Today — Community Picks",
+    description:
+      "See what YouTube videos are trending right now on Flegm. Fresh picks voted by the community, updated every hour.",
+    alternates: { canonical, languages: getAlternateLanguages("trending") },
+    openGraph: {
+      title: "Trending YouTube Videos Today — Flegm",
+      description:
+        "Fresh YouTube videos trending right now, voted by the community.",
+      type: "website",
+      url: canonical,
+    },
+  };
+}
+
+export default async function TrendingPage({ params }: Props) {
+  const { locale, t } = await getServerDictionary();
   const oneDayAgo = new Date();
   oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
@@ -48,7 +56,7 @@ export default async function TrendingPage() {
     itemListElement: trending.map((v, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      url: `${baseUrl}/v/${v.youtubeId}`,
+      url: `${baseUrl}/${locale}/v/${v.youtubeId}`,
       name: v.title,
     })),
   };
@@ -77,16 +85,16 @@ export default async function TrendingPage() {
           <span className="pill bg-[var(--accent)] px-4 py-1.5 text-white font-bold text-xs">
             {t.trending.navTrending}
           </span>
-          <Link href="/top/week" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
+          <Link href={`/${locale}/top/week`} className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
             {t.trending.navThisWeek}
           </Link>
-          <Link href="/top/month" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
+          <Link href={`/${locale}/top/month`} className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
             {t.trending.navThisMonth}
           </Link>
-          <Link href="/top/all-time" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
+          <Link href={`/${locale}/top/all-time`} className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
             {t.trending.navAllTime}
           </Link>
-          <Link href="/leaderboard" className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
+          <Link href={`/${locale}/leaderboard`} className="pill border border-[var(--border)] bg-[var(--surface)] px-4 py-1.5 text-xs font-medium text-[var(--muted)] hover:border-purple-300 transition-colors">
             {t.trending.navLeaderboard}
           </Link>
         </nav>
@@ -94,7 +102,7 @@ export default async function TrendingPage() {
         {trending.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 px-6 py-8 text-center">
             <p className="text-sm text-[var(--muted)]">
-              {t.trending.empty} <Link href="/submit" className="font-bold text-[var(--accent)] hover:underline">{t.trending.emptyLink}</Link>
+              {t.trending.empty} <Link href={`/${locale}/submit`} className="font-bold text-[var(--accent)] hover:underline">{t.trending.emptyLink}</Link>
             </p>
           </div>
         ) : (
@@ -111,6 +119,7 @@ export default async function TrendingPage() {
                     duration: video.duration,
                   }}
                   rank={index + 1}
+                  locale={locale}
                 />
               </li>
             ))}

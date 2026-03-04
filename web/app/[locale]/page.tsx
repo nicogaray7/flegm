@@ -2,19 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getHomeVideos } from "@/lib/home-data";
 import { getServerDictionary } from "@/lib/i18n/server";
-import { GaEvent } from "./components/ga-event";
-import { HomeSection } from "./components/home-section";
-import { Header } from "./components/header";
-import { Footer } from "./components/footer";
-import { SubmitIntentLink } from "./components/submit-intent-link";
-
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
+import { GaEvent } from "../components/ga-event";
+import { HomeSection } from "../components/home-section";
+import { Header } from "../components/header";
+import { Footer } from "../components/footer";
+import { SubmitIntentLink } from "../components/submit-intent-link";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  alternates: { canonical: baseUrl },
-};
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const canonical = getCanonicalForLocale(locale as Locale, "");
+  const languages = getAlternateLanguages("");
+  return {
+    alternates: { canonical, languages },
+  };
+}
 
 type HomeData = Awaited<ReturnType<typeof getHomeVideos>>;
 const emptyHomeData: HomeData = {
@@ -24,8 +31,8 @@ const emptyHomeData: HomeData = {
   lastMonth: { videos: [], count: 0 },
 };
 
-export default async function Home() {
-  const { t } = await getServerDictionary();
+export default async function Home({ params }: Props) {
+  const { locale, t } = await getServerDictionary();
   let data = emptyHomeData;
   let dbError: string | null = null;
   try {
@@ -50,7 +57,6 @@ export default async function Home() {
           </div>
         )}
 
-        {/* Hero */}
         <section className="mb-12 text-center">
           <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-700">
             <span>{"\u{1F525}"}</span> {t.home.communityPowered}
@@ -64,7 +70,7 @@ export default async function Home() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <SubmitIntentLink
-              href="/submit"
+              href={`/${locale}/submit`}
               source="hero"
               className="btn-primary px-6 py-3 text-base"
             >
@@ -74,7 +80,7 @@ export default async function Home() {
               {t.nav.dropAVideo}
             </SubmitIntentLink>
             <Link
-              href="/leaderboard"
+              href={`/${locale}/leaderboard`}
               className="btn-secondary px-6 py-3 text-base"
             >
               <span>{"\u{1F3C6}"}</span>
@@ -83,7 +89,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Stats */}
         <section className="mb-12 grid grid-cols-3 gap-3">
           <div className="card-shadow flex flex-col items-center px-4 py-5 text-center hover-lift">
             <span className="text-2xl mb-1">{"\u{1F4F9}"}</span>
@@ -114,18 +119,19 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Sections */}
         <HomeSection
           title={t.home.droppingToday}
           emoji={"\u{26A1}"}
           videos={today}
           emptyMessage={t.home.emptyToday}
+          locale={locale}
         />
         <HomeSection
           title={t.home.yesterday}
           emoji={"\u{23EA}"}
           videos={yesterday}
           emptyMessage={t.home.emptyYesterday}
+          locale={locale}
         />
         <HomeSection
           title={t.home.sectionThisWeek}
@@ -137,6 +143,7 @@ export default async function Home() {
               : undefined
           }
           emptyMessage={t.home.emptyWeek}
+          locale={locale}
         />
         <HomeSection
           title={t.home.sectionThisMonth}
@@ -148,6 +155,7 @@ export default async function Home() {
               : undefined
           }
           emptyMessage={t.home.emptyMonth}
+          locale={locale}
         />
       </main>
 

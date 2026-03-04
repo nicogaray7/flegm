@@ -1,27 +1,35 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { getServerDictionary } from "@/lib/i18n/server";
-import Link from "next/link";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
-export const metadata: Metadata = {
-  title: "About Flegm — The Community YouTube Leaderboard",
-  description:
-    "Flegm is a community-driven YouTube video leaderboard where you drop, upvote, and discover the best videos. No algorithm, just real people.",
-  alternates: { canonical: `${baseUrl}/about` },
-  openGraph: {
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const canonical = getCanonicalForLocale(locale as Locale, "about");
+  return {
     title: "About Flegm — The Community YouTube Leaderboard",
     description:
-      "Discover how Flegm works: drop YouTube videos, upvote the best, and watch what the community is loving.",
-    type: "website",
-    url: `${baseUrl}/about`,
-  },
-};
+      "Flegm is a community-driven YouTube video leaderboard where you drop, upvote, and discover the best videos. No algorithm, just real people.",
+    alternates: { canonical, languages: getAlternateLanguages("about") },
+    openGraph: {
+      title: "About Flegm — The Community YouTube Leaderboard",
+      description:
+        "Discover how Flegm works: drop YouTube videos, upvote the best, and watch what the community is loving.",
+      type: "website",
+      url: canonical,
+    },
+  };
+}
 
-export default async function AboutPage() {
-  const { t } = await getServerDictionary();
+export default async function AboutPage({ params }: Props) {
+  const { locale, t } = await getServerDictionary();
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -104,14 +112,14 @@ export default async function AboutPage() {
               </li>
               <li>
                 <strong>{t.about.step3Title}</strong> &mdash; {t.about.step3Text}{" "}
-                <Link href="/trending" className="font-semibold text-[var(--accent)] hover:underline">
+                <Link href={`/${locale}/trending`} className="font-semibold text-[var(--accent)] hover:underline">
                   {t.about.step3TrendingVideos}
                 </Link>,
                 {" "}{t.about.step3The}{" "}
-                <Link href="/leaderboard" className="font-semibold text-[var(--accent)] hover:underline">
+                <Link href={`/${locale}/leaderboard`} className="font-semibold text-[var(--accent)] hover:underline">
                   {t.about.step3LeaderboardLink}
                 </Link>, {t.about.step3Or}{" "}
-                <Link href="/top/all-time" className="font-semibold text-[var(--accent)] hover:underline">
+                <Link href={`/${locale}/top/all-time`} className="font-semibold text-[var(--accent)] hover:underline">
                   {t.about.step3AllTime}
                 </Link>.
               </li>
@@ -188,8 +196,8 @@ export default async function AboutPage() {
           <section className="text-center pt-4">
             <p className="text-[var(--muted)] text-sm mb-4">{t.about.readyDiscover}</p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link href="/" className="btn-primary px-6 py-3 text-sm">{t.about.browseVideos}</Link>
-              <Link href="/submit" className="btn-secondary px-6 py-3 text-sm">{t.nav.dropAVideo}</Link>
+              <Link href={`/${locale}`} className="btn-primary px-6 py-3 text-sm">{t.about.browseVideos}</Link>
+              <Link href={`/${locale}/submit`} className="btn-secondary px-6 py-3 text-sm">{t.nav.dropAVideo}</Link>
             </div>
           </section>
         </div>

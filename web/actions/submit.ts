@@ -1,8 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { db } from "@/db";
+import { LOCALE_COOKIE, locales, defaultLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { videos, profiles } from "@/db/schema";
 import { extractVideoId, fetchVideoMetadata } from "@/lib/youtube";
 import { desc, eq } from "drizzle-orm";
@@ -53,8 +56,13 @@ export async function submitVideo(
     columns: { youtubeId: true },
   });
 
+  const cookieStore = await cookies();
+  const locale = (locales.includes(cookieStore.get(LOCALE_COOKIE)?.value as Locale)
+    ? cookieStore.get(LOCALE_COOKIE)?.value
+    : defaultLocale) as Locale;
+
   if (existing) {
-    redirect(`/v/${youtubeId}`);
+    redirect(`/${locale}/v/${youtubeId}`);
   }
 
   const apiKey = process.env.YOUTUBE_DATA_API_KEY;
@@ -100,5 +108,5 @@ export async function submitVideo(
     clippeurId: user.id,
   });
 
-  redirect(`/v/${youtubeId}?submitted=1`);
+  redirect(`/${locale}/v/${youtubeId}?submitted=1`);
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { EmailSignInForm } from "@/app/components/email-sign-in-form";
-import { SignInButton } from "@/app/submit/sign-in-button";
+import { SignInButton } from "@/app/[locale]/submit/sign-in-button";
 import { getServerDictionary } from "@/lib/i18n/server";
 
 type Props = {

@@ -1,4 +1,5 @@
 import { VideoCard } from "./video-card";
+import type { Locale } from "@/lib/i18n";
 
 type Video = {
   id: string;
@@ -16,6 +17,7 @@ type Props = {
   summary?: string;
   emptyMessage?: string;
   showRanks?: boolean;
+  locale?: Locale;
 };
 
 export function HomeSection({
@@ -25,6 +27,7 @@ export function HomeSection({
   summary,
   emptyMessage = "No videos yet.",
   showRanks = true,
+  locale = "en",
 }: Props) {
   return (
     <section className="mb-10">
@@ -53,6 +56,7 @@ export function HomeSection({
               <VideoCard
                 video={video}
                 rank={showRanks ? index + 1 : undefined}
+                locale={locale}
               />
             </li>
           ))}

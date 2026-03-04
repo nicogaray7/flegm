@@ -1,16 +1,27 @@
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import Link from "next/link";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
-export const metadata = {
-  title: "Terms of Use",
-  description: "Flegm terms of use — the rules for using the platform.",
-  alternates: { canonical: `${baseUrl}/terms` },
-};
+type Props = { params: Promise<{ locale: string }> };
 
-export default function TermsPage() {
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  return {
+    title: "Terms of Use",
+    description: "Flegm terms of use — the rules for using the platform.",
+    alternates: {
+      canonical: getCanonicalForLocale(locale as Locale, "terms"),
+      languages: getAlternateLanguages("terms"),
+    },
+  };
+}
+
+export default async function TermsPage({ params }: Props) {
+  const { locale } = await params;
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
@@ -140,11 +151,11 @@ export default function TermsPage() {
         <div className="mt-12 pt-6 border-t border-[var(--border)]">
           <p className="text-xs text-[var(--muted)]">
             See also:{" "}
-            <Link href="/privacy" className="font-semibold text-purple-600 hover:underline">
+            <Link href={`/${locale}/privacy`} className="font-semibold text-purple-600 hover:underline">
               Privacy Policy
             </Link>
             {" "}&middot;{" "}
-            <Link href="/cookies" className="font-semibold text-purple-600 hover:underline">
+            <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">
               Cookie Policy
             </Link>
           </p>

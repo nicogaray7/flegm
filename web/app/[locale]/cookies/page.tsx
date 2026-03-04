@@ -2,16 +2,27 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import Link from "next/link";
 import { CookiePreferencesButton } from "./cookie-preferences-button";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
-export const metadata = {
-  title: "Cookie Policy",
-  description: "Flegm cookie policy — what cookies we use and why.",
-  alternates: { canonical: `${baseUrl}/cookies` },
-};
+type Props = { params: Promise<{ locale: string }> };
 
-export default function CookiesPage() {
+export async function generateMetadata({ params }: Props) {
+  const { locale } = await params;
+  return {
+    title: "Cookie Policy",
+    description: "Flegm cookie policy — what cookies we use and why.",
+    alternates: {
+      canonical: getCanonicalForLocale(locale as Locale, "cookies"),
+      languages: getAlternateLanguages("cookies"),
+    },
+  };
+}
+
+export default async function CookiesPage({ params }: Props) {
+  const { locale } = await params;
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
@@ -227,11 +238,11 @@ export default function CookiesPage() {
         <div className="mt-12 pt-6 border-t border-[var(--border)]">
           <p className="text-xs text-[var(--muted)]">
             See also:{" "}
-            <Link href="/privacy" className="font-semibold text-purple-600 hover:underline">
+            <Link href={`/${locale}/privacy`} className="font-semibold text-purple-600 hover:underline">
               Privacy Policy
             </Link>
             {" "}&middot;{" "}
-            <Link href="/terms" className="font-semibold text-purple-600 hover:underline">
+            <Link href={`/${locale}/terms`} className="font-semibold text-purple-600 hover:underline">
               Terms of Use
             </Link>
           </p>

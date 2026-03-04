@@ -10,10 +10,12 @@ import { CommentForm } from "./comment-form";
 import { CommentTree } from "./comment-tree";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
-import { SignInButton } from "@/app/submit/sign-in-button";
+import { SignInButton } from "@/app/[locale]/submit/sign-in-button";
 import { GaEvent } from "@/app/components/ga-event";
 import { SubmitSuccessBanner } from "@/app/components/submit-success-banner";
 import { getServerDictionary } from "@/lib/i18n/server";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 import { formatDurationHMS } from "@/lib/format-duration";
 import { formatDurationISO } from "@/lib/format-duration";
 import { db } from "@/db";
@@ -23,12 +25,12 @@ import { eq } from "drizzle-orm";
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 type Props = {
-  params: Promise<{ youtube_id: string }>;
+  params: Promise<{ locale: string; youtube_id: string }>;
   searchParams: Promise<{ submitted?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { youtube_id } = await params;
+  const { locale, youtube_id } = await params;
   const video = await db.query.videos.findFirst({
     where: eq(videos.youtubeId, youtube_id),
   });
@@ -36,16 +38,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = `${video.title} — ${video.channelName}`;
   const description = `Watch "${video.title}" by ${video.channelName} on Flegm. ${video.upvotesCount} upvotes. Drop, upvote, and discover the top YouTube videos.`;
+  const canonical = getCanonicalForLocale(locale as Locale, `v/${youtube_id}`);
 
   return {
     title,
     description,
-    alternates: { canonical: `${baseUrl}/v/${youtube_id}` },
+    alternates: { canonical, languages: getAlternateLanguages(`v/${youtube_id}`) },
     openGraph: {
       title,
       description,
       type: "video.other",
-      url: `${baseUrl}/v/${youtube_id}`,
+      url: canonical,
       images: [
         {
           url: `https://i.ytimg.com/vi/${youtube_id}/hqdefault.jpg`,
@@ -65,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function VideoPage({ params, searchParams }: Props) {
-  const { t } = await getServerDictionary();
+  const { locale, t } = await getServerDictionary();
   const { youtube_id } = await params;
   const { submitted } = await searchParams;
   const supabase = await createClient();
@@ -75,7 +78,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
 
   const { video, commentTree } = data;
   const upvoted = await getUserUpvoteStatus(video.id, user?.id ?? null);
-  const signInNext = `/v/${youtube_id}`;
+  const signInNext = `/${locale}/v/${youtube_id}`;
 
   const durationFormatted = formatDurationHMS(video.duration);
 
@@ -101,8 +104,8 @@ export default async function VideoPage({ params, searchParams }: Props) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Flegm", item: baseUrl },
-      { "@type": "ListItem", position: 2, name: video.channelName, item: `${baseUrl}/channel/${encodeURIComponent(video.channelId)}` },
-      { "@type": "ListItem", position: 3, name: video.title, item: `${baseUrl}/v/${video.youtubeId}` },
+      { "@type": "ListItem", position: 2, name: video.channelName, item: `${baseUrl}/${locale}/channel/${encodeURIComponent(video.channelId)}` },
+      { "@type": "ListItem", position: 3, name: video.title, item: `${baseUrl}/${locale}/v/${video.youtubeId}` },
     ],
   };
 
@@ -131,7 +134,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
 
       <main className="mx-auto max-w-4xl px-4 py-8">
         {submitted === "1" && (
-          <SubmitSuccessBanner path={`/v/${youtube_id}`} />
+          <SubmitSuccessBanner path={`/${locale}/v/${youtube_id}`} />
         )}
         {/* Video player */}
         <div className="mb-6 overflow-hidden rounded-2xl shadow-lg shadow-purple-500/10">
@@ -159,7 +162,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
         {/* Channel card */}
         <section className="card p-4 mb-6">
           <Link
-            href={`/channel/${encodeURIComponent(video.channelId)}`}
+            href={`/${locale}/channel/${encodeURIComponent(video.channelId)}`}
             className="flex items-center gap-3 group"
           >
             {video.channelThumbnail && (

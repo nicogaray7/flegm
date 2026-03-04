@@ -9,13 +9,15 @@ import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import { GaEvent } from "@/app/components/ga-event";
 import { getServerDictionary } from "@/lib/i18n/server";
+import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
+import type { Locale } from "@/lib/i18n";
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
-type Props = { params: Promise<{ channel_id: string }> };
+type Props = { params: Promise<{ locale: string; channel_id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { channel_id } = await params;
+  const { locale, channel_id } = await params;
   const decodedId = decodeURIComponent(channel_id);
   const first = await db.query.videos.findFirst({
     where: eq(videos.channelId, decodedId),
@@ -24,16 +26,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = `${first.channelName} — Videos on Flegm`;
   const description = `Watch and upvote the best videos from ${first.channelName} on Flegm, the community YouTube leaderboard.`;
+  const canonical = getCanonicalForLocale(locale as Locale, `channel/${channel_id}`);
 
   return {
     title,
     description,
-    alternates: { canonical: `${baseUrl}/channel/${channel_id}` },
+    alternates: { canonical, languages: getAlternateLanguages(`channel/${channel_id}`) },
     openGraph: {
       title,
       description,
       type: "profile",
-      url: `${baseUrl}/channel/${channel_id}`,
+      url: canonical,
       ...(first.channelThumbnail
         ? { images: [{ url: first.channelThumbnail, width: 88, height: 88, alt: first.channelName }] }
         : {}),
@@ -43,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ChannelPage({ params }: Props) {
-  const { t } = await getServerDictionary();
+  const { locale, t } = await getServerDictionary();
   const { channel_id } = await params;
   const decodedId = decodeURIComponent(channel_id);
 
@@ -108,6 +111,7 @@ export default async function ChannelPage({ params }: Props) {
                   duration: video.duration,
                 }}
                 rank={index + 1}
+                locale={locale}
               />
             </li>
           ))}

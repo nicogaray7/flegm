@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDurationHMS } from "@/lib/format-duration";
+import type { Locale } from "@/lib/i18n";
 
 type Video = {
   id: string;
@@ -21,16 +22,18 @@ function getRankDisplay(rank: number): string {
 export function VideoCard({
   video,
   rank,
+  locale = "en",
 }: {
   video: Video;
   rank?: number;
+  locale?: Locale;
 }) {
   const thumbUrl = `https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`;
   const rankEmoji = rank !== undefined ? getRankDisplay(rank) : "";
 
   return (
     <Link
-      href={`/v/${video.youtubeId}`}
+      href={`/${locale}/v/${video.youtubeId}`}
       className="group card flex items-center gap-4 px-4 py-3 hover-lift"
     >
       {rank !== undefined && (

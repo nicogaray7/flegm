@@ -58,7 +58,18 @@ class FlegmCommenter:
     # ------------------------------------------------------------------
 
     def generate_comment(self, video: Video) -> str:
-        """Call the configured LLM and return a short comment text."""
+        """Call the configured LLM and return a short comment text.
+
+        If no LLM provider or API key is configured (e.g. provider='none'),
+        returns an empty string so the bot can run without a paid LLM.
+        """
+        if not self._api_key or self._provider in ("none", "disabled"):
+            logger.info(
+                "LLM disabled (provider=%s) — skipping comment generation for %s",
+                self._provider,
+                video.video_id,
+            )
+            return ""
         user_content = USER_TEMPLATE.format(
             title=video.title,
             description=video.description[:500],

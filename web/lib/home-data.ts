@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { videos } from "@/db/schema";
-import { and, desc, gte, lt, sql } from "drizzle-orm";
+import { and, asc, desc, gte, lt, sql } from "drizzle-orm";
 
 export type VideoRow = {
   id: string;
@@ -39,7 +39,7 @@ export async function getHomeVideos() {
         .select()
         .from(videos)
         .where(gte(videos.createdAt, startOfToday))
-        .orderBy(desc(videos.upvotesCount))
+        .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey))
         .limit(20),
       db
         .select()
@@ -50,7 +50,7 @@ export async function getHomeVideos() {
             lt(videos.createdAt, startOfToday)
           )
         )
-        .orderBy(desc(videos.upvotesCount))
+        .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey))
         .limit(20),
       db
         .select()
@@ -61,7 +61,7 @@ export async function getHomeVideos() {
             lt(videos.createdAt, startOfYesterday)
           )
         )
-        .orderBy(desc(videos.upvotesCount))
+        .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey))
         .limit(5),
       db
         .select()
@@ -72,7 +72,7 @@ export async function getHomeVideos() {
             lt(videos.createdAt, sevenDaysAgo)
           )
         )
-        .orderBy(desc(videos.upvotesCount))
+        .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey))
         .limit(5),
     ]);
 

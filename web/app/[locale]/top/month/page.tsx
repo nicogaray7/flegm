@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/db";
 import { videos } from "@/db/schema";
-import { desc, gte } from "drizzle-orm";
+import { asc, desc, gte } from "drizzle-orm";
 import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
@@ -43,7 +43,7 @@ export default async function TopMonthPage({ params }: Props) {
     .select()
     .from(videos)
     .where(gte(videos.createdAt, thirtyDaysAgo))
-    .orderBy(desc(videos.upvotesCount))
+    .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey))
     .limit(50);
 
   const jsonLd = {

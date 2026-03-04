@@ -75,8 +75,9 @@ def _build_dependencies(config: dict):
     publisher = FlegmPublisher(
         supabase_url=config["supabase_url"],
         supabase_anon_key=config["supabase_anon_key"],
-        email=config["flegm_bot_email"],
-        password=config["flegm_bot_password"],
+        email=config.get("flegm_bot_email"),
+        password=config.get("flegm_bot_password"),
+        user_id=config.get("flegm_bot_user_id"),
         publish_delay_seconds=int(config.get("publish_delay_seconds", 3)),
     )
     publisher.authenticate()

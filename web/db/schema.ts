@@ -1,11 +1,12 @@
 import {
+  doublePrecision,
   pgTable,
-  text,
-  uuid,
-  integer,
-  timestamp,
   primaryKey,
+  text,
+  timestamp,
+  uuid,
   varchar,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const profiles = pgTable("profiles", {
@@ -25,6 +26,8 @@ export const videos = pgTable("videos", {
   upvotesCount: integer("upvotes_count").notNull().default(0),
   clippeurId: uuid("clippeur_id").references(() => profiles.id),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  youtubePublishedAt: timestamp("youtube_published_at", { withTimezone: true }),
+  shuffleKey: doublePrecision("shuffle_key").notNull().default(0),
 });
 
 export const upvotes = pgTable(

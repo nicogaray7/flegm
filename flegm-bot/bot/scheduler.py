@@ -1,6 +1,7 @@
 """Orchestration: initialisation + RSS polling loop via APScheduler."""
 
 import logging
+import random
 import time
 from datetime import datetime, timezone
 from typing import Any
@@ -79,11 +80,15 @@ def run_initialization(
     publisher: FlegmPublisher,
     commenter: FlegmCommenter,
 ) -> None:
-    """Fetch popular + recent videos for each uninitialised channel."""
+    """Fetch popular + recent videos for uninitialised channels, shuffle, then publish."""
     popular_count: int = config.get("initial_popular_count", 5)
     recent_count: int = config.get("initial_recent_count", 5)
     delay: int = config.get("publish_delay_seconds", 3)
     channels: list[dict] = config.get("channels", [])
+
+    # Collect (channel_id, video) for all uninitialised channels
+    to_publish: list[tuple[str, Video]] = []
+    channels_to_mark: list[str] = []
 
     for channel in channels:
         channel_id: str = channel["channel_id"]
@@ -102,16 +107,26 @@ def run_initialization(
 
         videos = _deduplicate(popular + recent)
         logger.info(
-            "Channel %s: %d unique videos to process (%d popular, %d recent)",
+            "Channel %s: %d unique videos (%d popular, %d recent)",
             channel_id,
             len(videos),
             len(popular),
             len(recent),
         )
-
         for video in videos:
-            _publish_and_comment(video, publisher, commenter, delay)
+            to_publish.append((channel_id, video))
+        channels_to_mark.append(channel_id)
 
+    if not to_publish:
+        return
+
+    random.shuffle(to_publish)
+    logger.info("Publishing %d videos in randomised order (across %d channels)", len(to_publish), len(channels_to_mark))
+
+    for channel_id, video in to_publish:
+        _publish_and_comment(video, publisher, commenter, delay)
+
+    for channel_id in channels_to_mark:
         state.mark_channel_initialized(channel_id)
         logger.info("Channel %s initialised", channel_id)
 
@@ -127,16 +142,19 @@ def run_rss_sync(
     publisher: FlegmPublisher,
     commenter: FlegmCommenter,
 ) -> None:
-    """Check RSS feeds for all channels and publish new videos."""
+    """Check RSS feeds for all channels, collect new videos, shuffle, then publish."""
     delay: int = config.get("publish_delay_seconds", 3)
     channels: list[dict] = config.get("channels", [])
+    now = datetime.now(timezone.utc)
+
+    # Collect (channel_id, video) from all channels
+    to_publish: list[tuple[str, Video]] = []
+    channels_checked: list[str] = []
 
     for channel in channels:
         channel_id: str = channel["channel_id"]
-        now = datetime.now(timezone.utc)
         since = state.get_last_rss_check(channel_id)
         if since is None:
-            # Default: look back 1 hour on first run
             from datetime import timedelta
             since = now - timedelta(hours=1)
 
@@ -148,11 +166,25 @@ def run_rss_sync(
             videos = scraper.get_rss_videos(channel_id, since)
         except Exception as exc:
             logger.warning("RSS error for channel %s: %s", channel_id, exc)
+            channels_checked.append(channel_id)
             continue
 
         for video in videos:
-            _publish_and_comment(video, publisher, commenter, delay)
+            to_publish.append((channel_id, video))
+        channels_checked.append(channel_id)
 
+    if not to_publish:
+        for channel_id in channels_checked:
+            state.update_last_rss_check(channel_id, now)
+        return
+
+    random.shuffle(to_publish)
+    logger.info("Publishing %d new RSS videos in randomised order", len(to_publish))
+
+    for channel_id, video in to_publish:
+        _publish_and_comment(video, publisher, commenter, delay)
+
+    for channel_id in channels_checked:
         state.update_last_rss_check(channel_id, now)
 
 

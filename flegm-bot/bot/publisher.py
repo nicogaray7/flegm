@@ -17,8 +17,10 @@ Database schema (from web/db/schema.ts):
 """
 
 import logging
+import random
 import time
 import uuid
+from datetime import timezone
 from typing import Optional  # used for Optional[str]
 
 from bot.scraper import Video
@@ -35,41 +37,57 @@ class FlegmPublisher:
         self,
         supabase_url: str,
         supabase_anon_key: str,
-        email: str,
-        password: str,
+        email: str | None = None,
+        password: str | None = None,
+        user_id: str | None = None,
         publish_delay_seconds: int = 3,
     ):
         self._supabase_url = supabase_url
         self._supabase_anon_key = supabase_anon_key
-        self._email = email
-        self._password = password
+        self._email = (email or "").strip()
+        self._password = (password or "").strip()
         self._publish_delay_seconds = publish_delay_seconds
         self._client = None  # supabase.Client, lazy import
-        self._user_id: Optional[str] = None
+        self._user_id: Optional[str] = (user_id or None)
 
     # ------------------------------------------------------------------
     # Authentication
     # ------------------------------------------------------------------
 
     def authenticate(self) -> None:
-        """Sign in via Supabase email+password and cache the client."""
-        from supabase import create_client  # lazy import
-        from supabase.lib.client_options import ClientOptions
+        """Initialise Supabase client and set user_id.
 
-        logger.info("Authenticating bot account: %s", self._email)
-        self._client = create_client(
-            self._supabase_url,
-            self._supabase_anon_key,
-            options=ClientOptions(auto_refresh_token=True, persist_session=False),
+        Deux modes :
+        - email+password configurés → login via Supabase Auth, user_id depuis le user.
+        - sinon → utilisation directe de la clé (service/anon) + user_id fourni.
+        """
+        from supabase import create_client  # lazy import
+
+        logger.info(
+            "Initialising Supabase client (email auth=%s)",
+            bool(self._email and self._password),
         )
-        response = self._client.auth.sign_in_with_password(
-            {"email": self._email, "password": self._password}
-        )
-        if not response.user:
-            raise PublishError("Authentication failed — no user returned from Supabase")
-        self._user_id = response.user.id
-        logger.info("Authenticated as user_id=%s", self._user_id)
-        self._ensure_profile(response.user)
+        # Python Supabase client gère déjà correctement les tokens côté serveur ;
+        # on utilise la configuration par défaut.
+        self._client = create_client(self._supabase_url, self._supabase_anon_key)
+        # Mode Auth email+password
+        if self._email and self._password:
+            response = self._client.auth.sign_in_with_password(
+                {"email": self._email, "password": self._password}
+            )
+            if not response.user:
+                raise PublishError("Authentication failed — no user returned from Supabase")
+            self._user_id = response.user.id
+            logger.info("Authenticated as user_id=%s", self._user_id)
+            self._ensure_profile(response.user)
+        else:
+            # Mode service key + user_id fourni
+            if not self._user_id:
+                raise PublishError(
+                    "FLEGM_BOT_USER_ID is required when not using email/password auth"
+                )
+            logger.info("Using configured user_id=%s (service key mode)", self._user_id)
+            self._ensure_profile_for_user_id()
 
     def _ensure_auth(self):
         """Return authenticated client, re-authenticating if needed."""
@@ -95,6 +113,22 @@ class FlegmPublisher:
         ).execute()
         logger.debug("Profile upserted for user_id=%s", self._user_id)
 
+    def _ensure_profile_for_user_id(self) -> None:
+        """Create a minimal profile row when running with a fixed user_id."""
+        if not self._user_id:
+            return
+        client = self._client
+        username = "flegm-bot"
+        avatar_url = ""
+        client.table("profiles").upsert(  # type: ignore[union-attr]
+            {
+                "id": self._user_id,
+                "username": username,
+                "avatar_url": avatar_url,
+            }
+        ).execute()
+        logger.debug("Profile upserted (service mode) for user_id=%s", self._user_id)
+
     # ------------------------------------------------------------------
     # Video publication
     # ------------------------------------------------------------------
@@ -108,6 +142,10 @@ class FlegmPublisher:
         client = self._ensure_auth()
         flegm_post_id = str(uuid.uuid4())
 
+        dt = video.published_at
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        published_at_iso = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         payload = {
             "id": flegm_post_id,
             "youtube_id": video.video_id,
@@ -118,6 +156,8 @@ class FlegmPublisher:
             "duration": video.duration,
             "upvotes_count": 0,
             "clippeur_id": self._user_id,
+            "youtube_published_at": published_at_iso,
+            "shuffle_key": random.random(),
         }
 
         self._insert_with_retry(client, "videos", payload, video.video_id)

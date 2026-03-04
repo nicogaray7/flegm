@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/db";
 import { videos } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { asc, desc } from "drizzle-orm";
 import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
@@ -39,7 +39,7 @@ export default async function TopAllTimePage({ params }: Props) {
   const topVideos = await db
     .select()
     .from(videos)
-    .orderBy(desc(videos.upvotesCount))
+    .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey))
     .limit(100);
 
   const jsonLd = {

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { videos } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
@@ -54,7 +54,7 @@ export default async function ChannelPage({ params }: Props) {
     .select()
     .from(videos)
     .where(eq(videos.channelId, decodedId))
-    .orderBy(desc(videos.upvotesCount));
+    .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey));
 
   if (channelVideos.length === 0) notFound();
 

@@ -1,0 +1,22 @@
+[Unit]
+Description=Flegm Bot — YouTube content curator for Flegm.fr
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=flegm
+Group=flegm
+WorkingDirectory=/opt/flegm-bot
+Environment=PATH=/opt/flegm-bot/venv/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/opt/flegm-bot/venv/bin/python main.py run
+Restart=always
+RestartSec=30
+
+# Logs
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=flegm-bot
+
+[Install]
+WantedBy=multi-user.target

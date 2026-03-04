@@ -9,6 +9,14 @@ logger = logging.getLogger(__name__)
 
 RSS_URL = "https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
 
+# YouTube Shorts: max 60 seconds — exclude from publishing
+SHORTS_MAX_DURATION_SECONDS = 60
+
+
+def _exclude_shorts(videos: list["Video"]) -> list["Video"]:
+    """Filter out Shorts (duration <= 60s)."""
+    return [v for v in videos if v.duration > SHORTS_MAX_DURATION_SECONDS]
+
 
 def _parse_iso8601_duration(duration: str) -> int:
     """Convert ISO 8601 duration (e.g. PT3M45S) to total seconds."""
@@ -123,7 +131,7 @@ class YouTubeScraper:
             for item in search_response.get("items", [])
             if item.get("id", {}).get("kind") == "youtube#video"
         ]
-        return self._enrich_videos(video_ids)
+        return _exclude_shorts(self._enrich_videos(video_ids))
 
     def get_recent_videos(self, channel_id: str, count: int) -> list[Video]:
         """Return the most recently published videos for a channel."""
@@ -150,7 +158,7 @@ class YouTubeScraper:
             for item in search_response.get("items", [])
             if item.get("id", {}).get("kind") == "youtube#video"
         ]
-        return self._enrich_videos(video_ids)
+        return _exclude_shorts(self._enrich_videos(video_ids))
 
     def get_rss_videos(self, channel_id: str, since: datetime) -> list[Video]:
         """Return videos published after `since` via the YouTube RSS feed."""
@@ -200,4 +208,8 @@ class YouTubeScraper:
             )
 
         logger.info("RSS: found %d new videos for channel %s", len(videos), channel_id)
-        return videos
+        if not videos:
+            return []
+        video_ids = [v.video_id for v in videos]
+        enriched = self._enrich_videos(video_ids)
+        return _exclude_shorts(enriched)

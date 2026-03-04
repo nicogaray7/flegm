@@ -106,6 +106,7 @@ export async function submitVideo(
     duration: metadata.duration,
     upvotesCount: 0,
     clippeurId: user.id,
+    shuffleKey: Math.random(),
   });
 
   redirect(`/${locale}/v/${youtubeId}?submitted=1`);

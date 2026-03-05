@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import { videos } from "@/db/schema";
+import { videos, totalUpvotesSql } from "@/db/schema";
 import { asc, desc, eq } from "drizzle-orm";
 import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
@@ -54,7 +54,7 @@ export default async function ChannelPage({ params }: Props) {
     .select()
     .from(videos)
     .where(eq(videos.channelId, decodedId))
-    .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey));
+    .orderBy(desc(totalUpvotesSql), asc(videos.shuffleKey));
 
   if (channelVideos.length === 0) notFound();
 
@@ -108,6 +108,7 @@ export default async function ChannelPage({ params }: Props) {
                   title: video.title,
                   channelName: video.channelName,
                   upvotesCount: video.upvotesCount,
+                  botUpvotesCount: video.botUpvotesCount,
                   duration: video.duration,
                 }}
                 rank={index + 1}

@@ -6,11 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getVideoPageData, getUserUpvoteStatus } from "@/lib/video-page-data";
 import { VideoPlayer } from "./video-player";
 import { UpvoteButton } from "./upvote-button";
-import { CommentForm } from "./comment-form";
-import { CommentTree } from "./comment-tree";
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
-import { SignInButton } from "@/app/[locale]/submit/sign-in-button";
 import { GaEvent } from "@/app/components/ga-event";
 import { SubmitSuccessBanner } from "@/app/components/submit-success-banner";
 import { getServerDictionary } from "@/lib/i18n/server";
@@ -18,6 +15,7 @@ import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alterna
 import type { Locale } from "@/lib/i18n";
 import { formatDurationHMS } from "@/lib/format-duration";
 import { formatDurationISO } from "@/lib/format-duration";
+import { totalUpvotes } from "@/lib/upvotes";
 import { db } from "@/db";
 import { videos } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -37,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!video) return { title: "Video Not Found" };
 
   const title = `${video.title} — ${video.channelName}`;
-  const description = `Watch "${video.title}" by ${video.channelName} on Flegm. ${video.upvotesCount} upvotes. Drop, upvote, and discover the top YouTube videos.`;
+  const description = `Watch "${video.title}" by ${video.channelName} on Flegm. ${totalUpvotes(video)} upvotes. Drop, upvote, and discover the top YouTube videos.`;
   const canonical = getCanonicalForLocale(locale as Locale, `v/${youtube_id}`);
 
   return {
@@ -76,7 +74,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
   const data = await getVideoPageData(youtube_id, user?.id ?? null);
   if (!data) notFound();
 
-  const { video, commentTree } = data;
+  const { video } = data;
   const upvoted = await getUserUpvoteStatus(video.id, user?.id ?? null);
   const signInNext = `/${locale}/v/${youtube_id}`;
 
@@ -95,7 +93,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
     interactionStatistic: {
       "@type": "InteractionCounter",
       interactionType: "https://schema.org/LikeAction",
-      userInteractionCount: video.upvotesCount,
+      userInteractionCount: totalUpvotes(video),
     },
   };
 
@@ -147,7 +145,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
           <div className="flex flex-wrap items-center gap-3">
             <UpvoteButton
               videoUuid={video.id}
-              initialCount={video.upvotesCount}
+              initialCount={totalUpvotes(video)}
               initialUpvoted={upvoted}
               signedIn={!!user}
               signInNext={signInNext}
@@ -186,28 +184,7 @@ export default async function VideoPage({ params, searchParams }: Props) {
           </Link>
         </section>
 
-        {/* Comments */}
-        <section className="card p-5">
-          <h2 className="flex items-center gap-2 text-sm font-extrabold text-[var(--foreground)] mb-4">
-            <span>{"\u{1F4AC}"}</span> {t.video.comments}
-          </h2>
-          {user && (
-            <div className="mb-6">
-              <CommentForm youtubeId={youtube_id} videoUuid={video.id} parentId={null} />
-            </div>
-          )}
-          {!user && (
-            <div className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl bg-purple-50 border border-purple-100 px-4 py-3">
-              <p className="text-sm text-[var(--muted)]">{t.video.joinConvo}</p>
-              <SignInButton next={signInNext} context="comment" />
-            </div>
-          )}
-          {commentTree.length === 0 ? (
-            <p className="text-sm text-[var(--muted-light)] py-4 text-center">{t.video.noComments}</p>
-          ) : (
-            <CommentTree youtubeId={youtube_id} videoUuid={video.id} tree={commentTree} signedIn={!!user} />
-          )}
-        </section>
+        {/* Comments section hidden on Flegm */}
       </main>
 
       <Footer />

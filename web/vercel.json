@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/backfill-bot-upvotes",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}

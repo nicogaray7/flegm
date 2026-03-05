@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { LOCALE_COOKIE, locales, defaultLocale } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { videos, profiles } from "@/db/schema";
-import { extractVideoId, fetchVideoMetadata } from "@/lib/youtube";
+import { extractVideoId, fetchVideoMetadata, SHORTS_MAX_DURATION_SECONDS } from "@/lib/youtube";
 import { desc, eq } from "drizzle-orm";
 
 /** Cooldown between submissions per user (minutes). */
@@ -73,6 +73,11 @@ export async function submitVideo(
   const metadata = await fetchVideoMetadata(youtubeId, apiKey);
   if (!metadata) {
     return { error: "Could not fetch video details. Check the URL and try again." };
+  }
+  if (metadata.duration <= SHORTS_MAX_DURATION_SECONDS) {
+    return {
+      error: "Short videos (≤3 min) are not allowed. Please submit a longer video.",
+    };
   }
 
   const username =

@@ -1,3 +1,6 @@
+/** YouTube Shorts: max duration (seconds) to consider as short. Bot and submit use this to exclude shorts. */
+export const SHORTS_MAX_DURATION_SECONDS = 180;
+
 /**
  * Extract YouTube video ID from common URL formats.
  * Supports: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID, youtube.com/shorts/ID

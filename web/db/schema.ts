@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   doublePrecision,
   pgTable,
@@ -24,11 +25,16 @@ export const videos = pgTable("videos", {
   channelThumbnail: text("channel_thumbnail"),
   duration: integer("duration").notNull(),
   upvotesCount: integer("upvotes_count").notNull().default(0),
+  /** Simulated upvotes for bot-published videos (so we keep real upvotes in `upvotes` table). */
+  botUpvotesCount: integer("bot_upvotes_count").notNull().default(0),
   clippeurId: uuid("clippeur_id").references(() => profiles.id),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   youtubePublishedAt: timestamp("youtube_published_at", { withTimezone: true }),
   shuffleKey: doublePrecision("shuffle_key").notNull().default(0),
 });
+
+/** Order by total upvotes (user + bot) for ranking. */
+export const totalUpvotesSql = sql`(videos.upvotes_count + coalesce(videos.bot_upvotes_count, 0))`;
 
 export const upvotes = pgTable(
   "upvotes",

@@ -17,11 +17,13 @@ export async function toggleUpvote(videoId: string): Promise<UpvoteResult> {
 
   const video = await db.query.videos.findFirst({
     where: eq(videos.id, videoId),
-    columns: { id: true, youtubeId: true, upvotesCount: true },
+    columns: { id: true, youtubeId: true, upvotesCount: true, botUpvotesCount: true },
   });
   if (!video) {
     return { count: 0, upvoted: false, error: "Video not found." };
   }
+
+  const botPart = video.botUpvotesCount ?? 0;
 
   const existing = await db.query.upvotes.findFirst({
     where: and(
@@ -40,7 +42,7 @@ export async function toggleUpvote(videoId: string): Promise<UpvoteResult> {
       .update(videos)
       .set({ upvotesCount: sql`GREATEST(${videos.upvotesCount} - 1, 0)` })
       .where(eq(videos.id, video.id));
-    result = { count: Math.max(0, video.upvotesCount - 1), upvoted: false };
+    result = { count: Math.max(0, video.upvotesCount - 1) + botPart, upvoted: false };
   } else {
     await db.insert(upvotes).values({
       userId: user.id,
@@ -50,7 +52,7 @@ export async function toggleUpvote(videoId: string): Promise<UpvoteResult> {
       .update(videos)
       .set({ upvotesCount: sql`${videos.upvotesCount} + 1` })
       .where(eq(videos.id, video.id));
-    result = { count: video.upvotesCount + 1, upvoted: true };
+    result = { count: video.upvotesCount + 1 + botPart, upvoted: true };
   }
 
   revalidatePath(`/v/${video.youtubeId}`);

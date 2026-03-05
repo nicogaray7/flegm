@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { db } from "@/db";
-import { videos } from "@/db/schema";
+import { videos, totalUpvotesSql } from "@/db/schema";
 import { asc, desc } from "drizzle-orm";
 import { VideoCard } from "@/app/components/video-card";
 import { Header } from "@/app/components/header";
@@ -29,13 +29,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LeaderboardPage({ params }: Props) {
   const { locale, t } = await getServerDictionary();
-  let topVideos: { id: string; youtubeId: string; title: string; channelName: string; upvotesCount: number; duration: number }[] = [];
+  let topVideos: { id: string; youtubeId: string; title: string; channelName: string; upvotesCount: number; botUpvotesCount: number; duration: number }[] = [];
   let dbError: string | null = null;
   try {
     topVideos = await db
       .select()
       .from(videos)
-      .orderBy(desc(videos.upvotesCount), asc(videos.shuffleKey))
+      .orderBy(desc(totalUpvotesSql), asc(videos.shuffleKey))
       .limit(100);
   } catch (err) {
     dbError = err instanceof Error ? err.message : "Database unavailable";
@@ -77,6 +77,7 @@ export default async function LeaderboardPage({ params }: Props) {
                     title: video.title,
                     channelName: video.channelName,
                     upvotesCount: video.upvotesCount,
+                    botUpvotesCount: video.botUpvotesCount,
                     duration: video.duration,
                   }}
                   rank={index + 1}

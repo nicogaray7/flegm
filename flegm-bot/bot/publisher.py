@@ -146,6 +146,8 @@ class FlegmPublisher:
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         published_at_iso = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        # Bot-simulated upvotes (stored in bot_upvotes_count; real upvotes stay in upvotes table)
+        initial_bot_upvotes = random.randint(2, 8)
         payload = {
             "id": flegm_post_id,
             "youtube_id": video.video_id,
@@ -155,6 +157,7 @@ class FlegmPublisher:
             "channel_thumbnail": video.thumbnail_url,
             "duration": video.duration,
             "upvotes_count": 0,
+            "bot_upvotes_count": initial_bot_upvotes,
             "clippeur_id": self._user_id,
             "youtube_published_at": published_at_iso,
             "shuffle_key": random.random(),

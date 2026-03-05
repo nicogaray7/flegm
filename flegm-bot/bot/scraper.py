@@ -9,12 +9,12 @@ logger = logging.getLogger(__name__)
 
 RSS_URL = "https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
 
-# YouTube Shorts: max 60 seconds — exclude from publishing
-SHORTS_MAX_DURATION_SECONDS = 60
+# YouTube Shorts: max 180 seconds (3 min) — exclude from publishing
+SHORTS_MAX_DURATION_SECONDS = 180
 
 
 def _exclude_shorts(videos: list["Video"]) -> list["Video"]:
-    """Filter out Shorts (duration <= 60s)."""
+    """Filter out Shorts (duration <= 180s)."""
     return [v for v in videos if v.duration > SHORTS_MAX_DURATION_SECONDS]
 
 

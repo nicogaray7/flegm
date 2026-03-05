@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDurationHMS } from "@/lib/format-duration";
+import { totalUpvotes } from "@/lib/upvotes";
 import type { Locale } from "@/lib/i18n";
 
 type Video = {
@@ -9,6 +10,7 @@ type Video = {
   title: string;
   channelName: string;
   upvotesCount: number;
+  botUpvotesCount?: number | null;
   duration: number;
 };
 
@@ -74,7 +76,7 @@ export function VideoCard({
         <svg width="12" height="8" viewBox="0 0 12 8" fill="none" className="text-current">
           <path d="M6 0L11.196 7.5H0.804L6 0Z" fill="currentColor" />
         </svg>
-        <span className="text-xs font-bold leading-none">{video.upvotesCount}</span>
+        <span className="text-xs font-bold leading-none">{totalUpvotes(video)}</span>
       </div>
     </Link>
   );

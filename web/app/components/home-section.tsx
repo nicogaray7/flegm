@@ -7,6 +7,7 @@ type Video = {
   title: string;
   channelName: string;
   upvotesCount: number;
+  botUpvotesCount?: number | null;
   duration: number;
 };
 

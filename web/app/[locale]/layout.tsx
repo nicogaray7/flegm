@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CookieConsentProvider } from "@/lib/cookie-consent";
@@ -108,6 +109,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
+      <Script
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1641130131347247"
+        strategy="afterInteractive"
+        crossOrigin="anonymous"
       />
       <CookieConsentProvider>
         {children}

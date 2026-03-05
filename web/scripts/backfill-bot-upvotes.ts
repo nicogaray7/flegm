@@ -4,7 +4,7 @@
  *
  * Usage (from web/): FLEGM_BOT_USER_ID=uuid DATABASE_URL=... npx tsx scripts/backfill-bot-upvotes.ts
  *
- * Env: FLEGM_BOT_USER_ID, DATABASE_URL; optional: DRY_RUN, BOT_UPVOTE_BASE, BOT_UPVOTE_GROWTH, BOT_UPVOTE_MAX_MEAN, BOT_UPVOTE_SPREAD.
+ * Env: FLEGM_BOT_USER_ID, DATABASE_URL; optional: DRY_RUN, BOT_UPVOTE_BASE, BOT_UPVOTE_GROWTH, BOT_UPVOTE_MAX_MEAN, BOT_UPVOTE_SPREAD, BOT_UPVOTE_SPREAD_RATIO, BOT_UPVOTE_SPREAD_MAX, BOT_UPVOTE_ORGANIC_BUMP.
  */
 
 import { runBackfillBotUpvotes } from "../lib/backfill-bot-upvotes";

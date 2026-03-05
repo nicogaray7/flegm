@@ -147,7 +147,8 @@ class FlegmPublisher:
             dt = dt.replace(tzinfo=timezone.utc)
         published_at_iso = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
         # Bot-simulated upvotes (stored in bot_upvotes_count; real upvotes stay in upvotes table)
-        initial_bot_upvotes = random.randint(2, 8)
+        # Wider range for more organic-looking variation; backfill will override with formula.
+        initial_bot_upvotes = random.randint(1, 14)
         payload = {
             "id": flegm_post_id,
             "youtube_id": video.video_id,

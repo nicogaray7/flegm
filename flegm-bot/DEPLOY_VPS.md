@@ -2,6 +2,16 @@
 
 Ce guide permet d’héberger le bot sur un serveur (ex. `root@217.196.49.11`) avec systemd.
 
+## Mise à jour rapide (déjà installé)
+
+Depuis la machine locale (avec accès SSH au VPS) :
+
+```bash
+./flegm-bot/deploy/update-vps.sh
+```
+
+Envoie le code par rsync, réinstalle les deps Python et redémarre `flegm-bot.service`. Pour un déploiement complet (première install ou réinstall), utiliser `./flegm-bot/deploy/launch-vps.sh`.
+
 ## Prérequis
 
 - Accès SSH au VPS (Debian ou Ubuntu)

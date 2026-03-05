@@ -1,0 +1,17 @@
+---
+description: Use Vercel CLI for deployments and config; VPS bot at 217.196.49.11
+alwaysApply: true
+---
+
+# Vercel et VPS Flegm
+
+## Vercel
+- **Toujours utiliser le CLI Vercel** pour déploiements, variables d'environnement et config (pas uniquement le dashboard).
+- Projet à cibler : **flegm** (flegm.fr). Scope : `nicogaray7s-projects`.
+- Lier le repo au projet : `vercel link --scope nicogaray7s-projects --project flegm`
+- Commandes utiles : `vercel env ls`, `vercel deploy --prod`, `vercel whoami`
+
+## VPS (bot)
+- **Hébergement du bot** : `root@217.196.49.11`, répertoire `/opt/flegm-bot`, service systemd `flegm-bot`.
+- Déploiement depuis la machine locale (quand SSH est configuré) : `./flegm-bot/deploy/launch-vps.sh` ou mise à jour rapide : `./flegm-bot/deploy/update-vps.sh`
+- Sur le VPS : mise à jour manuelle possible avec `git pull` dans `/opt/flegm-bot` puis `systemctl restart flegm-bot` (si le code est cloné en git sur le serveur).

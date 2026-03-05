@@ -1,18 +1,18 @@
 import { Header } from "@/app/components/header";
 import { Footer } from "@/app/components/footer";
 import Link from "next/link";
+import { getServerDictionary } from "@/lib/i18n/server";
 import { getAlternateLanguages, getCanonicalForLocale } from "@/lib/i18n/alternates";
 import type { Locale } from "@/lib/i18n";
-
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
+  const { t } = await getServerDictionary(locale as Locale);
   return {
-    title: "Privacy Policy",
-    description: "Flegm privacy policy — how we handle your data.",
+    title: t.privacyPage.title,
+    description: t.privacyPage.metaDescription,
     alternates: {
       canonical: getCanonicalForLocale(locale as Locale, "privacy"),
       languages: getAlternateLanguages("privacy"),
@@ -22,6 +22,8 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function PrivacyPage({ params }: Props) {
   const { locale } = await params;
+  const { t } = await getServerDictionary(locale as Locale);
+  const p = t.privacyPage;
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <Header />
@@ -29,171 +31,148 @@ export default async function PrivacyPage({ params }: Props) {
         <div className="mb-8">
           <span className="text-3xl mb-2 block">{"\u{1F512}"}</span>
           <h1 className="text-3xl font-black tracking-tight text-[var(--foreground)]">
-            Privacy Policy
+            {p.title}
           </h1>
-          <p className="mt-2 text-sm text-[var(--muted)]">
-            Last updated: February 2026
-          </p>
+          <p className="mt-2 text-sm text-[var(--muted)]">{p.lastUpdated}</p>
         </div>
 
         <div className="space-y-8 text-sm text-[var(--foreground)]/85 leading-relaxed">
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              TL;DR
+              {p.tldrHeading}
             </h2>
-            <p>
-              We collect the minimum we need to run Flegm — your sign-in info, what you
-              do on the platform, and basic analytics. We don&apos;t sell your data. Ever.
-            </p>
+            <p>{p.tldrBody}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              1. What we collect
+              {p.section1Heading}
             </h2>
-
-            <h3 className="font-bold text-[var(--foreground)] mt-3 mb-1">Account info</h3>
-            <p>When you sign in, we get:</p>
+            <h3 className="font-bold text-[var(--foreground)] mt-3 mb-1">{p.accountInfo}</h3>
+            <p>{p.accountInfoIntro}</p>
             <ul className="list-disc pl-5 space-y-1 mt-1">
-              <li><strong>Google sign-in:</strong> your name, email, and profile picture</li>
-              <li><strong>Email sign-in:</strong> just your email address</li>
+              <li><strong>{p.googleSignIn}</strong> {p.googleSignInDetail}</li>
+              <li><strong>{p.emailSignIn}</strong> {p.emailSignInDetail}</li>
             </ul>
-            <p className="mt-2">This is handled by Supabase Auth. We store your profile (username, avatar) so the site works.</p>
+            <p className="mt-2">{p.accountInfoOutro}</p>
 
-            <h3 className="font-bold text-[var(--foreground)] mt-4 mb-1">Your activity</h3>
+            <h3 className="font-bold text-[var(--foreground)] mt-4 mb-1">{p.yourActivity}</h3>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Videos you drop</li>
-              <li>Videos you upvote</li>
-              <li>Comments you post</li>
+              <li>{p.yourActivityLi1}</li>
+              <li>{p.yourActivityLi2}</li>
+              <li>{p.yourActivityLi3}</li>
             </ul>
-            <p className="mt-1">This is visible to other users — that&apos;s the whole point of the platform.</p>
+            <p className="mt-1">{p.yourActivityOutro}</p>
 
-            <h3 className="font-bold text-[var(--foreground)] mt-4 mb-1">Analytics</h3>
-            <p>
-              We use <strong>Google Analytics 4</strong> to understand how people use Flegm
-              (page views, button clicks, sign-in events). GA may collect:
-            </p>
+            <h3 className="font-bold text-[var(--foreground)] mt-4 mb-1">{p.analytics}</h3>
+            <p>{p.analyticsIntro}</p>
             <ul className="list-disc pl-5 space-y-1 mt-1">
-              <li>Your IP address (anonymized by Google)</li>
-              <li>Browser type and device info</li>
-              <li>Pages you visit and how long you stay</li>
-              <li>Referral source (how you found us)</li>
+              <li>{p.analyticsLi1}</li>
+              <li>{p.analyticsLi2}</li>
+              <li>{p.analyticsLi3}</li>
+              <li>{p.analyticsLi4}</li>
             </ul>
 
-            <h3 className="font-bold text-[var(--foreground)] mt-4 mb-1">Cookies</h3>
-            <p>We use cookies for:</p>
+            <h3 className="font-bold text-[var(--foreground)] mt-4 mb-1">{p.cookies}</h3>
+            <p>{p.cookiesIntro}</p>
             <ul className="list-disc pl-5 space-y-1 mt-1">
-              <li><strong>Necessary:</strong> keeping you signed in (Supabase session) and storing your consent preference</li>
-              <li><strong>Analytics:</strong> Google Analytics cookies to understand usage patterns (opt-in)</li>
-              <li><strong>Marketing:</strong> advertising and retargeting cookies (opt-in)</li>
+              <li><strong>{p.necessary}</strong> {p.necessaryDetail}</li>
+              <li><strong>{p.analyticsCat}</strong> {p.analyticsCatDetail}</li>
+              <li><strong>{p.marketing}</strong> {p.marketingDetail}</li>
             </ul>
             <p className="mt-1">
-              Analytics and marketing cookies are only set after you give consent.
-              You can manage your preferences any time on our{" "}
+              {p.cookiesOutro}{" "}
               <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">
-                Cookie Policy
-              </Link>{" "}page.
+                {p.cookiePolicyPage}
+              </Link>{" "}{p.page}
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              2. How we use your data
+              {p.section2Heading}
             </h2>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li>To run Flegm — show your profile, display your votes and comments</li>
-              <li>To keep the platform safe — our moderation system scores comments for risk</li>
-              <li>To understand usage — analytics help us improve the experience</li>
-              <li>To send you sign-in links if you use email auth</li>
+              <li>{p.section2Li1}</li>
+              <li>{p.section2Li2}</li>
+              <li>{p.section2Li3}</li>
+              <li>{p.section2Li4}</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              3. Who sees your data
+              {p.section3Heading}
             </h2>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li><strong>Other users:</strong> your username, avatar, dropped videos, upvotes, and comments are public</li>
-              <li><strong>Supabase:</strong> hosts our database and handles authentication</li>
-              <li><strong>Google:</strong> provides Analytics and OAuth sign-in</li>
-              <li><strong>Vercel:</strong> hosts the website</li>
-              <li><strong>Resend:</strong> sends sign-in emails and moderation alerts</li>
+              <li>{p.section3Li1}</li>
+              <li>{p.section3Li2}</li>
+              <li>{p.section3Li3}</li>
+              <li>{p.section3Li4}</li>
+              <li>{p.section3Li5}</li>
             </ul>
-            <p className="mt-2">
-              We don&apos;t sell, rent, or share your personal data with advertisers or data brokers. Period.
-            </p>
+            <p className="mt-2">{p.section3Outro}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              4. Where your data lives
+              {p.section4Heading}
             </h2>
-            <p>
-              Our infrastructure is hosted on Supabase (cloud) and Vercel. Your data
-              may be processed in the US or EU depending on the service. All connections
-              use HTTPS encryption.
-            </p>
+            <p>{p.section4Body}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              5. How long we keep it
+              {p.section5Heading}
             </h2>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li><strong>Account data:</strong> as long as your account exists</li>
-              <li><strong>Videos &amp; comments:</strong> as long as the content is on the platform</li>
-              <li><strong>Analytics:</strong> retained per Google&apos;s default retention policies</li>
+              <li><strong>{p.accountData}</strong> {p.accountDataDetail}</li>
+              <li><strong>{p.videosComments}</strong> {p.videosCommentsDetail}</li>
+              <li><strong>{p.analyticsRetention}</strong> {p.analyticsRetentionDetail}</li>
             </ul>
-            <p className="mt-2">
-              If you delete your account, we&apos;ll remove your personal data. Public
-              content (comments, dropped videos) may remain anonymized.
-            </p>
+            <p className="mt-2">{p.section5Outro}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              6. Your rights
+              {p.section6Heading}
             </h2>
-            <p className="mb-2">You can:</p>
+            <p className="mb-2">{p.section6Intro}</p>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li><strong>Access</strong> your data — ask us what we have</li>
-              <li><strong>Delete</strong> your account — email us and we&apos;ll wipe it</li>
-              <li><strong>Export</strong> your data — we can provide what we store</li>
-              <li><strong>Opt out</strong> of analytics — use the <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">cookie settings</Link> or a browser extension</li>
+              <li>{p.access}</li>
+              <li>{p.delete}</li>
+              <li>{p.export}</li>
+              <li>
+                {p.optOutBeforeLink}
+                <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">
+                  {p.cookiePolicyPage}
+                </Link>
+                {p.optOutAfterLink}
+              </li>
             </ul>
-            <p className="mt-2">
-              If you&apos;re in the EU, you have additional rights under GDPR
-              (rectification, restriction, portability, objection). Just reach out.
-            </p>
+            <p className="mt-2">{p.section6Outro}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              7. Kids
+              {p.section7Heading}
             </h2>
-            <p>
-              Flegm is not designed for anyone under 13. We don&apos;t knowingly collect
-              data from children. If you&apos;re under 13, please don&apos;t use the platform.
-            </p>
+            <p>{p.section7Body}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              8. Changes to this policy
+              {p.section8Heading}
             </h2>
-            <p>
-              We might update this policy as Flegm evolves. If we make significant
-              changes, we&apos;ll let you know. The &quot;last updated&quot; date at the top
-              always reflects the current version.
-            </p>
+            <p>{p.section8Body}</p>
           </section>
 
           <section>
             <h2 className="text-lg font-extrabold text-[var(--foreground)] mb-2">
-              9. Contact
+              {p.section9Heading}
             </h2>
             <p>
-              Got questions about your data? Email us at{" "}
+              {p.section9Body}{" "}
               <a href="mailto:contact@flegm.fr" className="font-semibold text-purple-600 hover:underline">
                 contact@flegm.fr
               </a>
@@ -203,13 +182,13 @@ export default async function PrivacyPage({ params }: Props) {
 
         <div className="mt-12 pt-6 border-t border-[var(--border)]">
           <p className="text-xs text-[var(--muted)]">
-            See also:{" "}
+            {p.seeAlso}{" "}
             <Link href={`/${locale}/terms`} className="font-semibold text-purple-600 hover:underline">
-              Terms of Use
+              {p.termsOfUse}
             </Link>
             {" "}&middot;{" "}
             <Link href={`/${locale}/cookies`} className="font-semibold text-purple-600 hover:underline">
-              Cookie Policy
+              {t.cookiesPage.title}
             </Link>
           </p>
         </div>

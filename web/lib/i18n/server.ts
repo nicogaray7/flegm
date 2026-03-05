@@ -41,7 +41,15 @@ function parseAcceptLanguage(header: string): string[] {
     .map((item) => item.lang);
 }
 
-export async function getServerDictionary() {
-  const locale = await getLocale();
+/**
+ * Get the dictionary for the current request.
+ * When localeOverride is provided (e.g. from [locale] route params), use it so the page
+ * language matches the URL. Otherwise use cookie / Accept-Language.
+ */
+export async function getServerDictionary(localeOverride?: Locale) {
+  const locale =
+    localeOverride && locales.includes(localeOverride)
+      ? localeOverride
+      : await getLocale();
   return { locale, t: getDictionary(locale) };
 }

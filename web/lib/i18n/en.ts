@@ -242,6 +242,186 @@ const en = {
     readyDiscover: "Ready to discover something great?",
     browseVideos: "Browse videos",
   },
+
+  // Terms of Use page
+  termsPage: {
+    title: "Terms of Use",
+    metaDescription: "Flegm terms of use — the rules for using the platform.",
+    lastUpdated: "Last updated: February 2026",
+    tldrHeading: "TL;DR",
+    tldrBody:
+      "Flegm is a community platform for sharing and discovering YouTube videos. Be cool, don't spam, and respect others. We can remove content or accounts that break these rules. That's basically it.",
+    section1Heading: "1. What Flegm is",
+    section1Body:
+      'Flegm ("we", "us", "the platform") is a community-driven YouTube video leaderboard. You can drop videos, upvote them, and leave comments. We don\'t host any video content — everything plays through YouTube.',
+    section2Heading: "2. Your account",
+    section2Li1: "You need to sign in (via Google or email) to drop videos, upvote, or comment.",
+    section2Li2: "You're responsible for your account. Keep your credentials safe.",
+    section2Li3: "One account per person. Don't create alts to game the leaderboard.",
+    section2Li4: "We can suspend or delete accounts that violate these terms.",
+    section3Heading: "3. Community rules",
+    section3Intro: "Keep it chill. Don't:",
+    section3Li1: "Spam, self-promote excessively, or use bots",
+    section3Li2: "Post hateful, violent, or illegal content",
+    section3Li3: "Harass other users in comments",
+    section3Li4: "Try to manipulate votes or game the leaderboard",
+    section3Li5: "Impersonate others or misrepresent your identity",
+    section3Outro:
+      "We moderate content using automated risk scoring and may hold comments for review. We reserve the right to remove any content at our discretion.",
+    section4Heading: "4. Content you share",
+    section4Li1: "You can only share YouTube videos that are publicly available.",
+    section4Li2: "By dropping a video, you're sharing a link — you're not claiming ownership of that content.",
+    section4Li3: "Your comments are your own. You grant Flegm permission to display them on the platform.",
+    section4Li4: "We can remove any content that violates these terms or that we consider harmful.",
+    section5Heading: "5. What we provide (and don't)",
+    section5Li1: 'Flegm is provided "as is". We do our best but can\'t guarantee uptime or perfection.',
+    section5Li2: "We're not responsible for the content of YouTube videos shared on the platform.",
+    section5Li3: "We may change, update, or discontinue features at any time.",
+    section5Li4: "We're not liable for any damages from using (or not being able to use) Flegm.",
+    section6Heading: "6. Intellectual property",
+    section6Body:
+      "The Flegm name, logo, and design are ours. The YouTube videos belong to their creators. You keep ownership of your comments, but give us a license to display them on the platform.",
+    section7Heading: "7. Changes to these terms",
+    section7Body:
+      "We might update these terms from time to time. If we make significant changes, we'll let you know. Continuing to use Flegm after changes means you accept them.",
+    section8Heading: "8. Contact",
+    section8Body: "Questions? Hit us up at",
+    seeAlso: "See also:",
+    privacyPolicy: "Privacy Policy",
+    cookiePolicy: "Cookie Policy",
+  },
+
+  // Privacy Policy page
+  privacyPage: {
+    title: "Privacy Policy",
+    metaDescription: "Flegm privacy policy — how we handle your data.",
+    lastUpdated: "Last updated: February 2026",
+    tldrHeading: "TL;DR",
+    tldrBody:
+      "We collect the minimum we need to run Flegm — your sign-in info, what you do on the platform, and basic analytics. We don't sell your data. Ever.",
+    section1Heading: "1. What we collect",
+    accountInfo: "Account info",
+    accountInfoIntro: "When you sign in, we get:",
+    googleSignIn: "Google sign-in:",
+    googleSignInDetail: "your name, email, and profile picture",
+    emailSignIn: "Email sign-in:",
+    emailSignInDetail: "just your email address",
+    accountInfoOutro: "This is handled by Supabase Auth. We store your profile (username, avatar) so the site works.",
+    yourActivity: "Your activity",
+    yourActivityLi1: "Videos you drop",
+    yourActivityLi2: "Videos you upvote",
+    yourActivityLi3: "Comments you post",
+    yourActivityOutro: "This is visible to other users — that's the whole point of the platform.",
+    analytics: "Analytics",
+    analyticsIntro:
+      "We use Google Analytics 4 to understand how people use Flegm (page views, button clicks, sign-in events). GA may collect:",
+    analyticsLi1: "Your IP address (anonymized by Google)",
+    analyticsLi2: "Browser type and device info",
+    analyticsLi3: "Pages you visit and how long you stay",
+    analyticsLi4: "Referral source (how you found us)",
+    cookies: "Cookies",
+    cookiesIntro: "We use cookies for:",
+    necessary: "Necessary:",
+    necessaryDetail: "keeping you signed in (Supabase session) and storing your consent preference",
+    analyticsCat: "Analytics:",
+    analyticsCatDetail: "Google Analytics cookies to understand usage patterns (opt-in)",
+    marketing: "Marketing:",
+    marketingDetail: "advertising and retargeting cookies (opt-in)",
+    cookiesOutro: "Analytics and marketing cookies are only set after you give consent. You can manage your preferences any time on our",
+    cookiePolicyPage: "Cookie Policy",
+    page: "page.",
+    section2Heading: "2. How we use your data",
+    section2Li1: "To run Flegm — show your profile, display your votes and comments",
+    section2Li2: "To keep the platform safe — our moderation system scores comments for risk",
+    section2Li3: "To understand usage — analytics help us improve the experience",
+    section2Li4: "To send you sign-in links if you use email auth",
+    section3Heading: "3. Who sees your data",
+    section3Li1: "Other users: your username, avatar, dropped videos, upvotes, and comments are public",
+    section3Li2: "Supabase: hosts our database and handles authentication",
+    section3Li3: "Google: provides Analytics and OAuth sign-in",
+    section3Li4: "Vercel: hosts the website",
+    section3Li5: "Resend: sends sign-in emails and moderation alerts",
+    section3Outro: "We don't sell, rent, or share your personal data with advertisers or data brokers. Period.",
+    section4Heading: "4. Where your data lives",
+    section4Body:
+      "Our infrastructure is hosted on Supabase (cloud) and Vercel. Your data may be processed in the US or EU depending on the service. All connections use HTTPS encryption.",
+    section5Heading: "5. How long we keep it",
+    accountData: "Account data:",
+    accountDataDetail: "as long as your account exists",
+    videosComments: "Videos & comments:",
+    videosCommentsDetail: "as long as the content is on the platform",
+    analyticsRetention: "Analytics:",
+    analyticsRetentionDetail: "retained per Google's default retention policies",
+    section5Outro:
+      "If you delete your account, we'll remove your personal data. Public content (comments, dropped videos) may remain anonymized.",
+    section6Heading: "6. Your rights",
+    section6Intro: "You can:",
+    access: "Access your data — ask us what we have",
+    delete: "Delete your account — email us and we'll wipe it",
+    export: "Export your data — we can provide what we store",
+    optOutBeforeLink: "Opt out of analytics — use the ",
+    optOutAfterLink: " or a browser extension",
+    section6Outro: "If you're in the EU, you have additional rights under GDPR (rectification, restriction, portability, objection). Just reach out.",
+    section7Heading: "7. Kids",
+    section7Body:
+      "Flegm is not designed for anyone under 13. We don't knowingly collect data from children. If you're under 13, please don't use the platform.",
+    section8Heading: "8. Changes to this policy",
+    section8Body:
+      "We might update this policy as Flegm evolves. If we make significant changes, we'll let you know. The \"last updated\" date at the top always reflects the current version.",
+    section9Heading: "9. Contact",
+    section9Body: "Got questions about your data? Email us at",
+    seeAlso: "See also:",
+    termsOfUse: "Terms of Use",
+  },
+
+  // Cookie Policy page
+  cookiesPage: {
+    title: "Cookie Policy",
+    metaDescription: "Flegm cookie policy — what cookies we use and why.",
+    lastUpdated: "Last updated: February 2026",
+    tldrHeading: "TL;DR",
+    tldrBody:
+      "We use cookies to keep you signed in, understand how you use Flegm, and (if you opt in) for marketing purposes. You can change your preferences any time.",
+    section1Heading: "1. What are cookies?",
+    section1Body:
+      "Cookies are small text files stored on your device when you visit a website. They help the site remember your preferences, keep you logged in, and understand how you interact with the platform.",
+    section2Heading: "2. Cookies we use",
+    tableCategory: "Category",
+    tablePurpose: "Purpose",
+    tableOptOut: "Can you opt out?",
+    necessaryRow: "Necessary",
+    necessaryPurpose:
+      "Authentication (Supabase session), security tokens, cookie consent preference. The site won't work without them.",
+    no: "No",
+    analyticsRow: "Analytics",
+    analyticsPurpose:
+      "Google Analytics 4 — page views, button clicks, sign-in events, usage patterns. Helps us understand what's working and what's not.",
+    yes: "Yes",
+    marketingRow: "Marketing",
+    marketingPurpose:
+      "Advertising cookies, retargeting pixels, ad personalization. Used to show relevant ads and measure ad campaign effectiveness.",
+    section3Heading: "3. Specific cookies",
+    tableCookie: "Cookie",
+    tableProvider: "Provider",
+    tableDuration: "Duration",
+    section4Heading: "4. Google Consent Mode v2",
+    section4Body:
+      "We use Google Consent Mode v2 to respect your cookie choices. When you decline analytics or marketing cookies, Google tags load in a privacy-safe mode — no identifying cookies are set, and only aggregate, cookieless pings are sent. This lets Google provide basic conversion modeling without tracking you individually.",
+    section5Heading: "5. Managing your preferences",
+    section5Intro:
+      "You can change your cookie preferences at any time using the button below, or through your browser settings.",
+    section5Outro:
+      "Most browsers also let you block or delete cookies. Note that blocking necessary cookies may prevent the site from working properly.",
+    section6Heading: "6. Third-party cookies",
+    section6Body:
+      "Some cookies are set by third-party services we use (Google Analytics, Google Ads). These services have their own privacy policies:",
+    googlePrivacy: "Google Privacy Policy",
+    gaOptout: "Google Analytics Opt-out Browser Add-on",
+    section7Heading: "7. Contact",
+    section7Body: "Questions about our cookie practices? Email",
+    privacyPolicy: "Privacy Policy",
+    termsOfUse: "Terms of Use",
+  },
 };
 
 export type Dictionary = {
@@ -277,6 +457,9 @@ export type Dictionary = {
   cookie: { [K in keyof typeof en.cookie]: string };
   notFound: { [K in keyof typeof en.notFound]: string };
   about: { [K in keyof typeof en.about]: string };
+  termsPage: { [K in keyof typeof en.termsPage]: string };
+  privacyPage: { [K in keyof typeof en.privacyPage]: string };
+  cookiesPage: { [K in keyof typeof en.cookiesPage]: string };
 };
 
 export default en as Dictionary;

@@ -110,6 +110,8 @@ export async function submitVideo(
     channelThumbnail: metadata.channelThumbnail,
     duration: metadata.duration,
     upvotesCount: 0,
+    viewCount: metadata.viewCount,
+    likeCount: metadata.likeCount,
     clippeurId: user.id,
     shuffleKey: Math.random(),
   });

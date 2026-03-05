@@ -51,7 +51,7 @@ class TestYouTubeScraper(unittest.TestCase):
                 "thumbnails": {"high": {"url": "https://img.yt/thumb.jpg"}},
                 "tags": ["python", "test"],
             },
-            "statistics": {"viewCount": view_count},
+            "statistics": {"viewCount": view_count, "likeCount": "100"},
             "contentDetails": {"duration": duration},
         }
 
@@ -69,6 +69,7 @@ class TestYouTubeScraper(unittest.TestCase):
         self.assertEqual(results[0].video_id, "vid1")
         self.assertEqual(results[0].title, "Test")
         self.assertEqual(results[0].view_count, 1000)
+        self.assertEqual(results[0].like_count, 100)
 
     def test_get_recent_videos_returns_videos(self):
         scraper = self._make_scraper()

@@ -42,6 +42,7 @@ class Video:
     channel_id: str
     published_at: datetime
     view_count: int
+    like_count: int = 0
     duration: int = 0              # seconds
     tags: list[str] = field(default_factory=list)
 
@@ -86,6 +87,7 @@ class YouTubeScraper:
             channel_id=snippet.get("channelId", ""),
             published_at=published_at,
             view_count=int(stats.get("viewCount", 0)),
+            like_count=int(stats.get("likeCount", 0)),
             duration=_parse_iso8601_duration(content_details.get("duration", "")),
             tags=snippet.get("tags", []),
         )

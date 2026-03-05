@@ -158,6 +158,8 @@ class FlegmPublisher:
             "duration": video.duration,
             "upvotes_count": 0,
             "bot_upvotes_count": initial_bot_upvotes,
+            "view_count": video.view_count,
+            "like_count": video.like_count,
             "clippeur_id": self._user_id,
             "youtube_published_at": published_at_iso,
             "shuffle_key": random.random(),

@@ -39,6 +39,8 @@ export type YouTubeVideoMetadata = {
   channelName: string;
   channelId: string;
   channelThumbnail: string | null;
+  viewCount: number;
+  likeCount: number;
 };
 
 /**
@@ -52,7 +54,7 @@ export async function fetchVideoMetadata(
   const base = "https://www.googleapis.com/youtube/v3";
 
   const videoRes = await fetch(
-    `${base}/videos?id=${encodeURIComponent(videoId)}&part=snippet,contentDetails&key=${encodeURIComponent(apiKey)}`
+    `${base}/videos?id=${encodeURIComponent(videoId)}&part=snippet,contentDetails,statistics&key=${encodeURIComponent(apiKey)}`
   );
   if (!videoRes.ok) return null;
   const videoJson = await videoRes.json();
@@ -61,6 +63,7 @@ export async function fetchVideoMetadata(
 
   const snippet = item.snippet || {};
   const contentDetails = item.contentDetails || {};
+  const statistics = item.statistics || {};
   const channelId = snippet.channelId || "";
   const channelTitle = snippet.channelTitle || "";
 
@@ -78,6 +81,8 @@ export async function fetchVideoMetadata(
   }
 
   const durationSec = parseISODuration(contentDetails.duration || "PT0S");
+  const viewCount = parseInt(statistics.viewCount || "0", 10) || 0;
+  const likeCount = parseInt(statistics.likeCount || "0", 10) || 0;
 
   return {
     title: snippet.title || "",
@@ -85,5 +90,7 @@ export async function fetchVideoMetadata(
     channelName: channelTitle,
     channelId,
     channelThumbnail,
+    viewCount,
+    likeCount,
   };
 }

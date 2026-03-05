@@ -27,6 +27,10 @@ export const videos = pgTable("videos", {
   upvotesCount: integer("upvotes_count").notNull().default(0),
   /** Simulated upvotes for bot-published videos (so we keep real upvotes in `upvotes` table). */
   botUpvotesCount: integer("bot_upvotes_count").notNull().default(0),
+  /** YouTube view count (for bot upvote formula). */
+  viewCount: integer("view_count"),
+  /** YouTube like count (for bot upvote formula, engagement ratio). */
+  likeCount: integer("like_count"),
   clippeurId: uuid("clippeur_id").references(() => profiles.id),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   youtubePublishedAt: timestamp("youtube_published_at", { withTimezone: true }),

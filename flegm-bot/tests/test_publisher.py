@@ -25,6 +25,7 @@ def _make_video(vid_id="dQw4w9WgXcQ"):
         channel_id="UCuAXFkgsw1L7xaCfnd5JJOw",
         published_at=datetime(1987, 11, 16, tzinfo=timezone.utc),
         view_count=1_400_000_000,
+        like_count=42_000_000,
         duration=213,
         tags=["rick roll", "80s"],
     )

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { runBackfillBotUpvotes } from "@/lib/backfill-bot-upvotes";
 
 /**
- * Daily cron: backfill bot_upvotes_count for bot-published videos.
+ * Daily cron (6:00 UTC): backfill bot_upvotes_count for bot-published videos
+ * using the organic formula (spread ∝ mean, 25% bump, jitter ±2).
  * Call with Authorization: Bearer <CRON_SECRET> or ?secret=<CRON_SECRET>.
  * Requires FLEGM_BOT_USER_ID and CRON_SECRET in env.
  */

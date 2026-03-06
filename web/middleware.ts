@@ -39,8 +39,13 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
 
-  // Routes that stay without locale prefix
-  if (pathname.startsWith("/auth/") || pathname === "/auth") {
+  // Routes that stay without locale prefix (auth, sitemap, robots)
+  if (
+    pathname.startsWith("/auth/") ||
+    pathname === "/auth" ||
+    pathname === "/sitemap.xml" ||
+    pathname === "/robots.txt"
+  ) {
     const res = await updateSession(request);
     return NextResponse.next({
       request: { headers: requestHeaders },

@@ -2,7 +2,9 @@ import type { MetadataRoute } from "next";
 import { db } from "@/db";
 import { videos } from "@/db/schema";
 import { desc, sql } from "drizzle-orm";
-import { locales } from "@/lib/i18n";
+import { defaultLocale } from "@/lib/i18n";
+import { getAlternateLanguages } from "@/lib/i18n/alternates";
+
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 type StaticPath = { path: string; changeFrequency: "hourly" | "daily" | "weekly" | "monthly"; priority: number };
@@ -39,37 +41,44 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .groupBy(videos.channelId)
     .limit(2000);
 
-  const staticPages: MetadataRoute.Sitemap = [];
-  for (const { path, changeFrequency, priority } of staticPaths) {
-    for (const locale of locales) {
-      const url = path ? `${baseUrl}/${locale}/${path}` : `${baseUrl}/${locale}`;
-      staticPages.push({ url, changeFrequency, priority });
-    }
-  }
+  const staticPages: MetadataRoute.Sitemap = staticPaths.map(
+    ({ path, changeFrequency, priority }) => {
+      const languages = getAlternateLanguages(path);
+      const url = languages[defaultLocale] ?? languages["x-default"]!;
+      return {
+        url,
+        changeFrequency,
+        priority,
+        alternates: { languages },
+      };
+    },
+  );
 
-  const videoPages: MetadataRoute.Sitemap = [];
-  for (const v of allVideos) {
-    for (const locale of locales) {
-      videoPages.push({
-        url: `${baseUrl}/${locale}/v/${v.youtubeId}`,
-        lastModified: v.createdAt,
-        changeFrequency: "daily",
-        priority: 0.7,
-      });
-    }
-  }
+  const videoPages: MetadataRoute.Sitemap = allVideos.map((v) => {
+    const path = `v/${v.youtubeId}`;
+    const languages = getAlternateLanguages(path);
+    const url = languages[defaultLocale] ?? languages["x-default"]!;
+    return {
+      url,
+      lastModified: v.createdAt,
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+      alternates: { languages },
+    };
+  });
 
-  const channelPages: MetadataRoute.Sitemap = [];
-  for (const c of channels) {
-    for (const locale of locales) {
-      channelPages.push({
-        url: `${baseUrl}/${locale}/channel/${encodeURIComponent(c.channelId)}`,
-        lastModified: c.lastUpdated,
-        changeFrequency: "weekly",
-        priority: 0.6,
-      });
-    }
-  }
+  const channelPages: MetadataRoute.Sitemap = channels.map((c) => {
+    const path = `channel/${encodeURIComponent(c.channelId)}`;
+    const languages = getAlternateLanguages(path);
+    const url = languages[defaultLocale] ?? languages["x-default"]!;
+    return {
+      url,
+      lastModified: c.lastUpdated,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+      alternates: { languages },
+    };
+  });
 
   return [...staticPages, ...videoPages, ...channelPages];
 }

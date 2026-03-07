@@ -16,16 +16,32 @@ type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const canonical = getCanonicalForLocale(locale as Locale, "leaderboard");
+  const title = "Leaderboard — Top YouTube Videos Ranked by the Community";
+  const description =
+    "Top 100 YouTube videos ranked by community upvotes on Flegm. Discover the most popular videos voted by real people.";
   return {
-    title: "Leaderboard — Top YouTube Videos Ranked by the Community",
-    description:
-      "Top 100 YouTube videos ranked by community upvotes on Flegm. Discover the most popular videos voted by real people.",
+    title,
+    description,
     alternates: {
-      canonical: getCanonicalForLocale(locale as Locale, "leaderboard"),
+      canonical,
       languages: getAlternateLanguages("leaderboard"),
+    },
+    openGraph: {
+      title: "Leaderboard — Top YouTube Videos | Flegm",
+      description,
+      type: "website",
+      url: canonical,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Leaderboard — Top YouTube Videos | Flegm",
+      description,
     },
   };
 }
+
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 export default async function LeaderboardPage({ params }: Props) {
   const { locale, t } = await getServerDictionary();
@@ -41,8 +57,26 @@ export default async function LeaderboardPage({ params }: Props) {
     dbError = err instanceof Error ? err.message : "Database unavailable";
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Top YouTube Videos — Flegm Leaderboard",
+    description: "The top YouTube videos ranked by community upvotes on Flegm",
+    numberOfItems: topVideos.length,
+    itemListElement: topVideos.map((v, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${baseUrl}/${locale}/v/${v.youtubeId}`,
+      name: v.title,
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <GaEvent eventName="leaderboard_view" />
       <Header />
       <main className="mx-auto max-w-3xl px-4 py-8">

@@ -84,11 +84,6 @@ export default async function LocaleLayout({ children, params }: Props) {
     url: baseUrl,
     description,
     inLanguage: localeHtmlLang[locale as Locale],
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${baseUrl}/${locale}/leaderboard`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   const orgJsonLd = {

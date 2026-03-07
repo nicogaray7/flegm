@@ -5,6 +5,8 @@ import { desc, sql } from "drizzle-orm";
 import { defaultLocale } from "@/lib/i18n";
 import { getAlternateLanguages } from "@/lib/i18n/alternates";
 
+export const dynamic = "force-dynamic";
+
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
 
 type StaticPath = { path: string; changeFrequency: "hourly" | "daily" | "weekly" | "monthly"; priority: number };

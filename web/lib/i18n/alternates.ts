@@ -1,7 +1,7 @@
 import { locales, defaultLocale } from "./index";
 import type { Locale } from "./index";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
+const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr").trim().replace(/\/+$/, "");
 
 /**
  * Path without leading slash and without locale prefix, e.g. "leaderboard", "v/abc123".

@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { submitVideo } from "@/actions/submit";
+import { trackEvent } from "@/lib/gtag";
 import { useTranslation } from "@/lib/i18n/locale-context";
 
 function SubmitButton() {
@@ -21,6 +23,14 @@ function SubmitButton() {
 export function SubmitForm() {
   const [state, formAction] = useFormState(submitVideo, null);
   const t = useTranslation();
+  const prevError = useRef(state?.error);
+
+  useEffect(() => {
+    if (state?.error && state.error !== prevError.current) {
+      trackEvent("submit_error", { error: state.error });
+    }
+    prevError.current = state?.error;
+  }, [state?.error]);
 
   return (
     <form action={formAction} className="space-y-4">

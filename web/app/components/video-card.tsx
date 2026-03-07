@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { formatDurationHMS } from "@/lib/format-duration";
+import { trackEvent } from "@/lib/gtag";
 import { totalUpvotes } from "@/lib/upvotes";
 import type { Locale } from "@/lib/i18n";
 
@@ -37,6 +40,7 @@ export function VideoCard({
     <Link
       href={`/${locale}/v/${video.youtubeId}`}
       className="group card flex items-center gap-4 px-4 py-3 hover-lift"
+      onClick={() => trackEvent("video_click", { video_id: video.youtubeId, video_title: video.title, channel_name: video.channelName })}
     >
       {rank !== undefined && (
         <span className="hidden sm:flex h-8 w-8 shrink-0 items-center justify-center text-sm font-bold">

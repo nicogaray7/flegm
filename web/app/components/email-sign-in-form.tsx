@@ -20,7 +20,7 @@ export function EmailSignInForm({ next, className }: Props) {
     e.preventDefault();
     setStatus("loading");
     setMessage("");
-    trackEvent("sign_in_start", { from_context: "email" });
+    trackEvent("sign_in_start", { method: "email", from_context: "email" });
     const result = await signInWithEmail(email, next);
     if (result.error) {
       setStatus("error");

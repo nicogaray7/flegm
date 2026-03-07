@@ -62,9 +62,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const path = `v/${v.youtubeId}`;
       const languages = getAlternateLanguages(path);
       const url = languages[defaultLocale] ?? languages["x-default"]!;
+      const lastModified = v.createdAt instanceof Date && !isNaN(v.createdAt.getTime()) ? v.createdAt : undefined;
       return {
         url,
-        lastModified: v.createdAt,
+        ...(lastModified && { lastModified }),
         changeFrequency: "daily" as const,
         priority: 0.7,
         alternates: { languages },
@@ -75,9 +76,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const path = `channel/${encodeURIComponent(c.channelId)}`;
       const languages = getAlternateLanguages(path);
       const url = languages[defaultLocale] ?? languages["x-default"]!;
+      const date = c.lastUpdated instanceof Date ? c.lastUpdated : new Date(c.lastUpdated);
+      const lastModified = !isNaN(date.getTime()) ? date : undefined;
       return {
         url,
-        lastModified: c.lastUpdated,
+        ...(lastModified && { lastModified }),
         changeFrequency: "weekly" as const,
         priority: 0.6,
         alternates: { languages },

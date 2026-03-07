@@ -7,8 +7,6 @@ import { getAlternateLanguages } from "@/lib/i18n/alternates";
 
 export const dynamic = "force-dynamic";
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://flegm.fr";
-
 type StaticPath = { path: string; changeFrequency: "hourly" | "daily" | "weekly" | "monthly"; priority: number };
 
 const staticPaths: StaticPath[] = [
@@ -25,31 +23,12 @@ const staticPaths: StaticPath[] = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allVideos = await db
-    .select({
-      youtubeId: videos.youtubeId,
-      createdAt: videos.createdAt,
-    })
-    .from(videos)
-    .orderBy(desc(videos.createdAt))
-    .limit(5000);
-
-  const channels = await db
-    .select({
-      channelId: videos.channelId,
-      lastUpdated: sql<Date>`max(${videos.createdAt})`,
-    })
-    .from(videos)
-    .groupBy(videos.channelId)
-    .limit(2000);
-
   const staticPages: MetadataRoute.Sitemap = staticPaths.map(
     ({ path, changeFrequency, priority }) => {
       const languages = getAlternateLanguages(path);
       const url = languages[defaultLocale] ?? languages["x-default"]!;
       return {
         url,
-        lastModified: new Date(),
         changeFrequency,
         priority,
         alternates: { languages },
@@ -57,31 +36,56 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   );
 
-  const videoPages: MetadataRoute.Sitemap = allVideos.map((v) => {
-    const path = `v/${v.youtubeId}`;
-    const languages = getAlternateLanguages(path);
-    const url = languages[defaultLocale] ?? languages["x-default"]!;
-    return {
-      url,
-      lastModified: v.createdAt,
-      changeFrequency: "daily" as const,
-      priority: 0.7,
-      alternates: { languages },
-    };
-  });
+  let videoPages: MetadataRoute.Sitemap = [];
+  let channelPages: MetadataRoute.Sitemap = [];
 
-  const channelPages: MetadataRoute.Sitemap = channels.map((c) => {
-    const path = `channel/${encodeURIComponent(c.channelId)}`;
-    const languages = getAlternateLanguages(path);
-    const url = languages[defaultLocale] ?? languages["x-default"]!;
-    return {
-      url,
-      lastModified: c.lastUpdated,
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-      alternates: { languages },
-    };
-  });
+  try {
+    const allVideos = await db
+      .select({
+        youtubeId: videos.youtubeId,
+        createdAt: videos.createdAt,
+      })
+      .from(videos)
+      .orderBy(desc(videos.createdAt))
+      .limit(5000);
+
+    const channels = await db
+      .select({
+        channelId: videos.channelId,
+        lastUpdated: sql<Date>`max(${videos.createdAt})`,
+      })
+      .from(videos)
+      .groupBy(videos.channelId)
+      .limit(2000);
+
+    videoPages = allVideos.map((v) => {
+      const path = `v/${v.youtubeId}`;
+      const languages = getAlternateLanguages(path);
+      const url = languages[defaultLocale] ?? languages["x-default"]!;
+      return {
+        url,
+        lastModified: v.createdAt,
+        changeFrequency: "daily" as const,
+        priority: 0.7,
+        alternates: { languages },
+      };
+    });
+
+    channelPages = channels.map((c) => {
+      const path = `channel/${encodeURIComponent(c.channelId)}`;
+      const languages = getAlternateLanguages(path);
+      const url = languages[defaultLocale] ?? languages["x-default"]!;
+      return {
+        url,
+        lastModified: c.lastUpdated,
+        changeFrequency: "weekly" as const,
+        priority: 0.6,
+        alternates: { languages },
+      };
+    });
+  } catch (err) {
+    console.error("Sitemap: failed to fetch dynamic entries", err);
+  }
 
   return [...staticPages, ...videoPages, ...channelPages];
 }

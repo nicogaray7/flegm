@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getServerDictionary } from "@/lib/i18n/server";
 
 export default async function NotFound() {
-  const { t } = await getServerDictionary();
+  const { locale, t } = await getServerDictionary();
   return (
     <div className="min-h-screen bg-[var(--background)] flex flex-col items-center justify-center px-4">
       <div className="card px-8 py-10 text-center max-w-sm">
@@ -14,7 +14,7 @@ export default async function NotFound() {
           {t.notFound.text}
         </p>
         <Link
-          href="/en"
+          href={`/${locale}`}
           className="inline-block rounded-lg bg-emerald-500 px-5 py-2 text-sm font-medium text-white hover:bg-emerald-600 transition-colors"
         >
           {t.notFound.backHome}

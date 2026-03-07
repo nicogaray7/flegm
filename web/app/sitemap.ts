@@ -47,6 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const url = languages[defaultLocale] ?? languages["x-default"]!;
       return {
         url,
+        lastModified: new Date(),
         changeFrequency,
         priority,
         alternates: { languages },

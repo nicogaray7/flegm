@@ -61,8 +61,26 @@ export default async function ChannelPage({ params }: Props) {
   const channelName = channelVideos[0].channelName;
   const channelThumbnail = channelVideos[0].channelThumbnail;
 
+  const channelJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${channelName} — Videos on Flegm`,
+    description: `The best videos from ${channelName}, ranked by community upvotes on Flegm`,
+    numberOfItems: channelVideos.length,
+    itemListElement: channelVideos.map((v, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${baseUrl}/${locale}/v/${v.youtubeId}`,
+      name: v.title,
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(channelJsonLd) }}
+      />
       <GaEvent
         eventName="channel_view"
         params={{ channel_id: decodedId, channel_name: channelName }}

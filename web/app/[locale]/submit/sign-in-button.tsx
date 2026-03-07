@@ -23,7 +23,7 @@ export function SignInButton({
   const displayLabel = label ?? t.auth.signInWithGoogle;
 
   function handleClick() {
-    trackEvent("sign_in_start", { from_context: context });
+    trackEvent("sign_in_start", { method: "google", from_context: context });
     startTransition(() => signInWithGoogle(next));
   }
 
